@@ -1,0 +1,1321 @@
+<style lang="less" scoped>
+//视频列表页面样式
+.videoListClass {
+  .videoPlay {
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .videoPlaywrap {
+      display: flex;
+      margin: 0 auto;
+      padding: 10px;
+      justify-content: space-evenly;
+      flex-wrap: wrap; //根据宽度限制一行的盒子个数
+      margin: 10px 0;
+      width: 98%;
+      background: transparent;
+      // overflow-x: hidden;
+
+      .videoPlayList {
+        margin-bottom: 10px;
+        width: 240px;
+        height: 155px;
+        border-radius: 10px;
+        box-sizing: border-box;
+
+        .videoImage {
+          position: relative;
+          margin-bottom: 10px;
+          width: 240px;
+          height: 155px;
+          border-radius: 10px;
+          overflow: hidden;
+          transition: 0.2s;
+
+          &:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+          }
+          .videoImg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+          }
+
+          .videoPlayTime {
+            position: absolute;
+            z-index: 99;
+            right: 10px;
+            background: transparent;
+          }
+        }
+
+        p {
+          font-size: 15px;
+          padding: 0 10px;
+          // width: 100%;
+          transition: 0.2s;
+          overflow: hidden; /*必须结合的属性,当内容溢出元素框时发生的事情*/
+          text-overflow: ellipsis; /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
+          display: -webkit-box; /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
+          -webkit-line-clamp: 2; /*用来限制在一个块元素显示的文本的行数。*/
+          -webkit-box-orient: vertical; /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
+          span {
+            &:hover {
+              color: rgb(145, 245, 228);
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+// 歌曲播放列表样式
+.playListClass {
+  .recPlay {
+    margin: auto;
+    max-height: 630px;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .playListWrap {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap; //根据宽度限制一行的盒子个数
+      margin: 10px 0;
+      width: 100%;
+      background: transparent;
+      // overflow-x: hidden;
+
+      .playListTable {
+        margin-bottom: 10px;
+        width: 205px;
+        height: 250px;
+        box-sizing: border-box;
+
+        .image {
+          position: relative;
+          margin: 10px auto;
+          width: 190px;
+          height: 190px;
+          border-radius: 10px;
+          overflow: hidden;
+          transition: 0.2s;
+
+          &:hover {
+            transform: scale(1.06);
+            cursor: pointer;
+            // height: 210px;
+          }
+          img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+          }
+
+          .playCount {
+            position: absolute;
+            z-index: 99;
+            right: 10px;
+            background: transparent;
+          }
+        }
+        .List-title {
+          margin: 0 auto;
+          font-size: 15px;
+          // padding: 0 10px;
+          width: 180px;
+          transition: 0.2s;
+          text-align: center;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          overflow: hidden; /*必须结合的属性,当内容溢出元素框时发生的事情*/
+          text-overflow: ellipsis; /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
+          white-space: nowrap;
+          display: -webkit-box; /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
+          -webkit-line-clamp: 1; /*用来限制在一个块元素显示的文本的行数。*/
+          -webkit-box-orient: vertical; /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
+          span {
+            display: inline-block;
+            width: 180px;
+            // text-align: center;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+
+            &:hover {
+              color: rgb(145, 245, 228);
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+//歌手列表样式
+.singerListClass {
+  .liWrap {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto 10px;
+    padding: 0 10px;
+    width: 95%;
+    height: 60px;
+    border-radius: 12px;
+    background-color: rgba(129, 235, 199, 0.068);
+    box-sizing: border-box;
+    transition: 0.2s;
+    &:hover {
+      transform: scale(1.01);
+    }
+    .liWrap-block1 {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background-color: rgba(178, 244, 151, 1);
+      transition: 0.2s;
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+      }
+      &:hover {
+        transform: scale(1.05);
+        cursor: pointer;
+      }
+    }
+    .liWrap-block2 {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      width: 920px;
+      height: 60px;
+      font-size: 15px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: no;
+      border-radius: 10px;
+      line-height: 40px;
+      box-sizing: border-box;
+      // background-color: rgba(226, 214, 156, 0.075);
+      transition: 0.2s;
+
+      span {
+        &:hover {
+          color: rgba(136, 240, 240, 0.719);
+        }
+      }
+      .div1 {
+        display: inline-block;
+        // width: 200px;
+
+        span {
+          color: bisque;
+          transition: 0.2s;
+          &:hover {
+            color: rgba(252, 214, 167, 0.979);
+          }
+        }
+      }
+      .divOther {
+        display: inline-block;
+        width: 100px;
+        margin-right: 5px;
+
+        span {
+          color: bisque;
+          transition: 0.2s;
+          &:hover {
+            color: rgba(255, 198, 129, 0.979);
+          }
+        }
+      }
+      &:hover {
+        transform: scale(1.01);
+        cursor: pointer;
+      }
+    }
+  }
+}
+//专辑列表页面样式
+.albumListClass {
+  .liWrap {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto 10px;
+    padding: 0 10px;
+    width: 95%;
+    height: 60px;
+    border-radius: 12px;
+    background-color: rgba(129, 235, 199, 0.068);
+    box-sizing: border-box;
+    transition: 0.2s;
+    &:hover {
+      // color: aqua;
+      transform: scale(1.01);
+    }
+    .liWrap-block1 {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background-color: rgba(178, 244, 151, 1);
+      transition: 0.2s;
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
+      }
+      &:hover {
+        // color: aqua;
+        transform: scale(1.05);
+        cursor: pointer;
+      }
+    }
+    .liWrap-block2 {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      width: 920px;
+      height: 60px;
+      font-size: 15px;
+      border-radius: 10px;
+      line-height: 40px;
+      box-sizing: border-box;
+      // background-color: rgba(226, 214, 156, 0.075);
+      transition: 0.2s;
+
+      span {
+        &:hover {
+          color: rgba(109, 255, 255, 0.753);
+        }
+      }
+      .div1 {
+        display: inline-block;
+        width: 520px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        .albumName {
+          display: inline-block;
+          max-width: 500px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          color: rgb(196, 255, 250);
+          transition: 0.2s;
+          span {
+            &:hover {
+              color: rgba(97, 252, 252, 0.979);
+            }
+          }
+          &:hover {
+            color: rgba(97, 252, 252, 0.979);
+          }
+        }
+        &:hover {
+          color: rgba(97, 252, 252, 0.979);
+        }
+      }
+      .divOther {
+        display: inline-block;
+        width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        // text-align: left;
+        margin-right: 5px;
+
+        span {
+          color: rgb(196, 255, 250);
+          transition: 0.2s;
+          &:hover {
+            color: rgba(97, 252, 252, 0.979);
+          }
+        }
+      }
+      &:hover {
+        // color: rgba(97, 252, 252, 0.979);
+        transform: scale(1.01);
+        cursor: pointer;
+      }
+    }
+  }
+}
+h3 {
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+}
+.descript {
+  display: flex;
+  justify-content: space-between;
+  color: aliceblue;
+  font-weight: bolder;
+  padding: 10px 20px;
+  border-radius: 20px 20px 0 0;
+  background: rgba(95, 158, 160, 0.322);
+  box-sizing: border-box;
+}
+.list-wrap {
+  margin: 10px auto;
+  padding: 0 20px 10px;
+  width: 1120px;
+  height: 730px;
+  border-radius: 20px;
+  background: rgba(95, 158, 160, 0.322);
+  box-sizing: border-box;
+
+  ul {
+    height: 630px;
+    border-radius: 0 0 10px 10px;
+    background: rgba(95, 158, 160, 0.322);
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    .playListDetailes {
+      display: flex;
+      justify-content: space-between;
+      margin: 0 auto;
+      padding: 10px;
+      width: 98%;
+      height: 200px;
+      // border: 1px solid rgb(97, 226, 183);
+      border-radius: 10px;
+      background: rgba(34, 173, 197, 0.055);
+      box-sizing: border-box;
+
+      .playListImg {
+        display: inline-block;
+        // width: 180px;
+        // height: 180px;
+        border-radius: 10px;
+
+        img {
+          width: 180px;
+          height: 180px;
+          border-radius: 10px;
+          transition: 0.2s;
+
+          &:hover {
+            // color: aqua;
+            transform: scale(1.03);
+          }
+        }
+      }
+
+      .detailsRight {
+        width: 820px;
+        height: 180px;
+        // background: rgb(181, 209, 152);
+
+        .playListIntro {
+          margin: 10px 0 10px 0;
+          width: 100%;
+          max-height: 75px;
+          font-size: 14px;
+          overflow-x: hidden;
+
+          &::-webkit-scrollbar {
+            display: none;
+          }
+        }
+        .playListNickName {
+          color: antiquewhite;
+        }
+      }
+    }
+
+    .music-list {
+      position: relative;
+      display: flex;
+      margin: 5px auto 5px;
+      padding: 0 10px;
+      width: 96%;
+      height: 30px;
+      line-height: 30px;
+      overflow: hidden;
+      color: rgba(255, 255, 255, 1);
+      font-weight: bolder;
+      border-radius: 5px;
+      -o-text-overflow: ellipsis;
+      text-overflow: ellipsis;
+      // background: rgba(172, 233, 236, 0.055);
+      transition: 0.2s;
+
+      .music-list-span {
+        display: inline-block;
+        width: 270px;
+        // font-size:13px;
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .option {
+        position: absolute;
+        padding-left: 120px;
+        width: 240px;
+        right: 0px;
+        box-sizing: border-box;
+
+        span {
+          display: inline-block;
+          width: 30px;
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+
+      &:hover {
+        color: rgb(88, 255, 241);
+        transform: scale(1.01);
+        // background: rgba(141, 251, 255, 0.192);
+      }
+    }
+  }
+}
+/deep/ .el-pager {
+  background: none !important;
+}
+/deep/ .number,
+/deep/ .btn-prev,
+/deep/ .btn-quicknext,
+/deep/ .btn-next,
+/deep/ .el-input__inner,
+/deep/ .more {
+  color: #f2fff7 !important;
+  transition: 0.2s;
+  background: transparent !important;
+}
+/deep/ .number:hover,
+/deep/ .btn-prev:hover,
+/deep/ .btn-quicknext:hover,
+/deep/ .btn-next:hover,
+/deep/ .el-input__inner:hover,
+/deep/ .more:hover {
+  transform: scale(1.02);
+  color: #f7a588 !important;
+}
+/deep/ .active {
+  color: #f7a588 !important;
+}
+/deep/ .el-input__inner {
+  border: none;
+}
+/deep/ .el-pagination__jump {
+  color: #f7dd88 !important;
+}
+/deep/.el-pagination {
+  height: 100%;
+}
+.iconhover {
+  transition: 0.2s;
+  &:hover {
+    color: rgb(247, 243, 45);
+  }
+}
+</style>
+
+<template>
+  <div class="list-wrap">
+    <h3>
+      <div class="tagWrap">
+        <span @click="tagSelect('songSwitch')"
+              v-if="!tagSwitch.songSwitch">单曲</span><span style="color: rgb(80, 180, 220)"
+              v-if="tagSwitch.songSwitch">单曲</span>
+        <span @click="tagSelect('albumSwitch')"
+              v-if="!tagSwitch.albumSwitch">专辑</span><span style="color: rgb(80, 180, 220)"
+              v-if="tagSwitch.albumSwitch">专辑</span>
+        <span @click="tagSelect('singerSwitch')"
+              v-if="!tagSwitch.singerSwitch">歌手</span><span style="color: rgb(80, 180, 220)"
+              v-if="tagSwitch.singerSwitch">歌手</span>
+        <span @click="tagSelect('playListSwitch')"
+              v-if="!tagSwitch.playListSwitch">歌单</span><span style="color: rgb(80, 180, 220)"
+              v-if="tagSwitch.playListSwitch">歌单</span><span @click="tagSelect('videoSwitch')"
+              v-if="!tagSwitch.videoSwitch">视频</span><span style="color: rgb(80, 180, 220)"
+              v-if="tagSwitch.videoSwitch">视频</span><span @click="tagSelect('mvSwitch')"
+              v-if="!tagSwitch.mvSwitch">MV</span><span style="color: rgb(80, 180, 220)"
+              v-if="tagSwitch.mvSwitch">MV</span>
+      </div>
+    </h3>
+    <div class="descript"></div>
+    <div>
+      <ul>
+        <!-- 单曲列表 -->
+        <div v-if="tagSwitch.songSwitch">
+          <h3 v-if="musicList.length === 0"><i class="el-icon-loading"></i></h3>
+          <li class="music-list"
+              v-for="(item, index) in musicList"
+              :key="item.id">
+            <span style="width: 20px">{{ index + 1 }}.</span>
+            <div @dblclick="goSongDetails(item.id)">
+              <span class="music-list-span">{{ item.name }}</span>
+              <span class="music-list-span">{{ item.ar[0].name }}</span>
+              <span class="music-list-span">{{ item.dt }}</span>
+            </div>
+            <div class="option">
+              <!-- 试听 -->
+              <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
+              <!-- 添加到播放列表 -->
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
+              </span>
+              <!-- 播放MV -->
+              <span v-if="Boolean(item.mv)"
+                    @click.stop="playMV(item.mv, item.name)"><i class="el-icon-video-camera iconhover"></i>
+              </span>
+              <!-- 下载 -->
+              <span v-if="item.fee == 0"
+                    @click="getDownloadUrl(item.id, item.name)">
+                <i class="el-icon-download iconhover"></i></span>
+            </div>
+          </li>
+        </div>
+        <!-- 专辑列表 -->
+        <div class="albumListClass"
+             v-if="tagSwitch.albumSwitch">
+          <h3 v-if="albumList.length === 0"><i class="el-icon-loading"></i></h3>
+          <li class="liWrap"
+              v-for="(item, index) in albumList"
+              :key="index"
+              @click.stop="goAlbumDetail(item.id)">
+            <div class="liWrap-block1">
+              <img :src="item.blurPicUrl"
+                   alt="" />
+            </div>
+            <div class="liWrap-block2">
+              <div class="div1">
+                <span class="albumName">{{ item.name }}
+                  <span v-if="item.alias[0]"
+                        class="albumName2">{{
+                    item.alias[0]
+                  }}</span></span>
+              </div>
+              <div>
+                <div class="divOther">
+                  作者：<span>{{ item.artist.name }}</span>
+                </div>
+                <span class="inline-block"
+                      style="display: inline-block; width: 50px"></span>
+                <div class="divOther"
+                     style="width: 100px">
+                  歌曲：<span>{{ item.size }}</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </div>
+        <!-- 歌手列表 -->
+        <div class="singerListClass"
+             v-if="tagSwitch.singerSwitch">
+          <h3 v-if="singerList.length === 0"><i class="el-icon-loading"></i></h3>
+          <li class="liWrap"
+              v-for="(item, index) in singerList"
+              :key="index"
+              @click.stop="goSingerDetail(item.id)">
+            <div class="liWrap-block1">
+              <img :src="item.img1v1Url"
+                   alt="" />
+            </div>
+            <div class="liWrap-block2">
+              <div class="div1">
+                歌手：<span>{{ item.name }}</span>
+              </div>
+              <div>
+                <div class="divOther">
+                  专辑：<span>{{ item.albumSize }}</span>
+                </div>
+
+                <div class="divOther">
+                  MV：<span>{{ item.mvSize }}</span>
+                </div>
+              </div>
+            </div>
+          </li>
+        </div>
+        <div v-if="tagSwitch.albumSwitch"></div>
+        <!-- 歌单列表 -->
+        <div class="playListClass"
+             v-if="tagSwitch.playListSwitch">
+          <h3 v-if="playListTable.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="recPlay">
+            <ul class="playListWrap">
+              <li class="playListTable"
+                  v-for="(item, index) in playListTable"
+                  :key="index">
+                <div class="image">
+                  <img :src="item.coverImgUrl"
+                       alt=""
+                       title=""
+                       @click="goSongList(item.id)" />
+                  <span class="playCount"><i class="el-icon-video-play"
+                       style="margin-right: 1px"></i>{{ item.playCount }}</span>
+                </div>
+                <p class="List-title"
+                   @click="goSongList(item.id)">
+                  <span>{{ item.name }} </span>
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- 视频列表 -->
+        <div class="videoListClass"
+             v-if="tagSwitch.videoSwitch">
+          <h3 v-if="videoList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="videoPlay">
+            <ul class="videoPlaywrap">
+              <li class="videoPlayList"
+                  v-for="(item, index) in videoList"
+                  :key="index">
+                <div class="videoImage">
+                  <img class="videoImg"
+                       style="
+                      position: absolute;
+                      width: 240px;
+                      height: 155px;
+                      border-radius: 10px;
+                    "
+                       :src="item.coverUrl"
+                       alt=""
+                       title=""
+                       @click="goVideo(item.vid, item.type)" />
+                  <span class="videoPlayTime"><i class="el-icon-video-play"
+                       style="margin-right: 1px"></i>{{ item.playTime }}</span>
+                  <span class="videoPlayTime"
+                        style="bottom: 0">{{
+                    item.durationms
+                  }}</span>
+                </div>
+
+                <p class="List-title"
+                   style="font-size: 10px"
+                   @click="goVideo(item.vid, item.type)">
+                  <span style="
+                      display: inline-block;
+                      width: 100%;
+                      overflow: hidden;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                    "><span v-if="!item.type"
+                          style="color: red">MV&nbsp;</span>{{ item.title }}</span><br />
+                  <span style="color: rgb(199, 199, 199)"><span v-if="item.markTypes">by&nbsp;</span>
+                    <span>{{ item.creator[0].userName }}</span></span>
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!-- MV列表 -->
+        <div class="videoListClass"
+             v-if="tagSwitch.mvSwitch">
+          <h3 v-if="mvList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="videoPlay">
+            <ul class="videoPlaywrap">
+              <li class="videoPlayList"
+                  v-for="(item, index) in mvList"
+                  :key="index">
+                <div class="videoImage">
+                  <img class="videoImg"
+                       style="
+                      position: absolute;
+                      width: 240px;
+                      height: 155px;
+                      border-radius: 10px;
+                    "
+                       :src="item.cover"
+                       alt=""
+                       title=""
+                       @click="goVideo(item.id, item.mark)" />
+                  <span class="videoPlayTime"><i class="el-icon-video-play"
+                       style="margin-right: 1px"></i>{{ item.playCount }}</span>
+                  <span class="videoPlayTime"
+                        style="bottom: 0">{{
+                    item.duration
+                  }}</span>
+                </div>
+
+                <p class="List-title"
+                   style="font-size: 10px"
+                   @click="goVideo(item.id, item.mark)">
+                  <span style="
+                      display: inline-block;
+                      width: 100%;
+                      overflow: hidden;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                    "><span v-if="!item.type"
+                          style="color: red">MV&nbsp;</span>{{ item.name }}</span><br />
+                  <span style="color: rgb(199, 199, 199)"><span>by&nbsp;</span>
+                    <span>{{ item.artistName }}</span></span>
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </ul>
+    </div>
+
+    <div style="text-align: center; margin-top: 10px; box-sizing: border-box">
+      <el-pagination v-if="count != 0"
+                     @current-change="handleCurrentChange"
+                     :current-page.sync="currentPage"
+                     :page-size="15"
+                     layout="prev, pager, next, jumper"
+                     :total="count"
+                     :background="true">
+      </el-pagination>
+    </div>
+    <div v-show="false">
+      <aplayer autoplay
+               :fixed="true"
+               :audio="listen"
+               :liric-type="1"></aplayer>
+    </div>
+  </div>
+</template>
+
+<script>
+import {
+  getMusicInfo,
+  playMusicUrl,
+  getSongLyric,
+  getSongDetails,
+  getSongList,
+  getDownloadUrl,
+} from "@/api/api";
+import { download } from "@/api/download";
+export default {
+  data () {
+    return {
+      //试听音乐
+      listen: [],
+      //单曲，专辑，歌手，歌单开关
+      tagSwitch: {},
+      //MV列表
+      videoList: [],
+      //歌单列表
+      playListTable: [],
+      // 歌曲列表
+      musicList: [],
+      // 专辑列表
+      albumList: [],
+      //歌手列表
+      singerList: [],
+      //MV列表
+      mvList: [],
+      //音乐下载地址
+      downLoadUrl: "",
+      //标签切换
+      activeName: "first",
+      //搜索内容总数（歌曲，歌单，mv,等）
+      count: "",
+      //音乐地址
+      songUrlAdd: null,
+      //歌词
+      songlrc: "",
+
+      //初始页
+      currentPage: 1,
+    };
+  },
+  created () {
+    // console.log(this);
+    var that = this;
+    that.tagSwitch = that.$store.state.tagSwitch;
+    that.search();
+  },
+  methods: {
+    //标签切换
+    tagSelect (tag) {
+      var that = this;
+      that.$store.commit("tagSelect", tag);
+      that.$nextTick(() => {
+        that.search();
+      });
+    },
+    //分页
+    handleCurrentChange: function (currentPage) {
+      // console.log(`当前页: ${currentPage}`);
+      this.currentPage = currentPage;
+      var that = this;
+      if (that.$route.query.recplaylist) {
+        that.getSongList(currentPage);
+      } else if (that.tagSwitch.songSwitch) {
+        that.getSingleMuscic();
+      } else if (that.tagSwitch.playListSwitch) {
+        that.getMusicList();
+      } else if (that.tagSwitch.videoSwitch) {
+        that.getVideoList();
+      } else if (that.tagSwitch.mvSwitch) {
+        that.getMVList();
+      } else if (that.tagSwitch.singerSwitch) {
+        that.getSingerList();
+      } else if (that.tagSwitch.albumSwitch) {
+        that.getSingerList();
+      }
+    },
+    search () {
+      var that = this;
+      if (that.$route.query.recplaylist) {
+        that.getSongListDetails(); //歌单详情
+      } else if (that.tagSwitch.songSwitch) {
+        that.getSingleMuscic();
+      } else if (that.tagSwitch.playListSwitch) {
+        that.getMusicList();
+      } else if (that.tagSwitch.videoSwitch) {
+        that.getVideoList();
+      } else if (that.tagSwitch.mvSwitch) {
+        that.getMVList();
+      } else if (that.tagSwitch.singerSwitch) {
+        that.getSingerList();
+      } else if (that.tagSwitch.albumSwitch) {
+        that.getAlbumList();
+      }
+    },
+
+    //获取歌曲详情,进入详情页面
+    goSongDetails (ids) {
+      this.$router.push({
+        name: "songDetails",
+        query: {
+          songId: ids,
+        },
+      });
+    },
+    //获取专辑详情
+    goAlbumDetail (id) {
+      this.$router.push({
+        name: "albumDetail",
+        query: {
+          id: id,
+        },
+      });
+    },
+    //获取歌手详情
+    goSingerDetail (id) {
+      if (id) {
+        this.$router.push({
+          name: "singerDetail",
+          query: {
+            id: id,
+          },
+        });
+      }
+    },
+    //传入歌单id进入歌曲列表
+    goSongList (songListId) {
+      //传入歌单id进入歌曲列表
+      var that = this;
+      that.$router.push({
+        name: "playListDetails",
+        query: { playListTable: true, songListId: songListId },
+      });
+    },
+    // 获取歌单详情
+    getSongListDetails () {
+      //传入歌单id获取歌曲id和歌单详情
+      var that = this;
+      let params = {
+        id: that.$route.query.songListId,
+      };
+      getSongList(params).then((res) => {
+        // console.log("----------------:", res.data.privileges); //歌单歌曲
+        // console.log("--歌单详情-------:", res.data.playlist); //歌单歌曲
+        that.playList = res.data.playlist;
+        that.musicList = that.playList.tracks;
+        that.transMusicTime(that.playList, dt);
+      });
+    },
+    //将时长转化成分秒
+    transMusicTime (arr, dt) {
+      for (let i = 0; i < arr.length; i++) {
+        let min = parseInt(arr[i][dt] / 1000 / 60);
+        let sec = parseInt((arr[i][dt] / 1000) % 60);
+        if (min < 10) {
+          min = "0" + min;
+        }
+        if (sec < 10) {
+          sec = "0" + sec;
+        }
+        arr[i][dt] = min + ":" + sec;
+      }
+    },
+    playMV (mvId, mvName) {
+      //获取mv播放链接
+      this.$router.push({
+        name: "mvPlay",
+        query: { mvId: mvId, mvName: mvName },
+      });
+    },
+
+    //试听音乐
+    listenMusic (id, fee, index) {
+      //获取播放音乐链接
+      var that = this;
+      if (that.musicList[index].timer) {
+        if (fee == 1) {
+          that.$message({
+            message: "VIP歌曲 - 只能试听30s",
+            type: "warning",
+          });
+        }
+        playMusicUrl({
+          id: id,
+        }).then((res) => {
+          // console.log("播放音乐链接", res.data.data[0].url);
+          if (res.data.data[0].url) {
+            that.songUrlAdd = res.data.data[0].url;
+          } else {
+            that.$message({
+              message: "不好意思这首歌暂无版权",
+              type: "error",
+            });
+            that.musicList[index].timer = false;
+            setTimeout(() => {
+              that.musicList[index].timer = true;
+            }, 3000);
+            return;
+          }
+        }),
+          // 获取歌词
+          getSongLyric({
+            id: id,
+          }).then((res) => {
+            that.songlrc = res.data.lrc.lyric;
+            // console.log("歌词：-------", that.songlrc);
+          }),
+          // 获取歌曲信息
+          getSongDetails({
+            ids: id,
+          }).then((res) => {
+            if (that.songUrlAdd != null) {
+              that.listen = [];
+              that.listen.push({
+                name: res.data.songs[0].name, //歌曲名
+                artist: res.data.songs[0].ar[0].name, //作者
+                url: that.songUrlAdd, //播放地址
+                cover: res.data.songs[0].al.picUrl,
+                lrc: that.songlrc,
+              });
+              // console.log(that.listen);
+              that.songUrlAdd = null;
+              that.songlrc = "";
+            }
+          });
+      }
+    },
+    //添加歌曲到播放列表
+    playMusic (id, fee, index) {
+      //获取播放音乐链接
+      var that = this;
+      if (that.musicList[index].timer) {
+        if (fee == 1) {
+          that.$message({
+            message: "VIP歌曲 - 只能试听30s",
+            type: "warning",
+          });
+        }
+        playMusicUrl({
+          id: id,
+        }).then((res) => {
+          // console.log("播放音乐链接", res.data.data[0].url);
+          if (res.data.data[0].url) {
+            that.songUrlAdd = res.data.data[0].url;
+          } else {
+            that.$message({
+              message: "不好意思这首歌暂无版权",
+              type: "error",
+            });
+            that.musicList[index].timer = false;
+            setTimeout(() => {
+              that.musicList[index].timer = true;
+            }, 3000);
+            return;
+          }
+        }),
+          // 获取歌词
+          getSongLyric({
+            id: id,
+          }).then((res) => {
+            that.songlrc = res.data.lrc.lyric;
+          }),
+          // 获取歌曲信息
+          getSongDetails({
+            ids: id,
+          }).then((res) => {
+            // console.log("获取歌曲信息，添加到播放器：", res.data.songs[0]);
+            if (that.songUrlAdd != null) {
+              that.$store.commit("addSONG", {
+                name: res.data.songs[0].name, //歌曲名
+                artist: res.data.songs[0].ar[0].name, //作者
+                url: that.songUrlAdd,
+                cover: res.data.songs[0].al.picUrl,
+                lrc: that.songlrc,
+                id: id,
+                // theme: that.randomColor(),
+              });
+              // console.log(
+              //   that.$store.state.audio,
+              //   "添加歌曲后的歌曲播放列表-----"
+              // );
+              that.songUrlAdd = null;
+              that.songlrc = "";
+              that.musicList[index].timer = false;
+              setTimeout(() => {
+                that.musicList[index].timer = true;
+              }, 3000);
+            }
+          });
+      }
+    },
+
+    //通过搜索关键词获取单曲（歌曲）
+    getSingleMuscic () {
+      var that = this;
+      if (that.$route.query.reload) {
+        // console.log("this.$route:---", that.$route);
+      }
+      //获取歌曲列表
+      let params = {
+        keywords: that.$route.query.keywords,
+        limit: 30,
+        offset: (that.currentPage - 1) * 30,
+        type: 1, //代表获取单曲
+      };
+      getMusicInfo(params).then((res) => {
+        let dt = "dt";
+        that.musicList = res.data.result.songs;
+        that.count = res.data.result.songCount;
+        that.transMusicTime(that.musicList, dt);
+        // console.log("音乐列表：", res.data.result);
+        //给每个列表添加一个防抖
+        for (let item of that.musicList) {
+          that.$set(item, "timer", true);
+        }
+      });
+    },
+    // 通过搜索关键词获取专辑
+    getAlbumList () {
+      var that = this;
+      //获取歌曲列表
+      let params = {
+        keywords: that.$route.query.keywords,
+        limit: 30,
+        offset: (that.currentPage - 1) * 30,
+        type: 10, //代表获取专辑
+      };
+      getMusicInfo(params).then((res) => {
+        that.albumList = res.data.result.albums;
+        that.count = res.data.result.albumCount;
+        // console.log("专辑列表：", res.data.result);
+      });
+    },
+    //通过搜索关键词获取歌手列表
+    getSingerList () {
+      var that = this;
+      let params = {
+        keywords: that.$route.query.keywords,
+        limit: 15,
+        offset: (that.currentPage - 1) * 15,
+        type: 100, //代表获取歌手
+      };
+      getMusicInfo(params).then((res) => {
+        // console.log("获取歌手列表----", res.data.result);
+        that.singerList = res.data.result.artists;
+        that.count = res.data.result.artistCount;
+      });
+    },
+    //通过搜索关键词获取歌单
+    getMusicList () {
+      var that = this;
+      let params = {
+        keywords: that.$route.query.keywords,
+        limit: 15,
+        offset: (that.currentPage - 1) * 15,
+        type: 1000, //代表获取歌单
+      };
+      getMusicInfo(params).then((res) => {
+        // console.log("获取歌单列表----", res.data.result);
+        that.playListTable = res.data.result.playlists;
+        that.count = res.data.result.playlistCount;
+        for (let i = 0; i < that.playListTable.length; i++) {
+          if (
+            String(that.playListTable[i].playCount).length > 5 &&
+            String(that.playListTable[i].playCount).length < 9
+          ) {
+            that.playListTable[i].playCount =
+              String(that.playListTable[i].playCount).substr(
+                0,
+                String(that.playListTable[i].playCount).length - 4
+              ) + "万";
+          } else if (String(that.playListTable[i].playCount).length == 5) {
+            that.playListTable[i].playCount =
+              String(that.playListTable[i].playCount).substr(0, 1) +
+              "." +
+              String(that.playListTable[i].playCount).substr(1, 2) +
+              "万";
+          } else if (String(that.playListTable[i].playCount).length == 9) {
+            that.playListTable[i].playCount =
+              String(that.playListTable[i].playCount).substr(0, 1) +
+              "." +
+              String(that.playListTable[i].playCount).substr(1, 2) +
+              "亿";
+          } else if (String(that.playListTable[i].playCount).length > 9) {
+            that.playListTable[i].playCount =
+              String(that.playListTable[i].playCount).substr(
+                0,
+                String(that.playListTable[i].playCount).length - 8
+              ) + "亿";
+          }
+        }
+      });
+    },
+    //通过搜索关键词获取对应视频列表
+    getVideoList () {
+      var that = this;
+      let params = {
+        keywords: that.$route.query.keywords,
+        limit: 12,
+        offset: (that.currentPage - 1) * 12,
+        type: 1014, //代表获取视频
+      };
+      getMusicInfo(params).then((res) => {
+        let dt = "durationms";
+        // console.log("获取视频列表----", res.data.result);
+        that.videoList = res.data.result.videos;
+        // console.log("视频列表：", that.videoList);
+        that.count = res.data.result.videoCount;
+        that.transMusicTime(that.videoList, dt);
+
+        for (let i = 0; i < that.videoList.length; i++) {
+          if (
+            String(that.videoList[i].playTime).length > 5 &&
+            String(that.videoList[i].playTime).length < 9
+          ) {
+            that.videoList[i].playTime =
+              String(that.videoList[i].playTime).substr(
+                0,
+                String(that.videoList[i].playTime).length - 4
+              ) + "万";
+          } else if (String(that.videoList[i].playTime).length == 5) {
+            that.videoList[i].playTime =
+              String(that.videoList[i].playTime).substr(0, 1) +
+              "." +
+              String(that.videoList[i].playTime).substr(1, 2) +
+              "万";
+          } else if (String(that.videoList[i].playTime).length == 9) {
+            that.videoList[i].playTime =
+              String(that.videoList[i].playTime).substr(0, 1) +
+              "." +
+              String(that.videoList[i].playTime).substr(1, 2) +
+              "亿";
+          } else if (String(that.videoList[i].playTime).length > 9) {
+            that.videoList[i].playTime =
+              String(that.videoList[i].playTime).substr(
+                0,
+                String(that.videoList[i].playTime).length - 8
+              ) + "亿";
+          }
+        }
+      });
+    },
+    //通过搜索关键词获取对应MV列表
+    getMVList () {
+      var that = this;
+      let params = {
+        keywords: that.$route.query.keywords,
+        limit: 12,
+        offset: (that.currentPage - 1) * 12,
+        type: 1004, //代表获取MV
+      };
+      getMusicInfo(params).then((res) => {
+        let dt = "duration"; //将时长字段赋值，方便传参
+        // console.log("获取MV列表----", res.data.result);
+        that.mvList = res.data.result.mvs;
+        // console.log("MV列表：", that.mvList);
+        that.count = res.data.result.mvCount;
+        that.transMusicTime(that.mvList, dt);
+
+        for (let i = 0; i < that.mvList.length; i++) {
+          if (
+            String(that.mvList[i].playCount).length > 5 &&
+            String(that.mvList[i].playCount).length < 9
+          ) {
+            that.mvList[i].playCount =
+              String(that.mvList[i].playCount).substr(
+                0,
+                String(that.mvList[i].playCount).length - 4
+              ) + "万";
+          } else if (String(that.mvList[i].playCount).length == 5) {
+            that.mvList[i].playCount =
+              String(that.mvList[i].playCount).substr(0, 1) +
+              "." +
+              String(that.mvList[i].playCount).substr(1, 2) +
+              "万";
+          } else if (String(that.mvList[i].playCount).length == 9) {
+            that.mvList[i].playCount =
+              String(that.mvList[i].playCount).substr(0, 1) +
+              "." +
+              String(that.mvList[i].playCount).substr(1, 2) +
+              "亿";
+          } else if (String(that.mvList[i].playCount).length > 9) {
+            that.mvList[i].playCount =
+              String(that.mvList[i].playCount).substr(
+                0,
+                String(that.mvList[i].playCount).length - 8
+              ) + "亿";
+          }
+        }
+      });
+    },
+
+    //获取歌曲下载地址
+    getDownloadUrl (songId, songName) {
+      var that = this;
+      let params = {
+        id: songId,
+      };
+      getDownloadUrl(params).then((res) => {
+        // console.log("歌曲下载地址：", res.data.data.url);
+        download(res.data.data.url, songName);
+        that.$message({
+          type: "success",
+          message: "开始下载了",
+        });
+      });
+    },
+    goVideo (vid, type) {
+      if (type === 0) {
+        this.$router.push({
+          name: "mvPlay",
+          query: {
+            mvId: vid,
+          },
+        });
+      } else {
+        this.$router.push({
+          name: "videoPlay",
+          query: {
+            vid: vid,
+          },
+        });
+      }
+    },
+    randomColor () {
+      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`;
+    },
+  },
+};
+</script>
+
