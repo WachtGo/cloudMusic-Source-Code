@@ -224,7 +224,7 @@ h3 {
                   @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
             </span>
             <span v-if="Boolean(item.mv)"
-                  @click="playMV(item.mv, item.name)"><i class="el-icon-video-camera iconhover"></i>
+                  @click="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
             </span>
             <!-- <span v-if="!Boolean(item.mv)">&nbsp;&nbsp;&nbsp; </span> -->
             <span v-if="item.fee == 0"
@@ -280,11 +280,13 @@ import {
 } from "@/api/api";
 import { download } from "@/api/download";
 export default {
+  // props: ['songListId'],
   data () {
     return {
       //试听音乐
       listen: [],
-
+      //歌单id
+      songListId: '',
       //评论分页
       currentPage: 1,
       // 歌曲数组
@@ -307,14 +309,13 @@ export default {
       playListDetail: {},
     };
   },
-  created () {
-    var that = this;
-    if (that.$route.query.recplaylist || that.$route.query.playListTable) {
-      that.getSongList();
-      that.getPlayListComment();
-    } else {
-      that.getMusicInfo();
-    }
+  mounted () {
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    if (this.$route.params.songListId) { localStorage.setItem('songListId', this.$route.params.songListId) }
+    // 判断是否使用缓存
+    this.$route.params.songListId ? this.songListId = this.$route.params.songListId : this.songListId = localStorage.getItem('songListId')
+    this.getSongList();
+    this.getPlayListComment();
   },
   methods: {
     //切换歌单评论
@@ -327,7 +328,7 @@ export default {
     getPlayListComment () {
       var that = this;
       let params = {
-        id: that.$route.query.songListId,
+        id: that.songListId,
         limit: 7,
         offset: (that.currentPage - 1) * 7,
       };
@@ -343,17 +344,17 @@ export default {
     goSongDetails (ids) {
       this.$router.push({
         name: "songDetails",
-        query: {
+        params: {
           songId: ids,
         },
       });
     },
     // 播放MV
-    playMV (mvId, mvName) {
+    playMV (mvId) {
       //获取mv播放链接
       this.$router.push({
         name: "mvPlay",
-        query: { mvId: mvId, mvName: mvName },
+        params: { mvId: mvId },
       });
     },
     listenMusic (id, fee, index) {
@@ -480,11 +481,7 @@ export default {
       // console.log(`当前页: ${currentPage}`);
       this.currentPage = currentPage;
       var that = this;
-      if (that.$route.query.recplaylist) {
-        that.getSongList(currentPage);
-      } else {
-        that.getMusicInfo();
-      }
+      that.getSongList(currentPage);
     },
 
     //获取歌曲下载地址
@@ -506,7 +503,7 @@ export default {
       //传入歌单id获取歌曲id和歌单详情
       var that = this;
       let params = {
-        id: that.$route.query.songListId,
+        id: that.songListId,
       };
       getSongList(params).then((res) => {
         // console.log("----------------:", res.data.privileges); //歌单歌曲

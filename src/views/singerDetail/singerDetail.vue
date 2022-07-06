@@ -462,7 +462,7 @@ h3 {
                     @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
               </span>
               <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv, item.name)"><i class="el-icon-video-camera iconhover"></i></span>
+                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i></span>
               <span v-if="item.fee == 0"
                     @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span>
             </span>
@@ -570,11 +570,13 @@ import {
 } from "@/api/api";
 import { download } from "@/api/download";
 export default {
+  // props: ['singerId'],
   data () {
     return {
       //试听音乐
       listen: [],
       //歌手信息
+      singerId: '',
       singerDesc: {},
       songList: [],
       albumList: [],
@@ -587,7 +589,11 @@ export default {
       },
     };
   },
-  created () {
+  mounted () {
+    ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
+    if (this.$route.params.singerId) { localStorage.setItem('singerId', this.$route.params.singerId) }
+    //判断是否使用缓存
+    this.$route.params.singerId ? this.singerId = this.$route.params.singerId : this.singerId = localStorage.getItem('singerId')
     this.getSingerDesc();
   },
   methods: {
@@ -607,7 +613,7 @@ export default {
       var that = this;
       that.detailShow = false;
       let params = {
-        id: that.$route.query.id,
+        id: that.singerId,
       };
       getSingerSongList(params).then((res) => {
         // console.log("歌手单曲列表：", res.data.hotSongs);
@@ -627,7 +633,7 @@ export default {
       var that = this;
       that.detailShow = false;
       let params = {
-        id: that.$route.query.id,
+        id: that.singerId,
         limit: 999,
       };
       getSingerAlbum(params).then((res) => {
@@ -641,7 +647,7 @@ export default {
     getSingerMvList (tag) {
       var that = this;
       let params = {
-        id: that.$route.query.id,
+        id: that.singerId,
       };
       getSingerMvList(params).then((res) => {
         // console.log("获取到的歌手MV：", res.data.mvs);
@@ -685,7 +691,7 @@ export default {
     getSingerDesc () {
       var that = this;
       let params = {
-        id: that.$route.query.id,
+        id: that.singerId,
       };
       getSingerDesc(params).then((res) => {
         // console.log("歌手描述", res.data);
@@ -827,7 +833,7 @@ export default {
     goSongDetails (ids) {
       this.$router.push({
         name: "songDetails",
-        query: {
+        params: {
           songId: ids,
         },
       });
@@ -836,23 +842,23 @@ export default {
     goAlbumDetail (albumId) {
       this.$router.push({
         name: "albumDetail",
-        query: {
+        params: {
           id: albumId,
         },
       });
     },
     //跳转到播放MV页面
-    playMV (mvId, mvName) {
+    playMV (mvId) {
       //获取mv播放链接
       this.$router.push({
         name: "mvPlay",
-        query: { mvId: mvId, mvName: mvName },
+        params: { mvId: mvId },
       });
     },
     goMv (mvId) {
       this.$router.push({
         name: "mvPlay",
-        query: {
+        params: {
           mvId: mvId,
         },
       });

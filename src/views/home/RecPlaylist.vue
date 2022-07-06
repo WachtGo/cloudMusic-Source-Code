@@ -4,24 +4,19 @@
     <h3 class="h2title">推荐歌单 :</h3>
     <div class="recPlay Ocenter">
       <ul class="recPlaywrap">
-        <li
-          class="recPlayList"
-          v-for="(item, index) in recPlayList"
-          :key="index"
-        >
+        <li class="recPlayList"
+            v-for="(item, index) in recPlayList"
+            :key="index">
           <div class="image">
-            <img
-              :src="item.picUrl"
-              alt=""
-              title=""
-              @click="goSongList(item.id)"
-            />
-            <span class="playCount"
-              ><i class="el-icon-video-play" style="margin-right: 1px"></i
-              >{{ item.playCount }}</span
-            >
+            <img :src="item.picUrl"
+                 alt=""
+                 title=""
+                 @click="goSongList(item.id)" />
+            <span class="playCount"><i class="el-icon-video-play"
+                 style="margin-right: 1px"></i>{{ item.playCount }}</span>
           </div>
-          <p class="List-title" @click="goSongList(item.id)">
+          <p class="List-title"
+             @click="goSongList(item.id)">
             <span>{{ item.name }}</span>
           </p>
         </li>
@@ -33,17 +28,17 @@
 <script>
 import { getSuggestPlayList } from "@/api/api";
 export default {
-  data() {
+  data () {
     return {
       limit: 10,
       recPlayList: [],
     };
   },
-  mounted() {
+  mounted () {
     this.getSuggestPlayList();
   },
   methods: {
-    getSuggestPlayList() {
+    getSuggestPlayList () {
       //获取推荐歌单
       var that = this;
       let params = {
@@ -85,12 +80,12 @@ export default {
         }
       });
     },
-    goSongList(songListId) {
+    goSongList (songListId) {
       //传入歌单id进入歌曲列表
       var that = this;
       that.$router.push({
         name: "playListDetails",
-        query: { recplaylist: true, songListId: songListId },
+        params: { songListId: songListId },
       });
     },
   },

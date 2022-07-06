@@ -5,6 +5,7 @@
       <!-- app外层套个盒子，防止由于fixed拖拽乱跳 -->
       <div id="app">
         <HeaderNav></HeaderNav>
+        <router-view></router-view>
       </div>
     </div>
     <aplayer></aplayer>

@@ -365,7 +365,7 @@ h3 {
                     @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
               </span>
               <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv, item.name)"><i class="el-icon-video-camera iconhover"></i>
+                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
               </span>
               <span v-if="item.fee == 0"
                     @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i>
@@ -396,14 +396,20 @@ import {
 import { download } from "@/api/download";
 
 export default {
+  // props: ['albumId'],
   data () {
     return {
       listen: [],
+      albumId: '',
       albumSongs: [],
       albumDesc: {},
     };
   },
-  created () {
+  mounted () {
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    if (this.$route.params.albumId) { localStorage.setItem('albumId', this.$route.params.albumId) }
+    // 判断是否使用缓存
+    this.$route.params.albumId ? this.albumId = this.$route.params.albumId : this.albumId = localStorage.getItem('albumId')
     this.getAlbumContent();
   },
   methods: {
@@ -411,7 +417,7 @@ export default {
     getAlbumContent () {
       var that = this;
       let params = {
-        id: that.$route.query.id,
+        id: that.albumId,
       };
       getAlbumContent(params).then((res) => {
         // console.log("专辑信息---：", res.data.album);
@@ -577,23 +583,23 @@ export default {
     goSongDetails (ids) {
       this.$router.push({
         name: "songDetails",
-        query: {
+        params: {
           songId: ids,
         },
       });
     },
     //跳转到播放MV页面
-    playMV (mvId, mvName) {
+    playMV (mvId) {
       //获取mv播放链接
       this.$router.push({
         name: "mvPlay",
-        query: { mvId: mvId, mvName: mvName },
+        params: { mvId: mvId },
       });
     },
     goMv (mvId) {
       this.$router.push({
         name: "mvPlay",
-        query: {
+        params: {
           mvId: mvId,
         },
       });

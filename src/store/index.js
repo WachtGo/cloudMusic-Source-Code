@@ -66,7 +66,7 @@ export default new Vuex.Store({
         }
       }
       state.tagSwitch[tag] = true;
-      console.log('state.tagSwitch----------------', state.tagSwitch)
+      // console.log('state.tagSwitch----------------', state.tagSwitch)
     },
     
     // //刷新音频播放器

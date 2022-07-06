@@ -191,7 +191,7 @@ h3 {
     <div>
       <ul>
         <div class="playListDetailes"
-             v-if="$route.query.songId">
+             v-if="songId">
           <div class="playListImg">
             <img :src="songDetails.al.picUrl"
                  alt="" />
@@ -217,7 +217,7 @@ h3 {
                   <span class="inline-block"
                         style=""
                         v-if="Boolean(songDetails.mv)"
-                        @click="playMV(songDetails.mv, songDetails.name)"><i class="el-icon-video-camera iconhover"></i>&nbsp;
+                        @click="playMV(songDetails.mv)"><i class="el-icon-video-camera iconhover"></i>&nbsp;
                   </span>
 
                   <span class="inline-block"
@@ -284,13 +284,14 @@ import {
 } from "@/api/api";
 import { download } from "@/api/download";
 export default {
+  // props: ['songId'],
   data () {
     return {
       listen: [],
       //评论分页
       currentPage: 1,
       songUrlAdd: null,
-      songId: "", //接受的歌曲id
+      songId: "", //接收的歌曲id
       songDetails: {}, //歌曲详情
       songComment: [],
       commentCount: "",
@@ -302,16 +303,14 @@ export default {
       songlrc: "",
     };
   },
-  created () {
-    var that = this;
-    if (that.$route.query.recplaylist) {
-      that.getSongList();
-    } else if (that.$route.query.songId) {
-      that.getSongDetails();
-      that.getSongComment();
-    } else {
-      that.getMusicInfo();
-    }
+  mounted () {
+    ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
+    if (this.$route.params.songId) { localStorage.setItem('songId', this.$route.params.songId) }
+    //判断是否使用缓存
+    this.$route.params.songId ? this.songId = this.$route.params.songId : this.songId = localStorage.getItem('songId')
+    this.getSongDetails();
+    this.getSongComment();
+
   },
   methods: {
     // 分页
@@ -324,7 +323,7 @@ export default {
     getSongDetails () {
       var that = this;
       let params = {
-        ids: that.$route.query.songId,
+        ids: that.songId,
       };
       getSongDetails(params).then((res) => {
         that.songDetails = res.data.songs[0];
@@ -345,7 +344,7 @@ export default {
     getSongComment () {
       var that = this;
       let params = {
-        id: that.$route.query.songId,
+        id: that.songId,
         limit: 7,
         offset: (that.currentPage - 1) * 7,
       };
@@ -491,11 +490,11 @@ export default {
         });
       });
     },
-    playMV (mvId, mvName) {
+    playMV (mvId) {
       //获取mv播放链接
       this.$router.push({
         name: "mvPlay",
-        query: { mvId: mvId, mvName: mvName },
+        params: { mvId: mvId },
       });
     },
     //根据主题更换播放器颜色

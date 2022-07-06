@@ -122,23 +122,23 @@
 }
 </style>
 <template>
-  <!-- 推荐歌单 -->
-  <div class="recMv" style="border-radius: 10px">
-    <div v-if="mvId" style="margin: 0 auto; width: 95%">
-      <video
-        controls
-        autoplay
-        loop
-        :src="mvUrl"
-        style="margin: 10px 0; width: 100%; height: 580px"
-      ></video>
+  <div class="recMv"
+       style="border-radius: 10px">
+    <div v-if="mvId"
+         style="margin: 0 auto; width: 95%">
+      <video controls
+             autoplay
+             loop
+             :src="mvUrl"
+             style="margin: 10px 0; width: 100%; height: 580px"></video>
     </div>
 
     <div class="mvDetail">
       <div>
         <div style="margin-bottom: 10px">
           <div class="authorImg">
-            <img :src="mvDetail.cover" alt="" />
+            <img :src="mvDetail.cover"
+                 alt="" />
           </div>
           <span class="authorName">{{ mvDetail.artistName }}</span>
         </div>
@@ -154,7 +154,9 @@
 
       <p style="margin-top: 10px">{{ mvDetail.desc }}</p>
       <ul>
-        <li class="mvTag" v-for="item in mvDetail.videoGroup" :key="item.id">
+        <li class="mvTag"
+            v-for="item in mvDetail.videoGroup"
+            :key="item.id">
           {{ item.name }}
         </li>
       </ul>
@@ -164,44 +166,35 @@
         <span class="smallFont border">分享{{ mvDetail.shareCount }}</span>
       </div>
     </div>
-    <div v-if="mvId" style="padding: 0px 50px">
+    <div v-if="mvId"
+         style="padding: 0px 50px">
       <h3 style="margin: 5px 0 10px 0; text-align: center">
         评论({{ count }}条)
       </h3>
-      <div class="hoverBackColor" v-for="item in mvComments" :key="item.id">
-        <img
-          :src="item.user.avatarUrl"
-          style="width: 50px; border-radius: 25px"
-        />
-        <span style="display: inline-block; margin-left: 10px; font-size: 15px"
-          >{{ item.user.nickname }}&nbsp;&nbsp;:&nbsp;&nbsp;</span
-        >
+      <div class="hoverBackColor"
+           v-for="item in mvComments"
+           :key="item.id">
+        <img :src="item.user.avatarUrl"
+             style="width: 50px; border-radius: 25px" />
+        <span style="display: inline-block; margin-left: 10px; font-size: 15px">{{ item.user.nickname }}&nbsp;&nbsp;:&nbsp;&nbsp;</span>
         <span style="margin-left: 20px; width: 750px">
           {{ item.content }}
         </span>
         <div style="height: 30px">
-          <span style="float: right; width: 130px"
-            >&nbsp;&nbsp;时间：{{ item.timeStr }}</span
-          ><span style="float: right"
-            >{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span
-          >
+          <span style="float: right; width: 130px">&nbsp;&nbsp;时间：{{ item.timeStr }}</span><span style="float: right">{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span>
         </div>
       </div>
       <!-- //评论分页 -->
     </div>
-    <div
-      class="pagination"
-      style="text-align: center; padding-top: 10px; box-sizing: border-box"
-    >
-      <el-pagination
-        v-if="count != 0"
-        @current-change="videohandleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-size="8"
-        layout="prev, pager, next, jumper"
-        :total="count"
-        :background="true"
-      >
+    <div class="pagination"
+         style="text-align: center; padding-top: 10px; box-sizing: border-box">
+      <el-pagination v-if="count != 0"
+                     @current-change="videohandleCurrentChange"
+                     :current-page.sync="currentPage"
+                     :page-size="8"
+                     layout="prev, pager, next, jumper"
+                     :total="count"
+                     :background="true">
       </el-pagination>
     </div>
   </div>
@@ -215,10 +208,10 @@ import {
   getMvDetailInfo,
 } from "@/api/api";
 export default {
-  data() {
+  // props: ['mvId'],
+  data () {
     return {
       mvUrl: "",
-      mvName: false,
       mvId: "",
       mvComments: [],
       mvDetail: {},
@@ -226,9 +219,12 @@ export default {
       currentPage: 1,
     };
   },
-  created() {
-    this.mvName = this.$route.query.mvName;
-    this.mvId = this.$route.query.mvId;
+  mounted () {
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    if (this.$route.params.mvId) { localStorage.setItem('mvId', this.$route.params.mvId) }
+    // 判断是否使用缓存
+    this.$route.params.mvId ? this.mvId = this.$route.params.mvId : this.mvId = localStorage.getItem('mvId')
     this.playMV();
   },
   methods: {
@@ -239,9 +235,9 @@ export default {
       // console.log("我是第一"+this.currentPage)
       this.playMV(this.mvId, currentPage);
     },
-    playMV() {
+    playMV () {
       let params = {
-        id: this.$route.query.mvId,
+        id: this.mvId,
       };
       getMVUrl(params).then((res) => {
         this.mvUrl = res.data.data.url;
@@ -258,7 +254,7 @@ export default {
       });
       // 热门评论;
       getcommentMV({
-        id: this.$route.query.mvId,
+        id: this.mvId,
         limit: 8,
         offset: (this.currentPage - 1) * 8,
       }).then((res) => {

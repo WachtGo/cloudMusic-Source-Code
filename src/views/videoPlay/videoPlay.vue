@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <div v-if="vid"
+    <div v-if="videoId"
          style="padding: 0px 50px">
       <h3 style="margin: 5px 0 10px 0; text-align: center">
         评论({{ count }}条)
@@ -84,15 +84,17 @@ export default {
       mvUrl: "",
       videoUrl: "",
       videoDetail: {},
-      vid: "",
+      videoId: "",
       videoComments: [],
       count: "",
       currentPage: 1,
     };
   },
-  created () {
-    // this.mvName = this.$route.query.mvName;
-    this.vid = this.$route.query.vid;
+  mounted () {
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    if (this.$route.params.albumId) { localStorage.setItem('albumId', this.$route.params.albumId) }
+    // 判断是否使用缓存
+    this.$route.params.albumId ? this.albumId = this.$route.params.albumId : this.albumId = localStorage.getItem('albumId')
     this.playVideo();
   },
   methods: {
@@ -101,11 +103,11 @@ export default {
       // console.log(`当前页: ${currentPage}`);
       this.currentPage = currentPage;
       // console.log("我是第一"+this.currentPage)
-      this.playVideo(this.vid, currentPage);
+      this.playVideo(this.videoId, currentPage);
     },
     playVideo () {
       let params = {
-        id: this.$route.query.vid,
+        id: this.videoId,
       };
       getVideoDetails(params).then((res) => {
         // console.log("视频详情--", res.data.data);
@@ -117,7 +119,7 @@ export default {
         this.videoUrl = res.data.urls[0].url;
       });
       var comments = {
-        id: this.$route.query.vid,
+        id: this.videoId,
         limit: 8,
         offset: (this.currentPage - 1) * 8,
       };

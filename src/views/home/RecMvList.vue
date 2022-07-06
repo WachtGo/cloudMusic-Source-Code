@@ -4,25 +4,25 @@
     <h3 class="h2title">最新MV :</h3>
     <div class="recPlay Ocenter">
       <ul class="recPlaywrap">
-        <li class="recPlayList" v-for="(item, index) in recMvList" :key="index">
+        <li class="recPlayList"
+            v-for="(item, index) in recMvList"
+            :key="index">
           <div class="image">
-            <img :src="item.cover" alt="" title="" @click="goPlayMv(item.id)" />
-            <span class="playCount"
-              ><i class="el-icon-video-play" style="margin-right: 1px"></i
-              >{{ item.playCount }}</span
-            >
+            <img :src="item.cover"
+                 alt=""
+                 title=""
+                 @click="goPlayMv(item.id)" />
+            <span class="playCount"><i class="el-icon-video-play"
+                 style="margin-right: 1px"></i>{{ item.playCount }}</span>
           </div>
           <p class="List-title">
-            <span
-              style="
+            <span style="
                 display: inline-block;
                 width: 100%;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-              "
-              >{{ item.name }}</span
-            >
+              ">{{ item.name }}</span>
             <span style="font-size: 10px; color: rgb(220, 220, 220)">{{
               item.artists[0].name
             }}</span>
@@ -36,17 +36,17 @@
 <script>
 import { getNewMvList } from "@/api/api";
 export default {
-  data() {
+  data () {
     return {
       limit: 12,
       recMvList: [],
     };
   },
-  mounted() {
+  mounted () {
     this.getNewMvList();
   },
   methods: {
-    getNewMvList() {
+    getNewMvList () {
       //获取最新MV
       var that = this;
       let params = {
@@ -87,11 +87,11 @@ export default {
         }
       });
     },
-    goPlayMv(mvId) {
+    goPlayMv (mvId) {
       var that = this;
       that.$router.push({
         name: "mvPlay",
-        query: { recplaylist: true, mvId: mvId },
+        params: { mvId: mvId },
       });
     },
   },

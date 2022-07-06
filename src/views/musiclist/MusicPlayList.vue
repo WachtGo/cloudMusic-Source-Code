@@ -572,7 +572,7 @@ h3 {
               </span>
               <!-- 播放MV -->
               <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv, item.name)"><i class="el-icon-video-camera iconhover"></i>
+                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
               </span>
               <!-- 下载 -->
               <span v-if="item.fee == 0"
@@ -791,7 +791,6 @@ import {
   playMusicUrl,
   getSongLyric,
   getSongDetails,
-  getSongList,
   getDownloadUrl,
 } from "@/api/api";
 import { download } from "@/api/download";
@@ -849,9 +848,7 @@ export default {
       // console.log(`当前页: ${currentPage}`);
       this.currentPage = currentPage;
       var that = this;
-      if (that.$route.query.recplaylist) {
-        that.getSongList(currentPage);
-      } else if (that.tagSwitch.songSwitch) {
+      if (that.tagSwitch.songSwitch) {
         that.getSingleMuscic();
       } else if (that.tagSwitch.playListSwitch) {
         that.getMusicList();
@@ -867,9 +864,7 @@ export default {
     },
     search () {
       var that = this;
-      if (that.$route.query.recplaylist) {
-        that.getSongListDetails(); //歌单详情
-      } else if (that.tagSwitch.songSwitch) {
+      if (that.tagSwitch.songSwitch) {
         that.getSingleMuscic();
       } else if (that.tagSwitch.playListSwitch) {
         that.getMusicList();
@@ -888,7 +883,7 @@ export default {
     goSongDetails (ids) {
       this.$router.push({
         name: "songDetails",
-        query: {
+        params: {
           songId: ids,
         },
       });
@@ -897,8 +892,8 @@ export default {
     goAlbumDetail (id) {
       this.$router.push({
         name: "albumDetail",
-        query: {
-          id: id,
+        params: {
+          albumId: id,
         },
       });
     },
@@ -907,36 +902,22 @@ export default {
       if (id) {
         this.$router.push({
           name: "singerDetail",
-          query: {
-            id: id,
+          params: {
+            singerId: id,
           },
         });
       }
     },
-    //传入歌单id进入歌曲列表
+    //传入歌单id进入歌单详情
     goSongList (songListId) {
-      //传入歌单id进入歌曲列表
+      //传入歌单id进入歌单详情
       var that = this;
       that.$router.push({
         name: "playListDetails",
-        query: { playListTable: true, songListId: songListId },
+        params: { songListId: songListId },
       });
     },
-    // 获取歌单详情
-    getSongListDetails () {
-      //传入歌单id获取歌曲id和歌单详情
-      var that = this;
-      let params = {
-        id: that.$route.query.songListId,
-      };
-      getSongList(params).then((res) => {
-        // console.log("----------------:", res.data.privileges); //歌单歌曲
-        // console.log("--歌单详情-------:", res.data.playlist); //歌单歌曲
-        that.playList = res.data.playlist;
-        that.musicList = that.playList.tracks;
-        that.transMusicTime(that.playList, dt);
-      });
-    },
+
     //将时长转化成分秒
     transMusicTime (arr, dt) {
       for (let i = 0; i < arr.length; i++) {
@@ -951,11 +932,11 @@ export default {
         arr[i][dt] = min + ":" + sec;
       }
     },
-    playMV (mvId, mvName) {
+    playMV (mvId) {
       //获取mv播放链接
       this.$router.push({
         name: "mvPlay",
-        query: { mvId: mvId, mvName: mvName },
+        params: { mvId: mvId },
       });
     },
 
@@ -1299,15 +1280,15 @@ export default {
       if (type === 0) {
         this.$router.push({
           name: "mvPlay",
-          query: {
+          params: {
             mvId: vid,
           },
         });
       } else {
         this.$router.push({
           name: "videoPlay",
-          query: {
-            vid: vid,
+          params: {
+            videoId: vid,
           },
         });
       }
