@@ -23,9 +23,15 @@
           </div>
         </div>
         <!-- 返回 -->
-        <div class="cl"
-             @click="back()">
-          <h3>返回</h3>
+        <div class="cl">
+          <div class="gobackWrap">
+            <span class="goBack"
+                  @click="goBack(1)">&lt;
+            </span>&nbsp;
+            <span class="goBack"
+                  @click="goBack(0)">&gt;
+            </span>
+          </div>
         </div>
       </header>
     </div>
@@ -112,8 +118,8 @@ export default {
     this.getSearchDefault();
   },
   methods: {
-    back () {
-      this.$router.back();
+    goBack (val) {
+      val ? this.$router.back() : this.$router.forward()
     },
     switchNone () {
       //搜索框失去焦点时消失
@@ -225,6 +231,23 @@ export default {
         color: rgb(95, 205, 248);
       }
     }
+    .gobackWrap {
+      height: 30px;
+      line-height: 30px;
+      transition: 0.2s;
+
+      .goBack {
+        font-size: 15px;
+        font-weight: bolder;
+        transition: 0.2s;
+        &:hover {
+          color: rgb(32, 147, 192);
+        }
+      }
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
   .search {
     height: 30px;
@@ -268,7 +291,7 @@ export default {
   width: 600px;
   max-height: 300px;
   border-radius: 0 0 20px 20px;
-  background: rgb(135, 192, 184);
+  background: rgb(139, 189, 182);
   overflow-x: hidden;
 
   cursor: default;
@@ -293,7 +316,7 @@ export default {
     &:hover {
       cursor: pointer;
       transform: scale(1.02);
-      color: aqua;
+      // color: rgb(94, 211, 211);
       background: rgba(250, 250, 250, 0.062);
     }
     .suggest-list-music {

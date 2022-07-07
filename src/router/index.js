@@ -22,7 +22,6 @@ const router = new VueRouter({
       path: "/emptyPage",
       name: "emptyPage",
       component: () => import("@/components/emptyPage.vue")
-
     },
     //搜索的音乐页面
     {
