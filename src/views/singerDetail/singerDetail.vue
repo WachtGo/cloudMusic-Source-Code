@@ -11,7 +11,7 @@ h3 {
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -19,13 +19,13 @@ h3 {
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   .ul {
     height: 630px;
     border-radius: 0 0 10px 10px;
-    background: rgba(95, 158, 160, 0.322);
+    background: rgba(95, 158, 160, 0.11);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
@@ -40,7 +40,7 @@ h3 {
       height: 170px;
       // border: 1px solid rgb(97, 226, 183);
       border-radius: 10px;
-      background: rgba(221, 239, 243, 0.11);
+      background: rgba(95, 158, 160, 0.11);
       box-sizing: border-box;
 
       .playListImg {
@@ -158,17 +158,30 @@ h3 {
     }
   }
   #albumList {
+    // width: 96%;
+    margin: 10 auto;
+    padding: 10px 20px;
+    width: 98%;
+    height: 420px;
+    border-radius: 10px;
+    background: rgba(95, 158, 160, 0.11);
+    box-sizing: border-box;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .liWrap {
       display: flex;
       justify-content: space-around;
       margin: 0 auto 10px;
       padding: 0 10px;
-      width: 95%;
+      // width: 95%;
       height: 60px;
       border-radius: 12px;
-      background-color: rgba(129, 235, 199, 0.068);
+      background: rgba(95, 158, 160, 0.11);
       box-sizing: border-box;
       transition: 0.2s;
+
       &:hover {
         transform: scale(1.01);
       }
@@ -258,13 +271,84 @@ h3 {
       }
     }
   }
+  .singerDetail {
+    margin: 0 auto;
+    padding: 10px;
+    width: 96%;
+    height: 420px;
+    border-radius: 10px;
+    background: rgba(95, 158, 160, 0.11);
+    box-sizing: border-box;
+  }
+
+  #singleSongs {
+    margin: 0 auto;
+    padding: 0px 10px 20px;
+    width: 96%;
+    height: 420px;
+    border-radius: 10px;
+    background: rgba(95, 158, 160, 0.05);
+    box-sizing: border-box;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    .SingsList {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      margin: 5px auto;
+      width: 100%;
+      height: 30px;
+      line-height: 30px;
+      padding: 0 10px;
+      background-color: rgba(99, 187, 162, 0.144);
+      border-radius: 15px;
+      box-sizing: border-box;
+      line-height: 30px;
+      transition: 0.2s;
+
+      .song-list {
+        display: inline-block;
+
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .song-list-option {
+        position: absolute;
+        width: 130px;
+        right: 10px;
+
+        span {
+          display: inline-block;
+          margin: 0 5px;
+          transition: 0.2s;
+
+          &:hover {
+            color: bisque;
+            cursor: pointer;
+          }
+        }
+      }
+
+      &:hover {
+        color: aqua;
+        transform: scale(1.01);
+      }
+    }
+  }
   #singerMvs {
     margin: 0 auto;
     padding: 0px 10px 20px;
     width: 96%;
     height: 420px;
     border-radius: 10px;
-    background: rgba(219, 255, 242, 0.151);
+    background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
     overflow-x: hidden;
     &::-webkit-scrollbar {

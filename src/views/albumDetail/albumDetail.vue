@@ -11,7 +11,7 @@ h3 {
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -19,19 +19,19 @@ h3 {
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 
   .ul {
     height: 630px;
     border-radius: 0 0 10px 10px;
-    background: rgba(95, 158, 160, 0.322);
+    background: rgba(221, 239, 243, 0.05);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
       display: none;
     }
-    .playListDetailes {
+    .albumDetails {
       display: flex;
       justify-content: space-between;
       margin: 0 auto 10px;
@@ -40,7 +40,7 @@ h3 {
       height: 170px;
       // border: 1px solid rgb(97, 226, 183);
       border-radius: 10px;
-      background: rgba(221, 239, 243, 0.11);
+      background: rgba(221, 239, 243, 0.05);
       box-sizing: border-box;
 
       .playListImg {
@@ -120,6 +120,67 @@ h3 {
         }
       }
     }
+    #singleSongs {
+      margin: 0 auto;
+      padding: 0px 10px 20px;
+      width: 96%;
+      height: 420px;
+      border-radius: 10px;
+      background: rgba(95, 158, 160, 0.05);
+      box-sizing: border-box;
+      overflow-x: hidden;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+
+      .SingsList {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        margin: 5px auto;
+        width: 100%;
+        height: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        background-color: rgba(99, 187, 162, 0.144);
+        border-radius: 15px;
+        box-sizing: border-box;
+        line-height: 30px;
+        transition: 0.2s;
+
+        .song-list {
+          display: inline-block;
+
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .song-list-option {
+          position: absolute;
+          width: 130px;
+          right: 10px;
+
+          span {
+            display: inline-block;
+            margin: 0 5px;
+            transition: 0.2s;
+
+            &:hover {
+              color: bisque;
+              cursor: pointer;
+            }
+          }
+        }
+
+        &:hover {
+          color: aqua;
+          transform: scale(1.01);
+        }
+      }
+    }
 
     .music-list {
       display: flex;
@@ -157,83 +218,6 @@ h3 {
 
       &:hover {
         background: rgba(76, 152, 155, 0.527);
-      }
-    }
-  }
-  #singerMvs {
-    margin: 0 auto;
-    padding: 0px 10px 20px;
-    width: 96%;
-    height: 420px;
-    border-radius: 10px;
-    background: rgba(219, 255, 242, 0.151);
-    box-sizing: border-box;
-    overflow-x: hidden;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    .videoPlaywrap {
-      display: flex;
-      margin: 0 auto;
-
-      justify-content: space-evenly;
-      flex-wrap: wrap; //根据宽度限制一行的盒子个数
-      margin: 10px 0;
-      width: 98%;
-      background: transparent;
-      // overflow-x: hidden;
-
-      .videoPlayList {
-        margin-bottom: 10px;
-        width: 220px;
-        height: 180px;
-        border-radius: 10px;
-        box-sizing: border-box;
-
-        .videoImage {
-          position: relative;
-          margin-bottom: 10px;
-          width: 220px;
-          height: 132px;
-          border-radius: 10px;
-          overflow: hidden;
-          transition: 0.2s;
-
-          &:hover {
-            transform: scale(1.05);
-            cursor: pointer;
-          }
-          .videoImg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-          }
-
-          .videoPlayTime {
-            position: absolute;
-            z-index: 99;
-            right: 10px;
-            background: transparent;
-          }
-        }
-
-        p {
-          font-size: 15px;
-          padding: 0 10px;
-          // width: 100%;
-          transition: 0.2s;
-          overflow: hidden; /*必须结合的属性,当内容溢出元素框时发生的事情*/
-          text-overflow: ellipsis; /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
-          display: -webkit-box; /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
-          -webkit-line-clamp: 2; /*用来限制在一个块元素显示的文本的行数。*/
-          -webkit-box-orient: vertical; /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
-          span {
-            &:hover {
-              color: rgb(145, 245, 228);
-              cursor: pointer;
-            }
-          }
-        }
       }
     }
   }
@@ -285,7 +269,7 @@ h3 {
     <div class="descript"></div>
     <div>
       <div class="ul">
-        <div class="playListDetailes">
+        <div class="albumDetails">
           <div class="playListImg">
             <img :src="albumDesc.blurPicUrl"
                  alt="" />
@@ -328,12 +312,6 @@ h3 {
             </div>
           </div>
         </div>
-        <!-- <div class="singerDetail" v-if="tagSwitch.detailSwitch">
-          <h3 style="font-size: 15px">简介：</h3>
-          <p>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ albumDesc.briefDesc }}
-          </p>
-        </div> -->
         <div id="singleSongs">
           <h3>专辑歌曲：{{ albumSongs.length }}首</h3>
           <div class="SingsList"

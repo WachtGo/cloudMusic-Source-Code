@@ -11,7 +11,7 @@ h3 {
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -20,13 +20,13 @@ h3 {
   width: 1120px;
   height: 730px;
   border-radius: 20px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 
   ul {
     height: 630px;
     border-radius: 0 0 10px 10px;
-    background: rgba(95, 158, 160, 0.322);
+    background: rgba(221, 239, 243, 0.05);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
@@ -41,7 +41,7 @@ h3 {
       height: 200px;
       // border: 1px solid rgb(97, 226, 183);
       border-radius: 10px;
-      background: rgba(34, 173, 197, 0.055);
+      // background: rgba(109, 109, 109, 0);
       box-sizing: border-box;
 
       .playListImg {
@@ -112,7 +112,7 @@ h3 {
       font-weight: bolder;
       -o-text-overflow: ellipsis;
       text-overflow: ellipsis;
-      // background: rgba(95, 158, 160, 0.322);
+      background: rgba(221, 239, 243, 0.11);
       transition: 0.2s;
 
       .music-list-span {
@@ -148,6 +148,7 @@ h3 {
   background: none !important;
 }
 /deep/ .el-pager {
+  height: 30px !important;
   background: none !important;
 }
 /deep/ .number,
@@ -175,6 +176,9 @@ h3 {
 }
 /deep/ .el-pagination__jump {
   color: #f7dd88 !important;
+}
+/deep/ .el-pagination {
+  height: 30px !important;
 }
 .iconhover {
   transition: 0.2s;
@@ -234,7 +238,7 @@ h3 {
           </div>
         </div>
 
-        <div style="padding: 0px 50px">
+        <div style="padding: 0px 50px ;">
           <h3 style="margin: 5px 0 10px 0">
             <span v-if="commentCount">评论({{ commentCount }}条)</span>
           </h3>

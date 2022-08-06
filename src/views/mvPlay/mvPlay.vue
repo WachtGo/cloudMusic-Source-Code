@@ -26,7 +26,7 @@
     border-radius: 10px;
     padding: 10px;
     border-radius: 10px;
-    background: rgba(95, 158, 160, 0.322);
+    // background: rgba(95, 158, 160, 0.322);
   }
 }
 .mvDetail {

@@ -291,7 +291,7 @@ export default {
   width: 600px;
   max-height: 300px;
   border-radius: 0 0 20px 20px;
-  background: rgba(95, 168, 160, 0.658);
+  background: rgba(77, 114, 131, 0.87);
   overflow-x: hidden;
 
   cursor: default;

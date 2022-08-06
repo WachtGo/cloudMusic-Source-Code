@@ -265,7 +265,7 @@
       width: 60px;
       height: 60px;
       border-radius: 10px;
-      background-color: rgba(178, 244, 151, 1);
+      background-color: rgba(177, 244, 151, 0);
       transition: 0.2s;
       img {
         width: 100%;
@@ -360,7 +360,7 @@ h3 {
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.05);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -369,13 +369,13 @@ h3 {
   width: 1120px;
   height: 730px;
   border-radius: 20px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   ul {
     height: 630px;
     border-radius: 0 0 10px 10px;
-    background: rgba(95, 158, 160, 0.322);
+    background: rgba(95, 158, 160, 0.05);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {

@@ -8,13 +8,13 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       keywords: "",
       reload: "",
     };
   },
-  created() {
+  created () {
     let that = this;
     setTimeout(() => {
       that.$router.push({
@@ -42,7 +42,7 @@ h3 {
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -51,13 +51,13 @@ h3 {
   width: 1120px;
   height: 730px;
   border-radius: 20px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   ul {
     height: 630px;
     border-radius: 0 0 10px 10px;
-    background: rgba(95, 158, 160, 0.322);
+    background: rgba(95, 158, 160, 0.11);
     overflow-x: hidden;
   }
 }

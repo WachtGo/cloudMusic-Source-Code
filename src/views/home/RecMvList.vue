@@ -75,7 +75,7 @@ export default {
 .recPlay {
   max-height: 550px;
   overflow-x: hidden;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   &::-webkit-scrollbar {
     display: none;
   }

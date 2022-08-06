@@ -11,7 +11,7 @@ h3 {
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -19,13 +19,13 @@ h3 {
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   ul {
     height: 680px;
     border-radius: 0 0 10px 10px;
-    background: rgba(95, 158, 160, 0.322);
+    background: rgba(95, 158, 160, 0.11);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
@@ -212,7 +212,7 @@ h3 {
             v-for="(item, index) in musicList"
             :key="item.id">
           <span style="display: inline-block; width: 20px">{{ index + 1 }}.</span>
-          <div @dblclick.self="goSongDetails(item.id)">
+          <div @dblclick="goSongDetails(item.id)">
             <span class="music-list-span">{{ item.name }}</span>
             <span class="music-list-span">{{ item.ar[0].name }}</span>
             <span class="music-list-span">{{ item.dt }}</span>
