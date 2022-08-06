@@ -7,6 +7,8 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  mode:'history',
+  // mode:'hash',
   routes: [
     {
       path: "",
@@ -16,6 +18,7 @@ const router = new VueRouter({
     {
       path: "/HomePage",
       name: "HomePage",
+     
       component: () => import("@/views/home/HomePage.vue"),
     },
     {
@@ -63,6 +66,12 @@ const router = new VueRouter({
       name: "mvPlay",
       component: () => import("@/views/mvPlay/mvPlay.vue"),
       props:true,
+      meta:{
+        login:true,
+        met:false
+      },
+      
+      
       // meta: { keepAlive: true }
     },
     //视频页面
@@ -72,10 +81,42 @@ const router = new VueRouter({
       component: () => import("@/views/videoPlay/videoPlay.vue"),
       props:true,
       // meta: { keepAlive: true }
-    },
-    
+      // 独享路由
+      // beforeEnter(to,from,next){
+      //   if(from.path=='/MusicPlayList'){
+      //     next()
+      //     // alert('buyun')
+      //   }
+      // },
+      //
+      // afterEnter(to,from,next){
 
+      // }
+    },
   ]
 })
+// 前置路由
+// router.beforeEach((to,from,next)=>{
+//   if(to.name === 'videoPlay' || to.meta.met === false) {
+//     alert('不允许进入')
+//   }else{
+//     next()
+//   }
+// })
+
+//后置路由
+// router.afterEach((to,from,next)=>{
+  
+// })
+// //还有组件内路由如下,组件内使用
+// beforRouteEnter(to,from,next){
+
+// }
+// befroeRouteLeave(to,from,next){
+
+// }
+// beforeRouteUpdate(to,from,next){
+
+// }
 
 export default router

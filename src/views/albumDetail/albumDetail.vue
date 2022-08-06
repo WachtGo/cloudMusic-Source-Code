@@ -392,8 +392,9 @@ import {
   playMusicUrl,
   getSongLyric,
   getSongDetails,
-} from "@/api/api";
-import { download } from "@/api/download";
+} from '@/api/api';
+import { download } from '@/api/download';
+import { transMusicTime } from '@/api/commonApi.js'
 
 export default {
   // props: ['albumId'],
@@ -429,24 +430,10 @@ export default {
           that.$set(item, "timer", true);
         }
         let dt = "dt";
-        that.transMusicTime(that.albumSongs, dt);
+        transMusicTime(that.albumSongs, dt);
       });
     },
 
-    //将时长转化成分秒
-    transMusicTime (arr, dt) {
-      for (let i = 0; i < arr.length; i++) {
-        let min = parseInt(arr[i][dt] / 1000 / 60);
-        let sec = parseInt((arr[i][dt] / 1000) % 60);
-        if (min < 10) {
-          min = "0" + min;
-        }
-        if (sec < 10) {
-          sec = "0" + sec;
-        }
-        arr[i][dt] = min + ":" + sec;
-      }
-    },
     //获取歌曲下载地址
     getDownloadUrl (songId, songName) {
       var that = this;
@@ -535,7 +522,7 @@ export default {
             that.songUrlAdd = res.data.data[0].url;
           } else {
             that.$message({
-              message: "不好意思这首歌暂无版权",
+              message: "抱歉，这首歌暂无版权",
               type: "error",
             });
             that.albumSongs[index].timer = false;

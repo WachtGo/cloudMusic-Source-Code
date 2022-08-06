@@ -279,6 +279,7 @@ import {
   getPlayListComment,
 } from "@/api/api";
 import { download } from "@/api/download";
+import { transMusicTime } from '@/api/commonApi.js'
 export default {
   // props: ['songListId'],
   data () {
@@ -510,26 +511,15 @@ export default {
         // console.log("--歌单详情-------:", res.data.playlist); //歌单歌曲
         that.playListDetail = res.data.playlist;
         that.musicList = that.playListDetail.tracks;
+
         //给每个列表添加一个防抖
         for (let item of that.musicList) {
           that.$set(item, "timer", true);
         }
-        this.transMusicTime();
+        transMusicTime(that.musicList, 'dt');
       });
     },
-    transMusicTime () {
-      for (let i = 0; i < this.musicList.length; i++) {
-        let min = parseInt(this.musicList[i].dt / 1000 / 60);
-        let sec = parseInt((this.musicList[i].dt / 1000) % 60);
-        if (min < 10) {
-          min = "0" + min;
-        }
-        if (sec < 10) {
-          sec = "0" + sec;
-        }
-        this.musicList[i].dt = min + ":" + sec;
-      }
-    },
+
   },
 };
 </script>

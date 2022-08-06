@@ -35,6 +35,7 @@
 
 <script>
 import { getNewMvList } from "@/api/api";
+import { transPlayCount } from "@/api/commonApi"
 export default {
   data () {
     return {
@@ -55,36 +56,8 @@ export default {
       getNewMvList(params).then((res) => {
         that.recMvList = res.data.data;
         // console.log("最新mv---:", res.data.data);
-        for (let i = 0; i < that.recMvList.length; i++) {
-          if (
-            String(that.recMvList[i].playCount).length > 5 &&
-            String(that.recMvList[i].playCount).length < 9
-          ) {
-            that.recMvList[i].playCount =
-              String(that.recMvList[i].playCount).substr(
-                0,
-                String(that.recMvList[i].playCount).length - 4
-              ) + "万";
-          } else if (String(that.recMvList[i].playCount).length == 5) {
-            that.recMvList[i].playCount =
-              String(that.recMvList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.recMvList[i].playCount).substr(1, 2) +
-              "万";
-          } else if (String(that.recMvList[i].playCount).length == 9) {
-            that.recMvList[i].playCount =
-              String(that.recMvList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.recMvList[i].playCount).substr(1, 2) +
-              "亿";
-          } else if (String(that.recMvList[i].playCount).length > 9) {
-            that.recMvList[i].playCount =
-              String(that.recMvList[i].playCount).substr(
-                0,
-                String(that.recMvList[i].playCount).length - 8
-              ) + "亿";
-          }
-        }
+        //将播放量转换成亿万单位
+        transPlayCount(that.recMvList, 'playCount')
       });
     },
     goPlayMv (mvId) {

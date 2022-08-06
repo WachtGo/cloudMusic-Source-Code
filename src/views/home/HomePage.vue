@@ -26,7 +26,7 @@ export default {
 .Home {
   width: 100%;
   height: 740px;
-  background: rgba(188, 220, 226, 0.205);
+  background: rgba(93, 150, 140, 0.11);
   box-sizing: border-box;
   overflow-x: hidden;
   &::-webkit-scrollbar {

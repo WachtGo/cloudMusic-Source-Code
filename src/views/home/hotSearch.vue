@@ -47,7 +47,7 @@ export default {
   padding: 10px;
   width: 1120px;
   border-radius: 10px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   .hotSearchWrap {

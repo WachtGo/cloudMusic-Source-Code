@@ -27,6 +27,7 @@
 
 <script>
 import { getSuggestPlayList } from "@/api/api";
+import { transPlayCount } from "@/api/commonApi"
 export default {
   data () {
     return {
@@ -48,36 +49,7 @@ export default {
         that.recPlayList = res.data.result;
         // console.log("推荐歌单：--", res.data.result);
         //将播放量转成亿,万单位
-        for (let i = 0; i < that.recPlayList.length; i++) {
-          if (
-            String(that.recPlayList[i].playCount).length > 5 &&
-            String(that.recPlayList[i].playCount).length < 9
-          ) {
-            that.recPlayList[i].playCount =
-              String(that.recPlayList[i].playCount).substr(
-                0,
-                String(that.recPlayList[i].playCount).length - 4
-              ) + "万";
-          } else if ((String(that.recPlayList[i].playCount).length = 5)) {
-            that.recPlayList[i].playCount =
-              String(that.recPlayList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.recPlayList[i].playCount).substr(1, 2) +
-              "万";
-          } else if ((String(that.recPlayList[i].playCount).length = 9)) {
-            that.recPlayList[i].playCount =
-              String(that.recPlayList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.recPlayList[i].playCount).substr(1, 2) +
-              "亿";
-          } else if (String(that.recPlayList[i].playCount).length > 9) {
-            that.recPlayList[i].playCount =
-              String(that.recPlayList[i].playCount).substr(
-                0,
-                String(that.recPlayList[i].playCount).length - 8
-              ) + "亿";
-          }
-        }
+        transPlayCount(that.recPlayList, 'playCount')
       });
     },
     goSongList (songListId) {

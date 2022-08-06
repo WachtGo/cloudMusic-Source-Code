@@ -179,7 +179,7 @@
       width: 60px;
       height: 60px;
       border-radius: 10px;
-      background-color: rgba(178, 244, 151, 1);
+      background-color: rgba(152, 158, 149, 0);
       transition: 0.2s;
       img {
         width: 100%;
@@ -552,8 +552,8 @@ h3 {
     <div>
       <ul>
         <!-- 单曲列表 -->
-        <div v-if="tagSwitch.songSwitch">
-          <h3 v-if="musicList.length === 0"><i class="el-icon-loading"></i></h3>
+        <div v-show="tagSwitch.songSwitch">
+          <h3 v-show="musicList.length === 0"><i class="el-icon-loading"></i></h3>
           <li class="music-list"
               v-for="(item, index) in musicList"
               :key="item.id">
@@ -583,8 +583,8 @@ h3 {
         </div>
         <!-- 专辑列表 -->
         <div class="albumListClass"
-             v-if="tagSwitch.albumSwitch">
-          <h3 v-if="albumList.length === 0"><i class="el-icon-loading"></i></h3>
+             v-show="tagSwitch.albumSwitch">
+          <h3 v-show="albumList.length === 0"><i class="el-icon-loading"></i></h3>
           <li class="liWrap"
               v-for="(item, index) in albumList"
               :key="index"
@@ -617,8 +617,8 @@ h3 {
         </div>
         <!-- 歌手列表 -->
         <div class="singerListClass"
-             v-if="tagSwitch.singerSwitch">
-          <h3 v-if="singerList.length === 0"><i class="el-icon-loading"></i></h3>
+             v-show="tagSwitch.singerSwitch">
+          <h3 v-show="singerList.length === 0"><i class="el-icon-loading"></i></h3>
           <li class="liWrap"
               v-for="(item, index) in singerList"
               :key="index"
@@ -643,11 +643,11 @@ h3 {
             </div>
           </li>
         </div>
-        <div v-if="tagSwitch.albumSwitch"></div>
+        <div v-show="tagSwitch.albumSwitch"></div>
         <!-- 歌单列表 -->
         <div class="playListClass"
-             v-if="tagSwitch.playListSwitch">
-          <h3 v-if="playListTable.length === 0"><i class="el-icon-loading"></i></h3>
+             v-show="tagSwitch.playListSwitch">
+          <h3 v-show="playListTable.length === 0"><i class="el-icon-loading"></i></h3>
           <div class="recPlay">
             <ul class="playListWrap">
               <li class="playListTable"
@@ -671,8 +671,8 @@ h3 {
         </div>
         <!-- 视频列表 -->
         <div class="videoListClass"
-             v-if="tagSwitch.videoSwitch">
-          <h3 v-if="videoList.length === 0"><i class="el-icon-loading"></i></h3>
+             v-show="tagSwitch.videoSwitch">
+          <h3 v-show="videoList.length === 0"><i class="el-icon-loading"></i></h3>
           <div class="videoPlay">
             <ul class="videoPlaywrap">
               <li class="videoPlayList"
@@ -718,8 +718,8 @@ h3 {
         </div>
         <!-- MV列表 -->
         <div class="videoListClass"
-             v-if="tagSwitch.mvSwitch">
-          <h3 v-if="mvList.length === 0"><i class="el-icon-loading"></i></h3>
+             v-show="tagSwitch.mvSwitch">
+          <h3 v-show="mvList.length === 0"><i class="el-icon-loading"></i></h3>
           <div class="videoPlay">
             <ul class="videoPlaywrap">
               <li class="videoPlayList"
@@ -767,7 +767,7 @@ h3 {
     </div>
 
     <div style="text-align: center; margin-top: 10px; box-sizing: border-box">
-      <el-pagination v-if="count != 0"
+      <el-pagination v-show="count != 0"
                      @current-change="handleCurrentChange"
                      :current-page.sync="currentPage"
                      :page-size="15"
@@ -794,6 +794,7 @@ import {
   getDownloadUrl,
 } from "@/api/api";
 import { download } from "@/api/download";
+import { transMusicTime, transPlayCount } from '@/api/commonApi.js'
 export default {
   data () {
     return {
@@ -916,21 +917,6 @@ export default {
         name: "playListDetails",
         params: { songListId: songListId },
       });
-    },
-
-    //将时长转化成分秒
-    transMusicTime (arr, dt) {
-      for (let i = 0; i < arr.length; i++) {
-        let min = parseInt(arr[i][dt] / 1000 / 60);
-        let sec = parseInt((arr[i][dt] / 1000) % 60);
-        if (min < 10) {
-          min = "0" + min;
-        }
-        if (sec < 10) {
-          sec = "0" + sec;
-        }
-        arr[i][dt] = min + ":" + sec;
-      }
     },
     playMV (mvId) {
       //获取mv播放链接
@@ -1075,10 +1061,9 @@ export default {
         type: 1, //代表获取单曲
       };
       getMusicInfo(params).then((res) => {
-        let dt = "dt";
         that.musicList = res.data.result.songs;
         that.count = res.data.result.songCount;
-        that.transMusicTime(that.musicList, dt);
+        transMusicTime(that.musicList, 'dt');
         // console.log("音乐列表：", res.data.result);
         //给每个列表添加一个防抖
         for (let item of that.musicList) {
@@ -1130,36 +1115,7 @@ export default {
         // console.log("获取歌单列表----", res.data.result);
         that.playListTable = res.data.result.playlists;
         that.count = res.data.result.playlistCount;
-        for (let i = 0; i < that.playListTable.length; i++) {
-          if (
-            String(that.playListTable[i].playCount).length > 5 &&
-            String(that.playListTable[i].playCount).length < 9
-          ) {
-            that.playListTable[i].playCount =
-              String(that.playListTable[i].playCount).substr(
-                0,
-                String(that.playListTable[i].playCount).length - 4
-              ) + "万";
-          } else if (String(that.playListTable[i].playCount).length == 5) {
-            that.playListTable[i].playCount =
-              String(that.playListTable[i].playCount).substr(0, 1) +
-              "." +
-              String(that.playListTable[i].playCount).substr(1, 2) +
-              "万";
-          } else if (String(that.playListTable[i].playCount).length == 9) {
-            that.playListTable[i].playCount =
-              String(that.playListTable[i].playCount).substr(0, 1) +
-              "." +
-              String(that.playListTable[i].playCount).substr(1, 2) +
-              "亿";
-          } else if (String(that.playListTable[i].playCount).length > 9) {
-            that.playListTable[i].playCount =
-              String(that.playListTable[i].playCount).substr(
-                0,
-                String(that.playListTable[i].playCount).length - 8
-              ) + "亿";
-          }
-        }
+        transPlayCount(that.playListTable)
       });
     },
     //通过搜索关键词获取对应视频列表
@@ -1172,43 +1128,15 @@ export default {
         type: 1014, //代表获取视频
       };
       getMusicInfo(params).then((res) => {
-        let dt = "durationms";
         // console.log("获取视频列表----", res.data.result);
         that.videoList = res.data.result.videos;
         // console.log("视频列表：", that.videoList);
         that.count = res.data.result.videoCount;
-        that.transMusicTime(that.videoList, dt);
+        //转换歌曲时长单位为分秒
+        transMusicTime(that.videoList, "durationms");
+        //将播放量转换成亿万单位
+        transPlayCount(that.videoList, 'playTime')
 
-        for (let i = 0; i < that.videoList.length; i++) {
-          if (
-            String(that.videoList[i].playTime).length > 5 &&
-            String(that.videoList[i].playTime).length < 9
-          ) {
-            that.videoList[i].playTime =
-              String(that.videoList[i].playTime).substr(
-                0,
-                String(that.videoList[i].playTime).length - 4
-              ) + "万";
-          } else if (String(that.videoList[i].playTime).length == 5) {
-            that.videoList[i].playTime =
-              String(that.videoList[i].playTime).substr(0, 1) +
-              "." +
-              String(that.videoList[i].playTime).substr(1, 2) +
-              "万";
-          } else if (String(that.videoList[i].playTime).length == 9) {
-            that.videoList[i].playTime =
-              String(that.videoList[i].playTime).substr(0, 1) +
-              "." +
-              String(that.videoList[i].playTime).substr(1, 2) +
-              "亿";
-          } else if (String(that.videoList[i].playTime).length > 9) {
-            that.videoList[i].playTime =
-              String(that.videoList[i].playTime).substr(
-                0,
-                String(that.videoList[i].playTime).length - 8
-              ) + "亿";
-          }
-        }
       });
     },
     //通过搜索关键词获取对应MV列表
@@ -1221,43 +1149,15 @@ export default {
         type: 1004, //代表获取MV
       };
       getMusicInfo(params).then((res) => {
-        let dt = "duration"; //将时长字段赋值，方便传参
+
         // console.log("获取MV列表----", res.data.result);
         that.mvList = res.data.result.mvs;
         // console.log("MV列表：", that.mvList);
         that.count = res.data.result.mvCount;
-        that.transMusicTime(that.mvList, dt);
-
-        for (let i = 0; i < that.mvList.length; i++) {
-          if (
-            String(that.mvList[i].playCount).length > 5 &&
-            String(that.mvList[i].playCount).length < 9
-          ) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(
-                0,
-                String(that.mvList[i].playCount).length - 4
-              ) + "万";
-          } else if (String(that.mvList[i].playCount).length == 5) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.mvList[i].playCount).substr(1, 2) +
-              "万";
-          } else if (String(that.mvList[i].playCount).length == 9) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.mvList[i].playCount).substr(1, 2) +
-              "亿";
-          } else if (String(that.mvList[i].playCount).length > 9) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(
-                0,
-                String(that.mvList[i].playCount).length - 8
-              ) + "亿";
-          }
-        }
+        //转换歌曲时间为分秒单位
+        transMusicTime(that.mvList, 'duration');
+        // 转换播放量单位为万
+        transPlayCount(that.mvList, 'playCount')
       });
     },
 

@@ -26,10 +26,10 @@
         <div class="cl">
           <div class="gobackWrap">
             <span class="goBack"
-                  @click="goBack(1)">&lt;
+                  @click="goBack(-1)">&lt;
             </span>&nbsp;
             <span class="goBack"
-                  @click="goBack(0)">&gt;
+                  @click="goBack(1)">&gt;
             </span>
           </div>
         </div>
@@ -119,7 +119,7 @@ export default {
   },
   methods: {
     goBack (val) {
-      val ? this.$router.back() : this.$router.forward()
+      this.$router.go(val)
     },
     switchNone () {
       //搜索框失去焦点时消失
@@ -217,7 +217,7 @@ export default {
   padding: 10px 50px;
   height: 100%;
   // line-height: 50px;
-  background: rgba(95, 158, 160, 0.322);
+  background: rgba(127, 188, 190, 0.137);
   box-sizing: border-box;
 
   .cl {
@@ -269,7 +269,7 @@ export default {
         text-align: center;
         text-overflow: ellipsis;
         color: rgb(255, 255, 255);
-        background: rgba(253, 253, 253, 0.11);
+        background: rgba(216, 216, 216, 0.11);
 
         &:focus {
           outline: none;
@@ -291,7 +291,7 @@ export default {
   width: 600px;
   max-height: 300px;
   border-radius: 0 0 20px 20px;
-  background: rgb(139, 189, 182);
+  background: rgba(95, 168, 160, 0.658);
   overflow-x: hidden;
 
   cursor: default;

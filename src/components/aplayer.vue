@@ -112,8 +112,8 @@ export default {
   top: 3%;
   left: 0;
   border-radius: 5px;
-  color: rgb(117, 191, 204);
-  background: rgba(243, 242, 242, 0.336);
+  color: rgba(218, 218, 218, 0.842);
+  // background: rgba(243, 242, 242, 0.336);
   overflow-x: hidden;
 
   .listTitle {
@@ -124,7 +124,7 @@ export default {
     &:hover {
       // display: none;
       cursor: default;
-      color: rgb(17, 175, 248);
+      color: rgb(253, 253, 253);
       transform: scale(1.02);
     }
   }
@@ -134,8 +134,8 @@ export default {
     top: 8%;
     left: 10px;
     border-radius: 5px;
-    color: rgb(117, 191, 204);
-    background: rgba(243, 242, 242, 0.336);
+    color: rgba(196, 196, 196, 0.836);
+    background: rgba(160, 160, 160, 0.096);
     overflow-x: hidden;
     transition: 0.8s;
     &:hover {
@@ -154,7 +154,7 @@ export default {
       transition: 0.3s;
       &:hover {
         cursor: pointer;
-        color: rgb(17, 175, 248);
+        color: rgb(247, 247, 247);
         transform: scale(1.02);
       }
       .artist {

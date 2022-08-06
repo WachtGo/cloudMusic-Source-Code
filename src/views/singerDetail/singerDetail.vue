@@ -569,6 +569,7 @@ import {
   getSingerAlbum,
 } from "@/api/api";
 import { download } from "@/api/download";
+import { transMusicTime, transPlayCount } from '@/api/commonApi.js'
 export default {
   // props: ['singerId'],
   data () {
@@ -624,7 +625,7 @@ export default {
         }
         //转换时间
         let dt = "dt";
-        that.transMusicTime(that.songList, dt);
+        transMusicTime(that.songList, dt);
       });
       that.switchChange(tag);
     },
@@ -652,38 +653,10 @@ export default {
       getSingerMvList(params).then((res) => {
         // console.log("获取到的歌手MV：", res.data.mvs);
         that.mvList = res.data.mvs;
-        let dt = "duration"; //将时长字段赋值，方便传参
-        that.transMusicTime(that.mvList, dt);
-        for (let i = 0; i < that.mvList.length; i++) {
-          if (
-            String(that.mvList[i].playCount).length > 5 &&
-            String(that.mvList[i].playCount).length < 9
-          ) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(
-                0,
-                String(that.mvList[i].playCount).length - 4
-              ) + "万";
-          } else if (String(that.mvList[i].playCount).length == 5) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.mvList[i].playCount).substr(1, 2) +
-              "万";
-          } else if (String(that.mvList[i].playCount).length == 9) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(0, 1) +
-              "." +
-              String(that.mvList[i].playCount).substr(1, 2) +
-              "亿";
-          } else if (String(that.mvList[i].playCount).length > 9) {
-            that.mvList[i].playCount =
-              String(that.mvList[i].playCount).substr(
-                0,
-                String(that.mvList[i].playCount).length - 8
-              ) + "亿";
-          }
-        }
+        // 转换时间单位
+        transMusicTime(that.mvList, "duration");
+        //转换播放量单位
+        transPlayCount(that.mvList, 'playCount')
       });
       that.switchChange(tag);
     },
@@ -698,20 +671,7 @@ export default {
         that.singerDesc = res.data.artist;
       });
     },
-    //将时长转化成分秒
-    transMusicTime (arr, dt) {
-      for (let i = 0; i < arr.length; i++) {
-        let min = parseInt(arr[i][dt] / 1000 / 60);
-        let sec = parseInt((arr[i][dt] / 1000) % 60);
-        if (min < 10) {
-          min = "0" + min;
-        }
-        if (sec < 10) {
-          sec = "0" + sec;
-        }
-        arr[i][dt] = min + ":" + sec;
-      }
-    },
+
     listenMusic (id, fee, index) {
       //获取播放音乐链接
       var that = this;
