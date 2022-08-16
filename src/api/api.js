@@ -1,4 +1,4 @@
-import request from './request'
+import request from '@/utils/request'
 
 //获取默认搜索关键字
 export const getSearchDefault = () => request.get('/search/default')
@@ -66,7 +66,17 @@ export function getSuggestPlayList(params){
 
 //通过歌单id获取歌单详情
 // export const getSongList = (params) => request.get(`/playlist/detail?id=${params.id}`);
+
+
 export function getSongList(params){
+    return request({
+        url:'/playlist/track/all',
+        method:'get',
+        params:params,
+    })
+}
+
+export function getPlaylistDetail(params){
     return request({
         url:'/playlist/detail',
         method:'get',
@@ -204,7 +214,7 @@ export function getSingerAlbum(params) {
 // export const getDownloadUrl = (params) => request.post(`/song/download/url?id=${params.id}`)
 export function getDownloadUrl(params) {
     return request({
-        url: '/song/download/url',
+        url: '/song/url',
         method: 'get',
         params: params,
     })
@@ -228,3 +238,4 @@ export function getAlbumDynamicInfo(params) {
         params: params,
     })
 }
+

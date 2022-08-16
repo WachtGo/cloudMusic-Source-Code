@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="h2title">热搜歌曲 :</h3>
+    <h3 class="h2title">热搜:</h3>
     <div class="hotSearch ">
       <div class="hotSearchWrap">
         <span class="hotSearchWord"
@@ -12,33 +12,33 @@
   </div>
 </template>
 <script>
-import { getHotSearch } from "@/api/api.js";
+import { getHotSearch } from '@/api/api.js'
 export default {
-  data () {
+  data() {
     return {
       hotSearch: [],
-    };
+    }
   },
-  mounted () {
-    this.getHotSearch();
+  mounted() {
+    this.getHotSearch()
   },
   methods: {
-    getHotSearch () {
+    getHotSearch() {
       //获取热搜歌曲列表
       getHotSearch().then((res) => {
-        this.hotSearch = res.data.data;
+        this.hotSearch = res.data.data
         // console.log(this.hotSearch);
-      });
+      })
     },
-    getMusicList (keywords) {
+    getMusicList(keywords) {
       //搜索进入搜索页面
       this.$router.push({
-        name: "MusicPlayList",
+        name: 'MusicPlayList',
         query: { keywords: keywords },
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

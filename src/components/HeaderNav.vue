@@ -64,22 +64,22 @@
 </template>
 
 <script>
-import { getSearchDefault, getMusicInfo } from "@/api/api";
+import { getSearchDefault, getMusicInfo } from '@/api/api'
 export default {
-  data () {
+  data() {
     return {
       searchSwitch: false,
-      searchTerms: "",
-      placeholder: "",
+      searchTerms: '',
+      placeholder: '',
       musicList: [],
       inputTimer: null,
-    };
+    }
   },
   directives: {
-    drag (el) {
-      // let dragBox = el.parentElement.parentElement; //获取app元素 
+    drag(el) {
+      // let dragBox = el.parentElement.parentElement; //获取app元素
       let dragBox = document.getElementById('app')
-      el.onmousedown = e => {
+      el.onmousedown = (e) => {
         //鼠标点击时鼠标的的位置
         // console.log(e)
         // console.log(el.parentElement)
@@ -90,124 +90,124 @@ export default {
         let top = dragBox.offsetTop
         // console.log(e.clientX,e.clientY)
         // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
-        document.onmousemove = e => {
+        document.onmousemove = (e) => {
           //鼠标移动的距离
-          let moveX = e.clientX - downX;
-          let moveY = e.clientY - downY;
+          let moveX = e.clientX - downX
+          let moveY = e.clientY - downY
           // console.log('鼠标移动:',moveX,moveY)
 
           //移动当前元素
-          dragBox.style.left = left + moveX + 'px';
-          dragBox.style.top = top + moveY + 'px';
-        };
-        document.onmouseup = e => {
+          dragBox.style.left = left + moveX + 'px'
+          dragBox.style.top = top + moveY + 'px'
+        }
+        document.onmouseup = (e) => {
           //鼠标弹起来的时候不再移动
-          document.onmousemove = null;
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）  
-          document.onmouseup = null;
-        };
-      };
-    }
+          document.onmousemove = null
+          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
+          document.onmouseup = null
+        }
+      }
+    },
   },
   watch: {
     searchTerms: function () {
-      this.search();
+      this.search()
     },
   },
-  mounted () {
-    this.getSearchDefault();
+  mounted() {
+    this.getSearchDefault()
   },
   methods: {
-    goBack (val) {
+    goBack(val) {
       this.$router.go(val)
     },
-    switchNone () {
+    switchNone() {
       //搜索框失去焦点时消失
       setTimeout(() => {
-        this.searchSwitch = false;
-      }, 100);
+        this.searchSwitch = false
+      }, 100)
     },
-    switchChange () {
+    switchChange() {
       //显示搜索列表
-      this.searchSwitch = true;
+      this.searchSwitch = true
       if (!this.searchTerms.trim()) {
-        this.getMusicInfo(this.placeholder);
+        this.getMusicInfo(this.placeholder)
       }
     },
-    selectMusic (keywords, artist) {
-      this.placeholder = `${keywords}   -   ${artist}`;
-      this.searchTerms = "";
+    selectMusic(keywords, artist) {
+      this.placeholder = `${keywords}   -   ${artist}`
+      this.searchTerms = ''
       //选择歌曲进入列表
       this.$router.push({
-        name: "emptyPage",
+        name: 'emptyPage',
         query: { keywords: keywords, reload: true },
-      });
-      this.searchSwitch = true;
+      })
+      this.searchSwitch = true
     },
-    enterSearch () {
+    enterSearch() {
       if (!this.searchTerms.trim()) {
         this.$router.push({
-          name: "emptyPage",
+          name: 'emptyPage',
           query: { keywords: this.placeholder, reload: true },
-        });
-        this.searchTerms = this.placeholder;
+        })
+        this.searchTerms = this.placeholder
       } else {
         this.$router.push({
-          name: "emptyPage",
+          name: 'emptyPage',
           query: { keywords: this.searchTerms, reload: true },
-        });
+        })
       }
-      this.searchSwitch = false;
+      this.searchSwitch = false
     },
-    search () {
+    search() {
       //搜索列表
       if (this.searchTerms.trim) {
         if (this.inputTimer) {
-          clearTimeout(this.inputTimer);
+          clearTimeout(this.inputTimer)
         }
         this.inputTimer = setTimeout(() => {
-          this.getMusicInfo(this.searchTerms);
-          clearTimeout(this.inputTimer);
-        }, 500);
+          this.getMusicInfo(this.searchTerms)
+          clearTimeout(this.inputTimer)
+        }, 500)
       }
     },
-    getMusicInfo (searchTerms) {
+    getMusicInfo(searchTerms) {
       //获取歌曲列表
       let params = {
         keywords: searchTerms,
         limit: 50,
-        offset: "",
-        type: "",
-      };
+        offset: '',
+        type: '',
+      }
       getMusicInfo(params).then((res) => {
-        this.musicList = [];
-        this.musicList = res.data.result.songs;
-        this.count = res.data.result.songCount;
+        this.musicList = []
+        this.musicList = res.data.result.songs
+        this.count = res.data.result.songCount
         //将歌曲时长转换成分秒格式
         for (let i = 0; i < this.musicList.length; i++) {
-          let min = parseInt(this.musicList[i].dt / 1000 / 60);
-          let sec = parseInt((this.musicList[i].dt / 1000) % 60);
+          let min = parseInt(this.musicList[i].dt / 1000 / 60)
+          let sec = parseInt((this.musicList[i].dt / 1000) % 60)
           if (min < 10) {
-            min = "0" + min;
+            min = '0' + min
           }
           if (sec < 10) {
-            sec = "0" + sec;
+            sec = '0' + sec
           }
-          this.musicList[i].dt = min + ":" + sec;
+          this.musicList[i].dt = min + ':' + sec
           // console.log(this.musicList[i].song.duration)
         }
         // console.log("音乐列表：", res.data.result.songs);
-      });
+      })
     },
-    getSearchDefault () {
+    getSearchDefault() {
       //默认搜索关键字
       getSearchDefault().then((res) => {
-        this.placeholder = res.data.data.realkeyword;
+        this.placeholder = res.data.data.realkeyword
         // console.log("搜索关键字：", res.data.data);
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

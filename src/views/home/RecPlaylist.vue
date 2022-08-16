@@ -26,52 +26,52 @@
 </template>
 
 <script>
-import { getSuggestPlayList } from "@/api/api";
-import { transPlayCount } from "@/api/commonApi"
+import { getSuggestPlayList } from '@/api/api'
+import { transPlayCount } from '@/utils/commonApi'
 export default {
-  data () {
+  data() {
     return {
       limit: 10,
       recPlayList: [],
-    };
+    }
   },
-  mounted () {
-    this.getSuggestPlayList();
+  mounted() {
+    this.getSuggestPlayList()
   },
   methods: {
-    getSuggestPlayList () {
+    getSuggestPlayList() {
       //获取推荐歌单
-      var that = this;
+      var that = this
       let params = {
         limit: that.limit,
-      };
+      }
       getSuggestPlayList(params).then((res) => {
-        that.recPlayList = res.data.result;
+        that.recPlayList = res.data.result
         // console.log("推荐歌单：--", res.data.result);
         //将播放量转成亿,万单位
         transPlayCount(that.recPlayList, 'playCount')
-      });
+      })
     },
-    goSongList (songListId) {
+    goSongList(songListId) {
       //传入歌单id进入歌曲列表
-      var that = this;
+      var that = this
       that.$router.push({
-        name: "playListDetails",
+        name: 'playListDetails',
         params: { songListId: songListId },
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
 .recPlay {
-  max-height: 550px;
+  // max-height: 550px;
   overflow-x: hidden;
   background: rgba(95, 158, 160, 0.11);
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  // &::-webkit-scrollbar {
+  //   display: none;
+  // }
 
   .recPlaywrap {
     display: flex;

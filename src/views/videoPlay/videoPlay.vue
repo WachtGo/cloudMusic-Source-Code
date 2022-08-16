@@ -76,61 +76,65 @@
 </template>
 
 <script>
-import { getVideoDetails, getVideoUrl, getVideoComment } from "@/api/api";
-import { transtime } from "@/api/commonApi";
+import { getVideoDetails, getVideoUrl, getVideoComment } from '@/api/api'
+import { transtime } from '@/utils/commonApi'
 export default {
-  data () {
+  data() {
     return {
-      mvUrl: "",
-      videoUrl: "",
+      mvUrl: '',
+      videoUrl: '',
       videoDetail: {},
-      videoId: "",
+      videoId: '',
       videoComments: [],
-      count: "",
+      count: '',
       currentPage: 1,
-    };
+    }
   },
-  mounted () {
+  mounted() {
     //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
-    if (this.$route.params.albumId) { localStorage.setItem('albumId', this.$route.params.albumId) }
+    if (this.$route.params.albumId) {
+      localStorage.setItem('albumId', this.$route.params.albumId)
+    }
     // 判断是否使用缓存
-    this.$route.params.albumId ? this.albumId = this.$route.params.albumId : this.albumId = localStorage.getItem('albumId')
-    this.playVideo();
+    this.$route.params.albumId
+      ? (this.albumId = this.$route.params.albumId)
+      : (this.albumId = localStorage.getItem('albumId'))
+    this.playVideo()
   },
   methods: {
     //mv分页
     mvhandleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
-      this.currentPage = currentPage;
+      this.currentPage = currentPage
       // console.log("我是第一"+this.currentPage)
-      this.playVideo(this.videoId, currentPage);
+      this.playVideo(this.videoId, currentPage)
     },
-    playVideo () {
+    playVideo() {
       let params = {
         id: this.videoId,
-      };
+      }
       getVideoDetails(params).then((res) => {
         // console.log("视频详情--", res.data.data);
-        this.videoDetail = res.data.data;
-        this.videoDetail.publishTime = transtime(this.videoDetail.publishTime);
-      });
+        this.videoDetail = res.data.data
+        this.videoDetail.publishTime = transtime(this.videoDetail.publishTime)
+      })
       getVideoUrl(params).then((res) => {
         // console.log("视频地址：", res.data.urls[0].url);
-        this.videoUrl = res.data.urls[0].url;
-      });
+        this.videoUrl = res.data.urls[0].url
+      })
       var comments = {
         id: this.videoId,
         limit: 8,
         offset: (this.currentPage - 1) * 8,
-      };
+      }
       getVideoComment(comments).then((res) => {
         // console.log("视频评论：", res);
-        this.videoComments = res.data.comments;
-        this.count = res.data.total;
-      });
+        this.videoComments = res.data.comments
+        this.count = res.data.total
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>

@@ -5,7 +5,6 @@
       <!-- app外层套个盒子，防止由于fixed拖拽乱跳 -->
 
       <div id="app">
-
         <HeaderNav></HeaderNav>
         <keep-alive :include="['mvPlay','videoPlay']">
           <router-view></router-view>
@@ -13,26 +12,28 @@
       </div>
     </div>
     <aplayer></aplayer>
+    <!-- <Login></Login> -->
   </div>
 </template>
 <script>
-import HeaderNav from "./components/HeaderNav.vue";
-import aplayer from "@/components/aplayer.vue";
+import HeaderNav from './components/HeaderNav.vue'
+import aplayer from '@/components/aplayer.vue'
+// import Login from "@/components/login/index"
+import AlbumDetail from './views/albumDetail/albumDetail.vue'
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
     HeaderNav,
-    aplayer, //播放小列表及按钮
+    aplayer,
+    // Login,
+    AlbumDetail,
   },
-  data () {
-    return {};
+  data() {
+    return {}
   },
-  mounted () {
-  },
-  methods: {
-
-  },
+  mounted() {},
+  methods: {},
 
   // directives:{
   //   focus:{
@@ -48,7 +49,7 @@ export default {
   //     }
   //   },
   // },
-};
+}
 </script>
 <style lang="less">
 @import '@/style/common.less';

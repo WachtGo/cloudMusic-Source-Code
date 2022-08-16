@@ -1,3 +1,286 @@
+<template>
+  <div class="list-wrap">
+    <h3>歌单详情</h3>
+    <div class="descript"></div>
+    <div>
+      <div class="wrap2">
+        <!-- 歌单信息 -->
+        <div class="playListDetailes">
+          <div class="playListImg">
+            <img :src="playListDetail.coverImgUrl"
+                 alt="" />
+          </div>
+          <div class="detailsRight">
+            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
+              {{ playListDetail.name }}
+            </h3>
+            <div style="margin: 10px 0 10px 0; height: 30px; font-size: 14px">
+              <img :src="playListDetail.creator.avatarUrl"
+                   alt=""
+                   style="width: 30px; height: 30px; border-radius: 15px" />
+              <span class="playListNickName">&nbsp;&nbsp;&nbsp;&nbsp;{{
+                  playListDetail.creator.nickname
+                }}&nbsp;&nbsp;</span><span v-if="playListDetail.creator.signature">&nbsp;&nbsp;-&nbsp;&nbsp;{{
+                  playListDetail.creator.signature
+                }}</span>
+            </div>
+            <div style="margin: 10px 0 10px 0; height: 18px; font-size: 14px">
+              <span>标签:&nbsp;&nbsp;</span><span v-for="(tag, index) in playListDetail.tags"
+                    :key="index">{{ tag }}&nbsp;</span>
+            </div>
+            <div class="playListIntro"
+                 style="">
+              <span style="display: inline-block; margin-left: 0px">
+                {{ playListDetail.description }}
+              </span>
+            </div>
+            <!-- <i class="iFont el-icon-star-off"
+               @click="collectPlaylist"></i> -->
+          </div>
+        </div>
+
+        <div style="padding: 0px 50px">
+          <h3 style="margin: 5px 0 10px 0">评论({{ commentCount }}条)</h3>
+          <div class="hoverBackColor"
+               v-for="item in playListComment"
+               :key="item.id">
+            <img :src="item.user.avatarUrl"
+                 style="width: 50px; border-radius: 25px" />
+            <span style="display: inline-block; margin-left: 10px; font-size: 15px">{{ item.user.nickname }}&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+            <span style="margin-left: 20px; width: 750px">
+              {{ item.content }}
+            </span>
+            <div style="height: 30px">
+              <span style="float: right; width: 130px">&nbsp;&nbsp;时间：{{ item.timeStr }}</span><span style="float: right">{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span>
+            </div>
+          </div>
+
+          <div style="text-align: center">
+            <el-pagination v-if="commentCount != 0"
+                           @current-change="playListHandleCurrentChange"
+                           :current-page.sync="currentPage"
+                           :page-size="7"
+                           layout="prev, pager, next, jumper"
+                           :total="commentCount"
+                           :background="true">
+            </el-pagination>
+          </div>
+        </div>
+        <!-- 歌单歌曲列表 -->
+        <h3 style="margin: 5px 0 10px 0">歌曲({{ musicList.length }}首)</h3>
+        <ul class="wrap-center">
+          <li class="music-list"
+              v-for="(item, index) in musicList"
+              :key="item.id">
+            <span style="display: inline-block; width: 20px">{{ index + 1 }}.</span>
+            <div @dblclick="goSongDetails(item.id)">
+              <span class="music-list-span">{{ item.name }}</span>
+              <span class="music-list-span">{{ item.ar[0].name }}</span>
+              <span class="music-list-span">{{ item.dt }}</span>
+            </div>
+            <div class="option">
+              <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
+              <!-- 添加到播放列表 -->
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
+              </span>
+              <span v-if="Boolean(item.mv)"
+                    @click="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
+              </span>
+              <!-- <span v-if="!Boolean(item.mv)">&nbsp;&nbsp;&nbsp; </span> -->
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span><span v-if="item.fee != 0"> </span>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import {
+  getDownloadUrl,
+  getPlaylistDetail,
+  getSongList,
+  getPlayListComment,
+} from '@/api/api'
+import { getTimestamp, transMusicTime, download } from '@/utils/commonApi'
+import { playMusic, listenMusic } from '@/utils/musicPlay'
+// import { getToken } from "@/utils/auth";
+export default {
+  // props: ['songListId'],
+  data() {
+    return {
+      //歌单id
+      songListId: '',
+      //评论分页
+      currentPage: 1,
+      // 歌曲数组
+      musicList: [],
+      //下载音乐的地址
+      DownloadSongUrl: '',
+      //mv地址
+      mvUrl: '',
+      //搜索歌曲总数
+      count: '',
+      playListComment: [
+        {
+          user: {
+            avatarUrl: '',
+          },
+        },
+      ],
+      commentCount: '',
+      //MV
+      songMV: [],
+      //歌单详情
+      playListDetail: { creator: { avatarUrl: '' } },
+    }
+  },
+  mounted() {
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    if (this.$route.params.songListId) {
+      localStorage.setItem('songListId', this.$route.params.songListId)
+    }
+    // 判断是否使用缓存
+    this.$route.params.songListId
+      ? (this.songListId = this.$route.params.songListId)
+      : (this.songListId = localStorage.getItem('songListId'))
+    this.getPlaylistDetail()
+    this.getSongList()
+    this.getPlayListComment()
+  },
+  methods: {
+    //切换歌单评论
+    playListHandleCurrentChange(currentPage) {
+      var that = this
+      that.currentPage = currentPage
+      that.getPlayListComment()
+    },
+    //获取歌单评论
+    getPlayListComment() {
+      var that = this
+      let params = {
+        id: that.songListId,
+        limit: 7,
+        offset: (that.currentPage - 1) * 7,
+      }
+      getPlayListComment(params).then((res) => {
+        // console.log("歌单评论：", res.data);
+        this.playListComment = res.data.comments
+        that.commentCount = res.data.total
+        // console.log("歌曲评论：", res.data);
+      })
+    },
+
+    //获取歌曲详情,进入详情页面
+    goSongDetails(ids) {
+      this.$router.push({
+        name: 'songDetails',
+        params: {
+          songId: ids,
+        },
+      })
+    },
+    // 播放MV
+    playMV(mvId) {
+      //获取mv播放链接
+      this.$router.push({
+        name: 'mvPlay',
+        params: { mvId: mvId },
+      })
+    },
+    //试听音乐
+    listenMusic(id, fee, index) {
+      //获取播放音乐链接
+      var that = this
+      var list = 'musicList'
+      listenMusic(id, fee, index, list, that)
+    },
+    //添加播放列表
+    playMusic(id, fee, index) {
+      var that = this
+      var list = 'musicList'
+      playMusic(id, fee, index, list, that)
+    },
+
+    //分页
+    handleCurrentChange: function (currentPage) {
+      // console.log(`当前页: ${currentPage}`);
+      this.currentPage = currentPage
+      var that = this
+      that.getPlaylistDetail(currentPage)
+    },
+
+    //获取歌曲下载地址
+    getDownloadUrl(songId, songName) {
+      var that = this
+      let params = {
+        id: songId,
+      }
+      getDownloadUrl(params).then((res) => {
+        // console.log("歌曲下载地址：", res.data.data.url);
+        download(res.data.data.url, songName)
+        that.$message({
+          type: 'success',
+          message: '开始下载了',
+        })
+      })
+    },
+    getPlaylistDetail() {
+      //传入歌单id获取歌曲id和歌单详情
+      var that = this
+      let params = {
+        id: that.songListId,
+      }
+      getPlaylistDetail(params).then((res) => {
+        // console.log("----------------:", res.data.privileges); //歌单歌曲
+        // console.log("--歌单详情-------:", res.data.playlist); //歌单歌曲
+        that.playListDetail = res.data.playlist
+        // that.musicList = that.playListDetail.tracks;
+      })
+    },
+    getSongList() {
+      //获取歌单所有歌曲
+      var that = this
+      let params = {
+        id: that.songListId,
+      }
+      getSongList(params).then((res) => {
+        that.musicList = res.data.songs
+        //给每个列表添加一个防抖
+        for (let item of that.musicList) {
+          that.$set(item, 'timer', true)
+        }
+        transMusicTime(that.musicList, 'dt')
+      })
+    },
+    // collectPlaylist () {
+    //   // let a = encodeURIComponent("NMTID=00OzCh7YMHCWQm1ZU9Vogn9qK4feTAAAAGCc3SE0Q; Max-Age=315360000; Expires=Tue, 03 Aug 2032 13:59:52 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_U=9611c371e6419e2c184a366a7ca936bf0fc69a8d2f6be4455ded1d5066ff6a4b993166e004087dd367fe124475fa63054c4bb8a8a030b49b26de8349c63f526ad40a31ebc291eb4ad4dbf082a8813684; Max-Age=15552000; Expires=Thu, 02 Feb 2023 13:59:52 GMT; Path=/; HTTPOnly;__csrf=e0281d26dcbef96212ed4b7db9e68461; Max-Age=1296010; Expires=Sun, 21 Aug 2022 14:00:02 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_SNS=; Max-Age=0; Expires=Sat, 06 Aug 2022 13:59:52 GMT; Path=/;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/clientlog; HTTPOnly")
+    //   // let cookie = "MUSIC_SNS=; Max-Age=0; Expires=Sun, 07 Aug 2022 07:29:20 GMT; Path=/;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/feedback; HTTPOnly;NMTID=00O7WKRxVwcZw0Uw0D6ubODlxpdLj4AAAGCdzVVLw; Max-Age=315360000; Expires=Wed, 04 Aug 2032 07:29:20 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_U=9611c371e6419e2c184a366a7ca936bfe793a0a6f0d4dbbbb88db8dba5edf83d993166e004087dd37a99ad5471c3636273479095928a9cef26de8349c63f526ad40a31ebc291eb4ad4dbf082a8813684; Max-Age=15552000; Expires=Fri, 03 Feb 2023 07:29:20 GMT; Path=/; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/feedback; HTTPOnly;__csrf=d1f2fa83b3815f03a3448349af4ecc04; Max-Age=1296010; Expires=Mon, 22 Aug 2022 07:29:30 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/clientlog; HTTPOnly"
+    //   // this.$store.commit('setTOKEN', cookie)
+    //   let params = {
+    //     t: '1',
+    //     id: this.songListId,
+    //     // timestamp: getTimestamp()
+    //     cookie: getToken(),
+    //   }
+    //   collectPlaylist(params).then((res) => {
+    //     console.log(res, '收藏返回')
+    //     if (res.data.code === 200) {
+    //       this.$message({
+    //         type: 'success',
+    //         message: '收藏成功'
+    //       })
+    //     }
+
+    //   })
+    // }
+  },
+}
+</script>
+
 <style lang="less" scoped>
 h3 {
   height: 30px;
@@ -22,7 +305,7 @@ h3 {
   background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
-  ul {
+  .wrap2 {
     height: 680px;
     border-radius: 0 0 10px 10px;
     background: rgba(95, 158, 160, 0.11);
@@ -62,6 +345,7 @@ h3 {
       }
 
       .detailsRight {
+        position: relative;
         width: 820px;
         height: 180px;
         // background: rgb(181, 209, 152);
@@ -82,52 +366,60 @@ h3 {
         }
       }
     }
+    .wrap-center {
+      max-height: 500px;
+      overflow-x: hidden;
+      // border-top: 1px exclusion chocolate;
 
-    .music-list {
-      position: relative;
-      display: flex;
-      margin: 5px auto;
-      padding: 0 10px;
-      width: 96%;
-      height: 30px;
-      line-height: 30px;
-      overflow: hidden;
-      color: rgba(255, 255, 255, 1);
-      font-weight: bolder;
-      -o-text-overflow: ellipsis;
-      text-overflow: ellipsis;
-      border-radius: 5px;
-      background: rgba(59, 165, 168, 0.048);
-      transition: 0.2s;
-
-      .music-list-span {
-        display: inline-block;
-        width: 270px;
-        text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      &::-webkit-scrollbar {
+        display: none;
       }
-      .option {
-        position: absolute;
-        padding-left: 150px;
-        width: 240px;
-        right: 10px;
-        box-sizing: border-box;
+      .music-list {
+        position: relative;
+        display: flex;
+        margin: 5px auto;
+        padding: 0 10px;
+        width: 96%;
+        height: 30px;
+        line-height: 30px;
+        overflow: hidden;
+        color: rgba(255, 255, 255, 1);
+        font-weight: bolder;
+        -o-text-overflow: ellipsis;
+        text-overflow: ellipsis;
+        border-radius: 5px;
+        background: rgba(59, 165, 168, 0.048);
+        transition: 0.2s;
 
-        span {
+        .music-list-span {
           display: inline-block;
-          width: 30px;
-          &:hover {
-            cursor: pointer;
+          width: 270px;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+        .option {
+          position: absolute;
+          padding-left: 150px;
+          width: 240px;
+          right: 10px;
+          box-sizing: border-box;
+
+          span {
+            display: inline-block;
+            width: 30px;
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
-      }
 
-      &:hover {
-        color: aquamarine;
-        transform: scale(1.01);
-        // background: rgba(146, 240, 243, 0.247);
+        &:hover {
+          color: aquamarine;
+          transform: scale(1.01);
+          // background: rgba(146, 240, 243, 0.247);
+        }
       }
     }
   }
@@ -168,359 +460,14 @@ h3 {
     color: rgb(247, 243, 45);
   }
 }
+// .iFont {
+//   position: absolute;
+//   top: 0;
+//   right: 5px;
+//   font-size: 25px;
+//   &:hover {
+//     cursor: pointer;
+//     color: rgb(215, 233, 57);
+//   }
+// }
 </style>
-
-<template>
-  <div class="list-wrap">
-    <h3>歌单详情</h3>
-    <div class="descript"></div>
-    <div>
-      <ul>
-        <div class="playListDetailes">
-          <div class="playListImg">
-            <img :src="playListDetail.coverImgUrl"
-                 alt="" />
-          </div>
-          <div class="detailsRight">
-            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
-              {{ playListDetail.name }}
-            </h3>
-            <div style="margin: 10px 0 10px 0; height: 30px; font-size: 14px">
-              <img :src="playListDetail.creator.avatarUrl"
-                   alt=""
-                   style="width: 30px; height: 30px; border-radius: 15px" />
-              <span class="playListNickName">&nbsp;&nbsp;&nbsp;&nbsp;{{
-                  playListDetail.creator.nickname
-                }}&nbsp;&nbsp;</span><span v-if="playListDetail.creator.signature">&nbsp;&nbsp;-&nbsp;&nbsp;{{
-                  playListDetail.creator.signature
-                }}</span>
-            </div>
-            <div style="margin: 10px 0 10px 0; height: 18px; font-size: 14px">
-              <span>标签:&nbsp;&nbsp;</span><span v-for="(tag, index) in playListDetail.tags"
-                    :key="index">{{ tag }}&nbsp;</span>
-            </div>
-            <div class="playListIntro"
-                 style="">
-              <span style="display: inline-block; margin-left: 0px">
-                {{ playListDetail.description }}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <li class="music-list"
-            v-for="(item, index) in musicList"
-            :key="item.id">
-          <span style="display: inline-block; width: 20px">{{ index + 1 }}.</span>
-          <div @dblclick="goSongDetails(item.id)">
-            <span class="music-list-span">{{ item.name }}</span>
-            <span class="music-list-span">{{ item.ar[0].name }}</span>
-            <span class="music-list-span">{{ item.dt }}</span>
-          </div>
-          <div class="option">
-            <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-            <!-- 添加到播放列表 -->
-            <span v-if="item.fee == 0 || item.fee == 8"
-                  @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-            </span>
-            <span v-if="Boolean(item.mv)"
-                  @click="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
-            </span>
-            <!-- <span v-if="!Boolean(item.mv)">&nbsp;&nbsp;&nbsp; </span> -->
-            <span v-if="item.fee == 0"
-                  @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span><span v-if="item.fee != 0"> </span>
-          </div>
-        </li>
-        <div style="padding: 0px 50px">
-          <h3 style="margin: 5px 0 10px 0">评论({{ commentCount }}条)</h3>
-          <div class="hoverBackColor"
-               v-for="item in playListComment"
-               :key="item.id">
-            <img :src="item.user.avatarUrl"
-                 style="width: 50px; border-radius: 25px" />
-            <span style="display: inline-block; margin-left: 10px; font-size: 15px">{{ item.user.nickname }}&nbsp;&nbsp;:&nbsp;&nbsp;</span>
-            <span style="margin-left: 20px; width: 750px">
-              {{ item.content }}
-            </span>
-            <div style="height: 30px">
-              <span style="float: right; width: 130px">&nbsp;&nbsp;时间：{{ item.timeStr }}</span><span style="float: right">{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span>
-            </div>
-          </div>
-
-          <div style="text-align: center">
-            <el-pagination v-if="commentCount != 0"
-                           @current-change="playListHandleCurrentChange"
-                           :current-page.sync="currentPage"
-                           :page-size="7"
-                           layout="prev, pager, next, jumper"
-                           :total="commentCount"
-                           :background="true">
-            </el-pagination>
-          </div>
-        </div>
-      </ul>
-    </div>
-    <div v-show="false">
-      <aplayer :autoplay="true"
-               :fixed="true"
-               :audio="listen"
-               :liric-type="1"></aplayer>
-    </div>
-  </div>
-</template>
-
-<script>
-import {
-  getDownloadUrl,
-  playMusicUrl,
-  getSongLyric,
-  getSongDetails,
-  getSongList,
-  getPlayListComment,
-} from "@/api/api";
-import { download } from "@/api/download";
-import { transMusicTime } from '@/api/commonApi.js'
-export default {
-  // props: ['songListId'],
-  data () {
-    return {
-      //试听音乐
-      listen: [],
-      //歌单id
-      songListId: '',
-      //评论分页
-      currentPage: 1,
-      // 歌曲数组
-      musicList: [],
-      //下载音乐的地址
-      DownloadSongUrl: "",
-      //mv地址
-      mvUrl: "",
-      //搜索歌曲总数
-      count: "",
-      playListComment: [],
-      commentCount: "",
-      //音乐地址
-      songUrlAdd: null,
-      //歌词
-      songlrc: "",
-      //MV
-      songMV: [],
-      //歌单详情
-      playListDetail: {},
-    };
-  },
-  mounted () {
-    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
-    if (this.$route.params.songListId) { localStorage.setItem('songListId', this.$route.params.songListId) }
-    // 判断是否使用缓存
-    this.$route.params.songListId ? this.songListId = this.$route.params.songListId : this.songListId = localStorage.getItem('songListId')
-    this.getSongList();
-    this.getPlayListComment();
-  },
-  methods: {
-    //切换歌单评论
-    playListHandleCurrentChange (currentPage) {
-      var that = this;
-      that.currentPage = currentPage;
-      that.getPlayListComment();
-    },
-    //获取歌单评论
-    getPlayListComment () {
-      var that = this;
-      let params = {
-        id: that.songListId,
-        limit: 7,
-        offset: (that.currentPage - 1) * 7,
-      };
-      getPlayListComment(params).then((res) => {
-        // console.log("歌单评论：", res.data);
-        this.playListComment = res.data.comments;
-        that.commentCount = res.data.total;
-        // console.log("歌曲评论：", res.data);
-      });
-    },
-
-    //获取歌曲详情,进入详情页面
-    goSongDetails (ids) {
-      this.$router.push({
-        name: "songDetails",
-        params: {
-          songId: ids,
-        },
-      });
-    },
-    // 播放MV
-    playMV (mvId) {
-      //获取mv播放链接
-      this.$router.push({
-        name: "mvPlay",
-        params: { mvId: mvId },
-      });
-    },
-    listenMusic (id, fee, index) {
-      //获取播放音乐链接
-      var that = this;
-      if (that.musicList[index].timer) {
-        if (fee == 1) {
-          that.$message({
-            message: "VIP歌曲 - 只能试听30s",
-            type: "warning",
-          });
-        }
-        playMusicUrl({
-          id: id,
-        }).then((res) => {
-          // console.log("播放音乐链接", res.data.data[0].url);
-          if (res.data.data[0].url) {
-            that.songUrlAdd = res.data.data[0].url;
-          } else {
-            that.$message({
-              message: "不好意思这首歌暂无版权",
-              type: "error",
-            });
-            that.musicList[index].timer = false;
-            setTimeout(() => {
-              that.musicList[index].timer = true;
-            }, 3000);
-            return;
-          }
-        }),
-          // 获取歌词
-          getSongLyric({
-            id: id,
-          }).then((res) => {
-            that.songlrc = res.data.lrc.lyric;
-          }),
-          // 获取歌曲信息
-          getSongDetails({
-            ids: id,
-          }).then((res) => {
-            if (that.songUrlAdd != null) {
-              that.listen = [];
-              that.listen.push({
-                name: res.data.songs[0].name, //歌曲名
-                artist: res.data.songs[0].ar[0].name, //作者
-                url: that.songUrlAdd,
-                cover: res.data.songs[0].al.picUrl,
-                lrc: that.songlrc,
-              });
-              // console.log(that.listen);
-              that.songUrlAdd = null;
-              that.songlrc = "";
-            }
-          });
-      }
-    },
-    //播放音乐
-    playMusic (id, fee, index) {
-      //获取播放音乐链接
-      var that = this;
-      // console.log(that.musicList[index]);
-      if (that.musicList[index].timer) {
-        if (fee == 1) {
-          that.$message({
-            message: "VIP歌曲 - 只能试听30s",
-            type: "warning",
-          });
-        }
-        playMusicUrl({
-          id: id,
-        }).then((res) => {
-          // console.log("播放音乐链接", res.data.data[0].url);
-          if (res.data.data[0].url) {
-            that.songUrlAdd = res.data.data[0].url;
-          } else {
-            that.$message({
-              message: "不好意思这首歌暂无版权",
-              type: "error",
-            });
-            that.musicList[index].timer = false;
-            setTimeout(() => {
-              that.musicList[index].timer = true;
-            }, 3000);
-            return;
-          }
-        }),
-          // 获取歌词
-          getSongLyric({
-            id: id,
-          }).then((res) => {
-            that.songlrc = res.data.lrc.lyric;
-          }),
-          // 获取歌曲信息
-          getSongDetails({
-            ids: id,
-          }).then((res) => {
-            // console.log("获取歌曲信息，添加到播放器：", res.data.songs);
-            if (that.songUrlAdd != null) {
-              that.$store.commit("addSONG", {
-                name: res.data.songs[0].name, //歌曲名
-                artist: res.data.songs[0].ar[0].name, //作者
-                url: that.songUrlAdd,
-                cover: res.data.songs[0].al.picUrl,
-                lrc: that.songlrc,
-                // theme: that.randomColor(),
-              });
-              // console.log(
-              //   that.$store.state.audio,
-              //   "添加歌曲后的歌曲播放列表-----"
-              // );
-              that.songUrlAdd = null;
-              that.songlrc = "";
-              that.musicList[index].timer = false;
-              setTimeout(() => {
-                that.musicList[index].timer = true;
-              }, 3000);
-            }
-          });
-      }
-    },
-
-    //分页
-    handleCurrentChange: function (currentPage) {
-      // console.log(`当前页: ${currentPage}`);
-      this.currentPage = currentPage;
-      var that = this;
-      that.getSongList(currentPage);
-    },
-
-    //获取歌曲下载地址
-    getDownloadUrl (songId, songName) {
-      var that = this;
-      let params = {
-        id: songId,
-      };
-      getDownloadUrl(params).then((res) => {
-        // console.log("歌曲下载地址：", res.data.data.url);
-        download(res.data.data.url, songName);
-        that.$message({
-          type: "success",
-          message: "开始下载了",
-        });
-      });
-    },
-    getSongList () {
-      //传入歌单id获取歌曲id和歌单详情
-      var that = this;
-      let params = {
-        id: that.songListId,
-      };
-      getSongList(params).then((res) => {
-        // console.log("----------------:", res.data.privileges); //歌单歌曲
-        // console.log("--歌单详情-------:", res.data.playlist); //歌单歌曲
-        that.playListDetail = res.data.playlist;
-        that.musicList = that.playListDetail.tracks;
-
-        //给每个列表添加一个防抖
-        for (let item of that.musicList) {
-          that.$set(item, "timer", true);
-        }
-        transMusicTime(that.musicList, 'dt');
-      });
-    },
-
-  },
-};
-</script>
-

@@ -34,51 +34,51 @@
 </template>
 
 <script>
-import { getNewMvList } from "@/api/api";
-import { transPlayCount } from "@/api/commonApi"
+import { getNewMvList } from '@/api/api'
+import { transPlayCount } from '@/utils/commonApi'
 export default {
-  data () {
+  data() {
     return {
-      limit: 12,
+      limit: 8,
       recMvList: [],
-    };
+    }
   },
-  mounted () {
-    this.getNewMvList();
+  mounted() {
+    this.getNewMvList()
   },
   methods: {
-    getNewMvList () {
+    getNewMvList() {
       //获取最新MV
-      var that = this;
+      var that = this
       let params = {
         limit: that.limit,
-      };
+      }
       getNewMvList(params).then((res) => {
-        that.recMvList = res.data.data;
+        that.recMvList = res.data.data
         // console.log("最新mv---:", res.data.data);
         //将播放量转换成亿万单位
         transPlayCount(that.recMvList, 'playCount')
-      });
+      })
     },
-    goPlayMv (mvId) {
-      var that = this;
+    goPlayMv(mvId) {
+      var that = this
       that.$router.push({
-        name: "mvPlay",
+        name: 'mvPlay',
         params: { mvId: mvId },
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="less" scoped>
 .recPlay {
-  max-height: 550px;
+  // max-height: 550px;
   overflow-x: hidden;
   background: rgba(95, 158, 160, 0.11);
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  // &::-webkit-scrollbar {
+  //   display: none;
+  // }
 
   .recPlaywrap {
     display: flex;
@@ -98,7 +98,7 @@ export default {
         position: relative;
         margin-bottom: 5px;
         width: 260px;
-        height: 155px;
+        height: 145px;
         border-radius: 10px;
         overflow: hidden;
         transition: 0.2s;

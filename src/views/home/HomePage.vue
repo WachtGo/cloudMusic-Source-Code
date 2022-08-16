@@ -4,22 +4,21 @@
     <hotSearch></hotSearch>
     <RecPlaylist></RecPlaylist>
     <RecMvList></RecMvList>
-    <!-- <div class="footerDiv"></div> -->
   </div>
 </template>
 
 <script>
-import hotSearch from "./hotSearch.vue";
-import RecPlaylist from "./RecPlaylist.vue";
-import RecMvList from "./RecMvList.vue";
+import hotSearch from './hotSearch.vue'
+import RecPlaylist from './RecPlaylist.vue'
+import RecMvList from './RecMvList.vue'
 export default {
-  name: "HomePage",
+  name: 'HomePage',
   components: {
     hotSearch,
     RecPlaylist,
     RecMvList,
   },
-};
+}
 </script>
 
 <style lang="less">
@@ -43,10 +42,4 @@ export default {
     padding: 0 40px;
   }
 }
-// .footerDiv {
-//   height: 200px;
-//   font-size: 15px;
-//   text-align: center;
-//   // line-height: 200px;
-// }
 </style>

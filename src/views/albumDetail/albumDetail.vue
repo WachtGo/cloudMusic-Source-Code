@@ -1,3 +1,211 @@
+<template>
+  <div class="list-wrap">
+    <h3>专辑详情</h3>
+    <div class="descript"></div>
+    <div>
+      <div class="ul">
+        <div class="albumDetails">
+          <div class="playListImg">
+            <img :src="albumDesc.blurPicUrl"
+                 alt="" />
+          </div>
+          <div class="detailsRight">
+            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
+              {{ albumDesc.name }}
+            </h3>
+            <div style="font-size: 14px">
+              <div class="aliasClass">
+                <img class="artistPic"
+                     :src="albumDesc.artist.img1v1Url"
+                     alt="" />-
+                <span class="playListNickName">{{
+                  albumDesc.artist.name
+                }}</span>
+              </div>
+
+              <!-- <div class="option">
+                <div class="flexBetween">
+                  <span
+                    class="inline-block"
+                    @click="getSingerSongList('songSwitch')"
+                    >收藏：<span class="musicSize">{{
+                      albumDesc.musicSize
+                    }}</span></span
+                  >
+                  <span class="inline-block"
+                    >专辑：<span class="musicSize">{{
+                      albumDesc.albumSize
+                    }}</span>
+                  </span>
+                  <span
+                    class="inline-block"
+                    @click="getSingerMvList('mvSwitch')"
+                    >MV：<span class="musicSize">{{ albumDesc.mvSize }}</span>
+                  </span>
+                </div>
+              </div> -->
+            </div>
+          </div>
+        </div>
+        <div id="singleSongs">
+          <h3>专辑歌曲：{{ albumSongs.length }}首</h3>
+          <div class="SingsList"
+               v-for="(item, index) in albumSongs"
+               :key="index">
+            <span class="song-list"
+                  style="width: 20px">{{ index + 1 }}.</span>
+            <div @dblclick="goSongDetails(item.id)">
+              <span class="song-list"
+                    style="width: 350px">
+                {{ item.name }}
+              </span>
+              <span class="song-list"
+                    style="width: 250px; text-align: center">
+                {{ item.ar[0].name }}
+              </span>
+              <span class="song-list"
+                    style="width: 230px">
+                {{ item.dt }}
+              </span>
+              <span class="song-list"
+                    style="width: 150px">
+              </span>
+            </div>
+            <span class="song-list song-list-option">
+              <span @click.stop="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
+              <!-- 添加到播放列表 -->
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
+              </span>
+              <span v-if="Boolean(item.mv)"
+                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
+              </span>
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-show="false">
+      <aplayer :autoplay="true"
+               :fixed="true"
+               :audio="listen"
+               :liric-type="1">
+      </aplayer>
+    </div>
+  </div>
+</template>
+
+<script>
+import { getAlbumContent, getDownloadUrl } from '@/api/api'
+import { transMusicTime, download } from '@/utils/commonApi'
+import { playMusic, listenMusic } from '@/utils/musicPlay'
+
+export default {
+  // props: ['albumId'],
+  data() {
+    return {
+      listen: [],
+      albumId: '',
+      albumSongs: [],
+      albumDesc: {},
+    }
+  },
+  mounted() {
+    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
+    if (this.$route.params.albumId) {
+      localStorage.setItem('albumId', this.$route.params.albumId)
+    }
+    // 判断是否使用缓存
+    this.$route.params.albumId
+      ? (this.albumId = this.$route.params.albumId)
+      : (this.albumId = localStorage.getItem('albumId'))
+    this.getAlbumContent()
+  },
+  methods: {
+    getAlbumContent() {
+      var that = this
+      let params = {
+        id: that.albumId,
+      }
+      getAlbumContent(params).then((res) => {
+        // console.log("专辑信息---：", res.data.album);
+        // console.log("专辑歌曲---：", res.data.songs);
+        that.albumDesc = res.data.album
+        that.albumSongs = res.data.songs
+        //给每个列表添加一个防抖
+        for (let item of that.albumSongs) {
+          that.$set(item, 'timer', true)
+        }
+        let dt = 'dt'
+        transMusicTime(that.albumSongs, dt)
+      })
+    },
+
+    //获取歌曲下载地址
+    getDownloadUrl(songId, songName) {
+      var that = this
+      let params = {
+        id: songId,
+      }
+      getDownloadUrl(params).then((res) => {
+        // console.log("歌曲下载地址：", res.data.data.url);
+        download(res.data.data.url, songName)
+        that.$message({
+          type: 'success',
+          message: '开始下载了',
+        })
+      })
+    },
+    //试听音乐
+    listenMusic(id, fee, index) {
+      //获取播放音乐链接
+      var that = this
+      var list = 'albumSongs'
+      listenMusic(id, fee, index, list, that)
+    },
+    //将歌曲添加到播放列表或者播放
+    playMusic(id, fee, index) {
+      //获取播放音乐链接
+      var that = this
+      var list = 'albumSongs'
+      playMusic(id, fee, index, list, that)
+    },
+    //跳转到歌曲详情
+    goSongDetails(ids) {
+      this.$router.push({
+        name: 'songDetails',
+        params: {
+          songId: ids,
+        },
+      })
+    },
+    //跳转到播放MV页面
+    playMV(mvId) {
+      //获取mv播放链接
+      this.$router.push({
+        name: 'mvPlay',
+        params: { mvId: mvId },
+      })
+    },
+    goMv(mvId) {
+      this.$router.push({
+        name: 'mvPlay',
+        params: {
+          mvId: mvId,
+        },
+      })
+    },
+    //根据主题更换播放器颜色
+    randomColor() {
+      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
+    },
+  },
+}
+</script>
+
 <style lang="less" scoped>
 h3 {
   height: 30px;
@@ -215,7 +423,6 @@ h3 {
           }
         }
       }
-
       &:hover {
         background: rgba(76, 152, 155, 0.527);
       }
@@ -262,317 +469,3 @@ h3 {
   }
 }
 </style>
-
-<template>
-  <div class="list-wrap">
-    <h3>专辑详情</h3>
-    <div class="descript"></div>
-    <div>
-      <div class="ul">
-        <div class="albumDetails">
-          <div class="playListImg">
-            <img :src="albumDesc.blurPicUrl"
-                 alt="" />
-          </div>
-          <div class="detailsRight">
-            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
-              {{ albumDesc.name }}
-            </h3>
-            <div style="font-size: 14px">
-              <div class="aliasClass">
-                <img class="artistPic"
-                     :src="albumDesc.artist.img1v1Url"
-                     alt="" />-
-                <span class="playListNickName">{{
-                  albumDesc.artist.name
-                }}</span>
-              </div>
-
-              <!-- <div class="option">
-                <div class="flexBetween">
-                  <span
-                    class="inline-block"
-                    @click="getSingerSongList('songSwitch')"
-                    >收藏：<span class="musicSize">{{
-                      albumDesc.musicSize
-                    }}</span></span
-                  >
-                  <span class="inline-block"
-                    >专辑：<span class="musicSize">{{
-                      albumDesc.albumSize
-                    }}</span>
-                  </span>
-                  <span
-                    class="inline-block"
-                    @click="getSingerMvList('mvSwitch')"
-                    >MV：<span class="musicSize">{{ albumDesc.mvSize }}</span>
-                  </span>
-                </div>
-              </div> -->
-            </div>
-          </div>
-        </div>
-        <div id="singleSongs">
-          <h3>专辑歌曲：{{ albumSongs.length }}首</h3>
-          <div class="SingsList"
-               v-for="(item, index) in albumSongs"
-               :key="index">
-            <span class="song-list"
-                  style="width: 20px">{{ index + 1 }}.</span>
-            <div @dblclick="goSongDetails(item.id)">
-              <span class="song-list"
-                    style="width: 350px">
-                {{ item.name }}
-              </span>
-              <span class="song-list"
-                    style="width: 250px; text-align: center">
-                {{ item.ar[0].name }}
-              </span>
-              <span class="song-list"
-                    style="width: 230px">
-                {{ item.dt }}
-              </span>
-              <span class="song-list"
-                    style="width: 150px">
-              </span>
-            </div>
-            <span class="song-list song-list-option">
-              <span @click.stop="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-              <!-- 添加到播放列表 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-              </span>
-              <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
-              </span>
-              <span v-if="item.fee == 0"
-                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i>
-              </span>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div v-show="false">
-      <aplayer :autoplay="true"
-               :fixed="true"
-               :audio="listen"
-               :liric-type="1">
-      </aplayer>
-    </div>
-  </div>
-</template>
-
-<script>
-import {
-  getAlbumContent,
-  getDownloadUrl,
-  playMusicUrl,
-  getSongLyric,
-  getSongDetails,
-} from '@/api/api';
-import { download } from '@/api/download';
-import { transMusicTime } from '@/api/commonApi.js'
-
-export default {
-  // props: ['albumId'],
-  data () {
-    return {
-      listen: [],
-      albumId: '',
-      albumSongs: [],
-      albumDesc: {},
-    };
-  },
-  mounted () {
-    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
-    if (this.$route.params.albumId) { localStorage.setItem('albumId', this.$route.params.albumId) }
-    // 判断是否使用缓存
-    this.$route.params.albumId ? this.albumId = this.$route.params.albumId : this.albumId = localStorage.getItem('albumId')
-    this.getAlbumContent();
-  },
-  methods: {
-
-    getAlbumContent () {
-      var that = this;
-      let params = {
-        id: that.albumId,
-      };
-      getAlbumContent(params).then((res) => {
-        // console.log("专辑信息---：", res.data.album);
-        // console.log("专辑歌曲---：", res.data.songs);
-        that.albumDesc = res.data.album;
-        that.albumSongs = res.data.songs;
-        //给每个列表添加一个防抖
-        for (let item of that.albumSongs) {
-          that.$set(item, "timer", true);
-        }
-        let dt = "dt";
-        transMusicTime(that.albumSongs, dt);
-      });
-    },
-
-    //获取歌曲下载地址
-    getDownloadUrl (songId, songName) {
-      var that = this;
-      let params = {
-        id: songId,
-      };
-      getDownloadUrl(params).then((res) => {
-        // console.log("歌曲下载地址：", res.data.data.url);
-        download(res.data.data.url, songName);
-        that.$message({
-          type: "success",
-          message: "开始下载了",
-        });
-      });
-    },
-    listenMusic (id, fee, index) {
-      //获取播放音乐链接
-      var that = this;
-      if (that.albumSongs[index].timer) {
-        if (fee == 1) {
-          that.$message({
-            message: "VIP歌曲 - 只能试听30s",
-            type: "warning",
-          });
-        }
-        playMusicUrl({
-          id: id,
-        }).then((res) => {
-          // console.log("播放音乐链接", res.data.data[0].url);
-          if (res.data.data[0].url) {
-            that.songUrlAdd = res.data.data[0].url;
-          } else {
-            that.$message({
-              message: "不好意思这首歌暂无版权",
-              type: "error",
-            });
-            that.albumSongs[index].timer = false;
-            setTimeout(() => {
-              that.albumSongs[index].timer = true;
-            }, 3000);
-            return;
-          }
-        }),
-          // 获取歌词
-          getSongLyric({
-            id: id,
-          }).then((res) => {
-            that.songlrc = res.data.lrc.lyric;
-          }),
-          // 获取歌曲信息
-          getSongDetails({
-            ids: id,
-          }).then((res) => {
-            if (that.songUrlAdd != null) {
-              that.listen = [];
-              that.listen.push({
-                name: res.data.songs[0].name, //歌曲名
-                artist: res.data.songs[0].ar[0].name, //作者
-                url: that.songUrlAdd,
-                cover: res.data.songs[0].al.picUrl,
-                lrc: that.songlrc,
-              });
-              // console.log(that.listen);
-              that.songUrlAdd = null;
-              that.songlrc = "";
-            }
-          });
-      }
-    },
-    //将歌曲添加到播放列表或者播放
-    playMusic (id, fee, index) {
-      //获取播放音乐链接
-      var that = this;
-      if (that.albumSongs[index].timer) {
-        if (fee == 1) {
-          that.$message({
-            message: "VIP歌曲 - 只能试听30s",
-            type: "warning",
-          });
-        }
-        playMusicUrl({
-          id: id,
-        }).then((res) => {
-          // console.log("播放音乐链接", res.data.data[0].url);
-          if (res.data.data[0].url) {
-            that.songUrlAdd = res.data.data[0].url;
-          } else {
-            that.$message({
-              message: "抱歉，这首歌暂无版权",
-              type: "error",
-            });
-            that.albumSongs[index].timer = false;
-            setTimeout(() => {
-              that.albumSongs[index].timer = true;
-            }, 3000);
-            return;
-          }
-        }),
-          // 获取歌词
-          getSongLyric({
-            id: id,
-          }).then((res) => {
-            that.songlrc = res.data.lrc.lyric;
-          }),
-          // 获取歌曲信息
-          getSongDetails({
-            ids: id,
-          }).then((res) => {
-            // console.log("获取歌曲信息，添加到播放器：", res.data.songs);
-            if (that.songUrlAdd != null) {
-              that.$store.commit("addSONG", {
-                name: res.data.songs[0].name, //歌曲名
-                artist: res.data.songs[0].ar[0].name, //作者
-                url: that.songUrlAdd,
-                cover: res.data.songs[0].al.picUrl,
-                lrc: that.songlrc,
-                // theme: that.randomColor(),
-              });
-              // console.log(
-              //   that.$store.state.audio,
-              //   "添加歌曲后的歌曲播放列表-----"
-              // );
-              that.songUrlAdd = null;
-              that.songlrc = "";
-              that.albumSongs[index].timer = false;
-              setTimeout(() => {
-                that.albumSongs[index].timer = true;
-              }, 3000);
-            }
-          });
-      }
-    },
-    //跳转到歌曲详情
-    goSongDetails (ids) {
-      this.$router.push({
-        name: "songDetails",
-        params: {
-          songId: ids,
-        },
-      });
-    },
-    //跳转到播放MV页面
-    playMV (mvId) {
-      //获取mv播放链接
-      this.$router.push({
-        name: "mvPlay",
-        params: { mvId: mvId },
-      });
-    },
-    goMv (mvId) {
-      this.$router.push({
-        name: "mvPlay",
-        params: {
-          mvId: mvId,
-        },
-      });
-    },
-    //根据主题更换播放器颜色
-    randomColor () {
-      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`;
-    },
-  },
-};
-</script>

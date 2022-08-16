@@ -12,66 +12,104 @@
         <li class="musicLi"
             v-for="(item, index) in audio"
             :key="item.id"
-            @dblclick="playMusic(index)">
+            @click.self="playMusic(index)">
           <span>{{ index + 1 }}.</span>&nbsp;
-          <span>{{ item.name }}</span>
+          <span class="musicName">{{ item.name }}</span>
           <span class="artist">{{ item.artist }}</span>
           <span class="delete"
                 @click.stop="deleteMusic(index)"><i class="el-icon-delete iconhover"></i></span>
         </li>
       </div>
     </ul>
-    <aplayer v-if="audio.length !== 0"
+    <div class="audition"
+         v-if="audition.length!==0">
+      <div class="inline-block"
+           style="margin:0 auto;"
+           v-for="(item ,index) in audition"
+           :key='item.id'
+           @click.self="playAudition(index)">
+        <div class="auditionTitle">正在试听:</div>
+        <div class='auditionMusic'>
+          <span class="inline-block auditionName">{{ item.name }}</span>
+          <span class="inline-block auditionArtist">{{ item.artist }}</span>
+          <span class="inline-block auditionDelete"
+                @click.stop="deleteAudition(index)"><i class="el-icon-delete iconhover"></i></span>
+          <span class="inline-block auditionAdd"
+                @click.stop="addListenMusic(item.id)"><i class="el-icon-folder-add iconhover"></i></span>
+        </div>
+      </div>
+
+    </div>
+    <aplayer v-if="audio.length !== 0 && musicAudioStatu === 0 "
              fixed
              ref="aplayer"
              :audio="audio"
              :lrcType="1"
              style="color: rgb(120, 120, 120)">
-      <!-- style="
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        width: 500px;
-        border-radius: 10px;
-        color: rgb(160, 160, 160);
-        background: rgb(160, 160, 160, 0.2);
-      " -->
     </aplayer>
+
+    <div v-if="audition.length !== 0 && musicAudioStatu === 1 ">
+      <aplayer autoplay
+               :fixed="true"
+               ref="auditions"
+               :audio="audition"
+               :liric-type="1"></aplayer>
+    </div>
   </div>
+
 </template>
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { mapMutations, mapState } from 'vuex'
+import { getSongDetails } from '@/api/api'
+import { playMusic } from '@/utils/musicPlay'
 export default {
-  data () {
-    return {
-
-    };
-  }, computed: {
-    ...mapState(['audio'])
+  data() {
+    return {}
   },
-  mounted () {
+  computed: {
+    ...mapState(['audio', 'audition', 'musicAudioStatu']),
   },
+  mounted() {},
 
   methods: {
-    ...mapMutations(['deleteMUSIC']),
+    ...mapMutations(['deleteMUSIC', 'deleteAUDITION', 'changeAPLAYER']),
     //播放指定歌曲
-    playMusic (idx) {
-      let aplayer = this.$refs.aplayer; //获取当前播放器
-      aplayer.switch(idx); //切换到播放当前下标的歌曲
-      aplayer.toggle(); //切换播放/暂停
+    playMusic(idx) {
+      this.changeAPLAYER(0)
+      let aplayer = this.$refs.aplayer //获取当前播放器
+      aplayer.switch(idx) //切换到播放当前下标的歌曲
+      aplayer.toggle() //切换播放/暂停
     },
     //删除歌曲
-    deleteMusic (idx) {
+    deleteMusic(idx) {
       // this.$store.commit('deleteMusic',idx)
       this.deleteMUSIC(idx)
     },
+    //试听的播放/暂停
+    playAudition(idx) {
+      this.changeAPLAYER(1)
+      let auditions = this.$refs.auditions //获取当前播放器
+      auditions.switch(idx) //切换到播放当前下标的歌曲
+      auditions.toggle() //切换播放/暂停
+    },
+    //删除试听
+    deleteAudition(idx) {
+      this.deleteAUDITION(idx)
+    },
+    //添加到播放列表
+    async addListenMusic(id) {
+      let that = this
+      let list = 'audition'
+      await getSongDetails({ ids: id }).then((res) => {
+        playMusic(id, res.data.songs[0].fee, 0, list, that)
+      })
+    },
   },
   directives: {
-    drag (el) {
-      // let dragBox = el.parentElement.parentElement; //获取移动的元素 
+    drag(el) {
+      // let dragBox = el.parentElement.parentElement; //获取移动的元素
       let dragBox = document.getElementsByClassName('musicWrap')
-      el.onmousedown = e => {
+      el.onmousedown = (e) => {
         //鼠标点击时鼠标的的位置
         // console.log(e)
         // console.log(el.parentElement)
@@ -82,27 +120,26 @@ export default {
         let top = dragBox[0].offsetTop
         // console.log(e.clientX,e.clientY)
         // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
-        document.onmousemove = e => {
+        document.onmousemove = (e) => {
           //鼠标移动的距离
-          let moveX = e.clientX - downX;
-          let moveY = e.clientY - downY;
+          let moveX = e.clientX - downX
+          let moveY = e.clientY - downY
           // console.log('鼠标移动:',moveX,moveY)
 
           //移动当前元素
-          dragBox[0].style.left = left + moveX + 'px';
-          dragBox[0].style.top = top + moveY + 'px';
-        };
-        document.onmouseup = e => {
+          dragBox[0].style.left = left + moveX + 'px'
+          dragBox[0].style.top = top + moveY + 'px'
+        }
+        document.onmouseup = (e) => {
           //鼠标弹起来的时候不再移动
-          document.onmousemove = null;
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）  
-          document.onmouseup = null;
-        };
-      };
-    }
+          document.onmousemove = null
+          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
+          document.onmouseup = null
+        }
+      }
+    },
   },
-
-};
+}
 </script>
 <style lang="less">
 .musicWrap {
@@ -112,7 +149,7 @@ export default {
   top: 3%;
   left: 0;
   border-radius: 5px;
-  color: rgba(218, 218, 218, 0.842);
+  color: #ccc;
   // background: rgba(243, 242, 242, 0.336);
   overflow-x: hidden;
 
@@ -124,7 +161,7 @@ export default {
     &:hover {
       // display: none;
       cursor: default;
-      color: rgb(253, 253, 253);
+      // color: rgb(253, 253, 253);
       transform: scale(1.02);
     }
   }
@@ -134,14 +171,14 @@ export default {
     top: 8%;
     left: 10px;
     border-radius: 5px;
-    color: rgba(196, 196, 196, 0.836);
+    // color: rgba(48, 46, 46, 0.548) !important;
     background: rgba(160, 160, 160, 0.096);
     overflow-x: hidden;
     transition: 0.8s;
     &:hover {
       // cursor: pointer;
       max-height: 480px;
-      // color: rgb(30, 205, 236);
+      // color: rgb(30, 205, 236) !important;
       // transform: scale(1.03);
     }
     &::-webkit-scrollbar {
@@ -154,9 +191,15 @@ export default {
       transition: 0.3s;
       &:hover {
         cursor: pointer;
-        color: rgb(247, 247, 247);
+        color: rgb(29, 236, 167);
         transform: scale(1.02);
       }
+      // .musicName,
+      // .artist {
+      //   &:hover {
+      //     color: aquamarine;
+      //   }
+      // }
       .artist {
         position: absolute;
         right: 30px;
@@ -178,9 +221,74 @@ export default {
     display: none;
   }
 }
+.audition {
+  position: fixed;
+  width: 500px;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  height: 18px;
+  color: #ccc;
+  // color: rgba(218, 218, 218, 0.842);
+
+  transition: 0.2s;
+  .auditionTitle {
+    position: relative;
+    display: inline-block;
+    font-size: 13px;
+    margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .auditionMusic {
+    // position: relative;
+    display: inline-block;
+    font-size: 13px;
+    transition: 0.2s;
+    &:hover {
+      // color: aqua;
+      color: rgb(29, 236, 167);
+    }
+    .auditionName {
+      width: 300px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .auditionArtist {
+      width: 90px;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    .auditionDelete {
+      width: 22px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .auditionAdd {
+      width: 22px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+  }
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.01);
+  }
+}
 .iconhover {
   transition: 0.3s;
   &:hover {
+    cursor: pointer;
     color: rgb(238, 160, 57);
   }
 }
