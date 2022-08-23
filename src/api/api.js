@@ -54,6 +54,43 @@ export function getSongComment(params){
     })
 }
 
+
+
+// // 获取歌单
+// 可选参数 : order: 可选值为 'new' 和 'hot', 分别对应最新和最热 , 默认为 'hot'
+
+// cat: tag, 比如 " 华语 "、" 古风 " 、" 欧美 "、" 流行 ", 默认为 "全部",可从歌单分类接口获取(/playlist/catlist)
+
+// limit: 取出歌单数量 , 默认为 50
+
+// offset: 偏移数量 , 用于分页 , 如 :( 评论页数 -1)*50, 其中 50 为 limit 的值
+export function getPlaylist(params){
+    return request({
+        url:'/top/playlist',
+        method:'get',
+        params:params,
+    })
+}  
+
+// 获取全部歌单分类
+export function getAllPlayList(params){
+    return request({
+        url:'/playlist/catlist',
+        method:'get',
+        params:params,
+    })
+}  
+
+// 获取热门歌单分类
+export function getHotPlayList(params){
+    return request({
+        url:'/playlist/hot',
+        method:'get',
+        params:params,
+    })
+}
+
+
 // 获取推荐歌单
 // export const getSuggestPlayList = (params) => request.get(`/personalized?limit=${params.limit}`)
 export function getSuggestPlayList(params){
@@ -113,6 +150,15 @@ export function getNewMvList(params){
     })
 }
 
+//获取推荐MV
+export function getSuggestMvList(params){
+    return request({
+        url:'/personalized/mv',
+        method:'get',
+        params:params,
+    })
+}
+
 //通过MV id获取MV点赞转发评论数数据
 export function getMvDetailInfo(params){
     return request({
@@ -140,6 +186,15 @@ export function getcommentMV(params){
     })
 }
 
+//获取推荐视频,需要登录/video/timeline/recommend?offset=10只能传入offset
+// export function getSuggestVideoList(params){
+//     return request({
+//         url:'/video/timeline/recommend',
+//         method:'get',
+//         params:params,
+//     })
+// }
+
 //通过视频id获取视频详情
 export function getVideoDetails(params){
     return request({
@@ -166,6 +221,16 @@ export function getVideoComment(params){
     })
 }
 
+
+//获取歌手(传入分类参数)
+export function getSingerlist(params){
+    return request({
+        url:'/artist/list',
+        method:'get',
+        params:params,
+    })
+}
+
 //获取歌手描述
 export function getSingerDesc(params){
     return request({
@@ -185,7 +250,7 @@ export function getSingerDetail(params){
 //获取歌手单曲列表
 export function getSingerSongList(params){
     return request({
-        url:'/artists',
+        url:'/artist/songs',
         method:'get',
         params:params,
     })

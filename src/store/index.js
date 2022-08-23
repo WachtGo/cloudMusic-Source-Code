@@ -16,6 +16,12 @@ export default new Vuex.Store({
     // token:getToken(),
     //获取本地token
     // token_storage:getStorage(),
+    // 首页标签
+    homeTags:{
+      routerPage:0,
+     tags: [{page:0,pageName:'个性推荐'},{page:1,pageName:'歌单'},{page:2,pageName:'歌手'},],
+    },
+    
     //歌曲，视频，歌单，歌手等标签开关
     tagSwitch: {
       songSwitch: true,
@@ -116,7 +122,7 @@ export default new Vuex.Store({
     //更换播放器
     changeAPLAYER(state,statu) {
       statu === 1 ? state.musicAudioStatu = 1 : state.musicAudioStatu = 0
-    }
+    },
     // //刷新音频播放器
     // alplayReload(state,change){
     //   if(change){
@@ -126,7 +132,11 @@ export default new Vuex.Store({
     //   },1000)
     //   }
     // }
-
+    //首页标签更改
+    changehomeTAG(state,page){
+      state.homeTags.routerPage = page
+      // console.log( state.homeTags)
+    }
   },
   //actions专门用来做异步处理
   actions: {

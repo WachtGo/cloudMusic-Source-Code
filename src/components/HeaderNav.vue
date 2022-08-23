@@ -5,7 +5,7 @@
       <header class="head">
         <!-- 首页 -->
         <div class="cl">
-          <router-link to="HomePage">
+          <router-link :to="{name:'recommend'}">
             <h3>首页</h3>
           </router-link>
         </div>

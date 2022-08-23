@@ -5,8 +5,8 @@
     <div>
       <div class="wrap2">
         <!-- 歌单信息 -->
-        <div class="playListDetailes">
-          <div class="playListImg">
+        <div class="details">
+          <div class="details-img">
             <img :src="playListDetail.coverImgUrl"
                  alt="" />
           </div>
@@ -38,7 +38,36 @@
                @click="collectPlaylist"></i> -->
           </div>
         </div>
+        <!-- 歌单歌曲列表 -->
+        <h3 style="margin: 5px 0 10px 0">歌曲 (<i v-if="musicList.length === 0"
+             class="el-icon-loading"></i> <span style="font-size:18px;"
+                v-if="musicList.length !==0">{{musicList.length }}</span> 首 )</h3>
 
+        <ul class="wrap-center">
+          <li class="music-list"
+              v-for="(item, index) in musicList"
+              :key="item.id">
+            <span style="display: inline-block; width: 20px">{{ index + 1 }}.</span>
+            <div @dblclick="goSongDetails(item.id)">
+              <span class="music-list-span">{{ item.name }}</span>
+              <span class="music-list-span">{{ item.ar[0].name }}</span>
+              <span class="music-list-span">{{ item.dt }}</span>
+            </div>
+            <div class="option">
+              <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
+              <!-- 添加到播放列表 -->
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
+              </span>
+              <span v-if="Boolean(item.mv)"
+                    @click="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
+              </span>
+              <!-- <span v-if="!Boolean(item.mv)">&nbsp;&nbsp;&nbsp; </span> -->
+              <span v-if="item.fee == 0 || item.fee == 8"
+                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span><span v-if="item.fee != 0"> </span>
+            </div>
+          </li>
+        </ul>
         <div style="padding: 0px 50px">
           <h3 style="margin: 5px 0 10px 0">评论({{ commentCount }}条)</h3>
           <div class="hoverBackColor"
@@ -66,33 +95,7 @@
             </el-pagination>
           </div>
         </div>
-        <!-- 歌单歌曲列表 -->
-        <h3 style="margin: 5px 0 10px 0">歌曲({{ musicList.length }}首)</h3>
-        <ul class="wrap-center">
-          <li class="music-list"
-              v-for="(item, index) in musicList"
-              :key="item.id">
-            <span style="display: inline-block; width: 20px">{{ index + 1 }}.</span>
-            <div @dblclick="goSongDetails(item.id)">
-              <span class="music-list-span">{{ item.name }}</span>
-              <span class="music-list-span">{{ item.ar[0].name }}</span>
-              <span class="music-list-span">{{ item.dt }}</span>
-            </div>
-            <div class="option">
-              <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-              <!-- 添加到播放列表 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-              </span>
-              <span v-if="Boolean(item.mv)"
-                    @click="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
-              </span>
-              <!-- <span v-if="!Boolean(item.mv)">&nbsp;&nbsp;&nbsp; </span> -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span><span v-if="item.fee != 0"> </span>
-            </div>
-          </li>
-        </ul>
+
       </div>
     </div>
   </div>
@@ -298,7 +301,7 @@ h3 {
   box-sizing: border-box;
 }
 .list-wrap {
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
@@ -314,7 +317,7 @@ h3 {
     &::-webkit-scrollbar {
       display: none;
     }
-    .playListDetailes {
+    .details {
       display: flex;
       justify-content: space-between;
       margin: 0 auto;
@@ -326,7 +329,7 @@ h3 {
       background: rgba(34, 173, 197, 0.055);
       box-sizing: border-box;
 
-      .playListImg {
+      .details-img {
         display: inline-block;
         // width: 180px;
         // height: 180px;
@@ -425,6 +428,7 @@ h3 {
   }
 }
 /deep/ .el-pager {
+  height: 30px !important;
   background: none !important;
 }
 /deep/ .number,

@@ -117,14 +117,14 @@ export default {
     },
     playMV() {
       let params = {
-        id: this.mvId,
+        mvid: this.mvId,
       }
-      getMVUrl(params).then((res) => {
+      getMVUrl({ id: this.mvId }).then((res) => {
         this.mvUrl = res.data.data.url
       })
       //mv详情
       getMvDetails(params).then((res) => {
-        // console.log("mv详情---：", res.data.data);
+        // console.log('mv详情---：', res.data.data)
         this.mvDetail = res.data.data
         // mv点赞转发评论数数据
         getMvDetailInfo(params).then((res) => {
@@ -236,6 +236,7 @@ export default {
 }
 .pagination {
   /deep/ .el-pager {
+    height: 30px !important;
     background: none !important;
   }
   /deep/ .number,

@@ -26,12 +26,13 @@
       <div class="inline-block"
            style="margin:0 auto;"
            v-for="(item ,index) in audition"
-           :key='item.id'
-           @click.self="playAudition(index)">
+           :key='item.id'>
         <div class="auditionTitle">正在试听:</div>
-        <div class='auditionMusic'>
+        <div class='auditionMusic'
+             @click="playAudition(index)">
           <span class="inline-block auditionName">{{ item.name }}</span>
           <span class="inline-block auditionArtist">{{ item.artist }}</span>
+
           <span class="inline-block auditionDelete"
                 @click.stop="deleteAudition(index)"><i class="el-icon-delete iconhover"></i></span>
           <span class="inline-block auditionAdd"
@@ -55,6 +56,7 @@
                :audio="audition"
                :liric-type="1"></aplayer>
     </div>
+
   </div>
 
 </template>
@@ -73,9 +75,10 @@ export default {
 
   methods: {
     ...mapMutations(['deleteMUSIC', 'deleteAUDITION', 'changeAPLAYER']),
+
     //播放指定歌曲
     playMusic(idx) {
-      this.changeAPLAYER(0)
+      this.changeAPLAYER(0) //切换播放器
       let aplayer = this.$refs.aplayer //获取当前播放器
       aplayer.switch(idx) //切换到播放当前下标的歌曲
       aplayer.toggle() //切换播放/暂停
@@ -87,7 +90,7 @@ export default {
     },
     //试听的播放/暂停
     playAudition(idx) {
-      this.changeAPLAYER(1)
+      this.changeAPLAYER(1) //切换到试听播放器
       let auditions = this.$refs.auditions //获取当前播放器
       auditions.switch(idx) //切换到播放当前下标的歌曲
       auditions.toggle() //切换播放/暂停
@@ -285,6 +288,45 @@ export default {
     transform: scale(1.01);
   }
 }
+.bgmusicWrap {
+  position: absolute;
+  top: 0;
+  right: 5px;
+  width: 250px;
+  color: #ccc;
+  max-height: 20px;
+  overflow: hidden;
+  transition: 0.3s;
+  &:hover {
+    max-height: 200px;
+  }
+  .bgmusic-ul {
+    width: 100%;
+    // height: 20px;
+    // max-height: 20px;
+    text-align: center;
+    // overflow: hidden;
+    // background: rgb(190, 190, 189);
+    transition: 0.2s;
+    // &:hover {
+    //   max-height: 100%;
+    // }
+
+    .bgmusic-li {
+      height: 20px;
+      padding: 0 10px;
+      border-radius: 10px;
+      background: rgba(160, 160, 160, 0.096);
+      transition: 0.2s;
+      &:hover {
+        cursor: pointer;
+        color: rgb(29, 236, 167);
+        transform: scale(1.01);
+      }
+    }
+  }
+}
+
 .iconhover {
   transition: 0.3s;
   &:hover {

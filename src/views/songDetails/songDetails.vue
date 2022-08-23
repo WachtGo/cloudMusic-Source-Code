@@ -4,9 +4,9 @@
     <div class="descript"></div>
     <div>
       <ul>
-        <div class="playListDetailes"
+        <div class="details"
              v-if="songId">
-          <div class="playListImg">
+          <div class="details-img">
             <img :src="songDetails.al.picUrl"
                  alt="" />
           </div>
@@ -330,7 +330,7 @@ h3 {
   box-sizing: border-box;
 }
 .list-wrap {
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
   height: 730px;
@@ -347,7 +347,7 @@ h3 {
     &::-webkit-scrollbar {
       display: none;
     }
-    .playListDetailes {
+    .details {
       display: flex;
       justify-content: space-between;
       margin: 0 auto;
@@ -359,7 +359,7 @@ h3 {
       // background: rgba(109, 109, 109, 0);
       box-sizing: border-box;
 
-      .playListImg {
+      .details-img {
         display: inline-block;
         // width: 180px;
         // height: 180px;

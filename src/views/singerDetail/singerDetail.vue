@@ -5,8 +5,8 @@
     <div class="descript"></div>
     <div>
       <div class="ul">
-        <div class="playListDetailes">
-          <div class="playListImg">
+        <div class="details">
+          <div class="details-img">
             <img :src="singerDesc.img1v1Url"
                  alt="" />
           </div>
@@ -53,79 +53,117 @@
         </div>
         <div id="singleSongs"
              v-if="tagSwitch.songSwitch">
-          <h3>
-            歌曲：{{ songList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;">(受接口限制-这里最多获取50首歌手热门歌曲-建议直接搜)</span>
-          </h3>
-          <div class="SingsList"
-               v-for="(item, index) in songList"
-               :key="index">
-            <span class="song-list"
-                  style="width: 20px">{{ index + 1 }}.</span>
-            <div @dblclick="goSongDetails(item.id)">
-              <span class="song-list"
-                    style="width: 350px">
-                {{ item.name }}
-              </span>
-              <span class="song-list"
-                    style="width: 250px; text-align: center">
-                {{ item.ar[0].name }}
-              </span>
-              <span class="song-list"
-                    style="width: 230px">
-                {{ item.dt }}
-              </span>
-              <span class="song-list"
-                    style="width: 150px"> </span>
+          <!-- <h3>
+            歌曲：{{ songCount }}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <span style="font-size：10px;"></span>
+          </h3> -->
+          <h3 style="text-align:center"
+              v-show="songList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div v-if="songList.length !== 0">
+            <ul class="song-album-wrap">
+              <li class="SingsList"
+                  v-for="(item, index) in songList"
+                  :key="index">
+                <span class="song-list"
+                      style="width: 25px">{{ index + 1 }}.</span>
+                <div @dblclick="goSongDetails(item.id)">
+                  <span class="song-list"
+                        style="width: 350px">
+                    {{ item.name }}
+                  </span>
+                  <span class="song-list"
+                        style="width: 250px; text-align: center">
+                    {{ item.ar[0].name }}
+                  </span>
+                  <span class="song-list"
+                        style="width: 220px">
+                    {{ item.dt }}
+                  </span>
+                  <span class="song-list"
+                        style="width: 150px"> </span>
+                </div>
+                <span class="song-list song-list-option">
+                  <span @click.stop="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
+                  <!-- 添加到播放列表 -->
+                  <span v-if="item.fee == 0 || item.fee == 8"
+                        @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
+                  </span>
+                  <span v-if="Boolean(item.mv)"
+                        @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i></span>
+                  <span v-if="item.fee == 0 || item.fee == 8"
+                        @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span>
+                </span>
+              </li>
+            </ul>
+            <div class="pagination">
+              <el-pagination v-show="singerDesc.musicSize > 30"
+                             @current-change="songHandleCurrentChange"
+                             :current-page.sync="songcurrentPage"
+                             :page-size="30"
+                             layout="prev, pager, next, jumper"
+                             :total="singerDesc.musicSize"
+                             :background="true">
+              </el-pagination>
             </div>
-            <span class="song-list song-list-option">
-              <span @click.stop="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-              <!-- 添加到播放列表 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-              </span>
-              <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i></span>
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span>
-            </span>
           </div>
+
         </div>
+
         <div id="albumList"
              v-if="tagSwitch.albumSwitch">
-          <li class="liWrap"
-              v-for="(item, index) in albumList"
-              :key="index"
-              @click.stop="goAlbumDetail(item.id)">
-            <div class="liWrap-block1">
-              <img :src="item.blurPicUrl"
-                   alt="" />
-            </div>
-            <div class="liWrap-block2">
-              <div class="div1">
-                <span class="albumName">{{ item.name }}
-                  <span v-if="item.alias[0]"
-                        class="albumName2">{{
+          <h3 style="text-align:center"
+              v-show="albumList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div v-if="albumList.length !== 0">
+            <ul class="song-album-wrap">
+              <li class="liWrap"
+                  v-for="(item, index) in albumList"
+                  :key="index"
+                  @click="goAlbumDetail(item.id)">
+                <div class="liWrap-block1">
+                  <img :src="item.blurPicUrl"
+                       alt="" />
+                </div>
+                <div class="liWrap-block2">
+                  <div class="div1">
+                    <span class="albumName">{{ item.name }}
+                      <span v-if="item.alias[0]"
+                            class="albumName2">{{
                     item.alias[0]
                   }}</span></span>
-              </div>
-              <div>
-                <div class="divOther">
-                  <!-- 作者：<span>{{ item.artist.name }}</span> -->
+                  </div>
+                  <div>
+                    <div class="divOther">
+                      <!-- 作者：<span>{{ item.artist.name }}</span> -->
+                    </div>
+                    <span class="inline-block"
+                          style="display: inline-block; width: 50px"></span>
+                    <div class="divOther"
+                         style="width: 100px">
+                      歌曲：<span>{{ item.size }}</span>
+                    </div>
+                  </div>
                 </div>
-                <span class="inline-block"
-                      style="display: inline-block; width: 50px"></span>
-                <div class="divOther"
-                     style="width: 100px">
-                  歌曲：<span>{{ item.size }}</span>
-                </div>
-              </div>
+              </li>
+            </ul>
+            <div class="pagination">
+              <el-pagination v-show="singerDesc.albumSize > 6"
+                             @current-change="albumHandleCurrentChange"
+                             :current-page.sync="albumcurrentPage"
+                             :page-size="6"
+                             layout="prev, pager, next, jumper"
+                             :total="singerDesc.albumSize"
+                             :background="true">
+              </el-pagination>
             </div>
-          </li>
+          </div>
+
         </div>
+
         <div id="singerMvs"
              v-if="tagSwitch.mvSwitch">
           <h3 style="margin: 0 auto">
-            MV：{{ mvList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;">(受接口限制-这里最多获取10个-建议直接搜)</span>
+            MV：{{ mvList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;">(这里最多获取10个-建议直接搜)</span>
           </h3>
 
           <ul class="videoPlaywrap">
@@ -171,6 +209,7 @@
       </div>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -200,6 +239,10 @@ export default {
         albumSwitch: false,
         mvSwitch: false,
       },
+
+      songcurrentPage: 1,
+
+      albumcurrentPage: 1,
     }
   },
   mounted() {
@@ -225,16 +268,20 @@ export default {
       that.tagSwitch[tag] = true
     },
 
-    //获取歌手单曲列表(只有热门50首)
+    //获取歌手单曲列表
     getSingerSongList(tag) {
       var that = this
-      that.detailShow = false
       let params = {
         id: that.singerId,
+        limit: 30,
+        offset: (that.songcurrentPage - 1) * 30,
       }
+      that.detailShow = false
+      that.songList = []
       getSingerSongList(params).then((res) => {
-        // console.log("歌手单曲列表：", res.data.hotSongs);
-        that.songList = res.data.hotSongs
+        // console.log('歌手单曲列表：', res.data)
+        that.songList = res.data.songs
+        // that.songCount = res.data.total
         //给每首曲子添加防抖
         for (let item of that.songList) {
           that.$set(item, 'timer', true)
@@ -248,11 +295,14 @@ export default {
     //获取歌手专辑列表
     getSingerAlbum(tag) {
       var that = this
-      that.detailShow = false
+
       let params = {
         id: that.singerId,
-        limit: 999,
+        limit: 6,
+        offset: (that.albumcurrentPage - 1) * 6,
       }
+      that.detailShow = false
+      that.albumList = []
       getSingerAlbum(params).then((res) => {
         // console.log("歌手专辑列表", res.data.hotAlbums);
         that.albumList = res.data.hotAlbums
@@ -315,7 +365,7 @@ export default {
       this.$router.push({
         name: 'albumDetail',
         params: {
-          id: albumId,
+          albumId: albumId,
         },
       })
     },
@@ -350,9 +400,23 @@ export default {
         })
       })
     },
-    //根据主题更换播放器颜色
-    randomColor() {
-      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
+    // //根据主题更换播放器颜色
+    // randomColor() {
+    //   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
+    // },
+    //歌手歌曲分页
+    songHandleCurrentChange: function (currentPage) {
+      // console.log(`当前页: ${currentPage}`);
+      var that = this
+      that.songcurrentPage = currentPage
+      that.getSingerSongList('songSwitch')
+    },
+    //歌手专辑分页
+    albumHandleCurrentChange: function (currentPage) {
+      // console.log(`当前页: ${currentPage}`);
+      var that = this
+      that.albumcurrentPage = currentPage
+      that.getSingerAlbum('albumSwitch')
     },
   },
 }
@@ -375,7 +439,7 @@ h3 {
   box-sizing: border-box;
 }
 .list-wrap {
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
@@ -386,12 +450,12 @@ h3 {
     height: 630px;
     border-radius: 0 0 10px 10px;
     background: rgba(95, 158, 160, 0.11);
-    overflow-x: hidden;
+    // overflow-x: hidden;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
-    .playListDetailes {
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
+    .details {
       display: flex;
       justify-content: space-between;
       margin: 0 auto 10px;
@@ -403,7 +467,7 @@ h3 {
       background: rgba(95, 158, 160, 0.11);
       box-sizing: border-box;
 
-      .playListImg {
+      .details-img {
         display: inline-block;
         // width: 180px;
         // height: 180px;
@@ -522,14 +586,15 @@ h3 {
     margin: 10 auto;
     padding: 10px 20px;
     width: 98%;
-    height: 420px;
+    height: 460px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
-    overflow-x: hidden;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    overflow: hidden;
+    // overflow-x: hidden;
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
     .liWrap {
       display: flex;
       justify-content: space-around;
@@ -549,7 +614,7 @@ h3 {
         width: 60px;
         height: 60px;
         border-radius: 10px;
-        background-color: rgba(178, 244, 151, 1);
+        // background-color: rgba(178, 244, 151, 1);
         transition: 0.2s;
         img {
           width: 100%;
@@ -645,15 +710,16 @@ h3 {
     margin: 0 auto;
     padding: 0px 10px 20px;
     width: 96%;
-    height: 420px;
+    height: 460px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.05);
     box-sizing: border-box;
-    overflow-x: hidden;
+    overflow: hidden;
+    // overflow-x: hidden;
 
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
 
     .SingsList {
       position: relative;
@@ -672,7 +738,6 @@ h3 {
 
       .song-list {
         display: inline-block;
-
         text-align: center;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -779,39 +844,50 @@ h3 {
       }
     }
   }
+  .song-album-wrap {
+    height: 420px;
+    // background: #8eb89e;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 .pagination {
   text-align: center;
   background: none !important;
-}
-/deep/ .el-pager {
-  background: none !important;
-}
-/deep/ .number,
-/deep/ .btn-prev,
-/deep/ .btn-quicknext,
-/deep/ .btn-next,
-/deep/ .el-input__inner,
-/deep/ .more {
-  color: #f2fff7 !important;
-  background: transparent !important;
-}
-/deep/ .number:hover,
-/deep/ .btn-prev:hover,
-/deep/ .btn-quicknext:hover,
-/deep/ .btn-next:hover,
-/deep/ .el-input__inner:hover,
-/deep/ .more:hover {
-  color: #f7a588 !important;
-}
-/deep/ .active {
-  color: #f7a588 !important;
-}
-/deep/ .el-input__inner {
-  border: none;
-}
-/deep/ .el-pagination__jump {
-  color: #f7dd88 !important;
+
+  /deep/ .el-pager {
+    height: 30px !important;
+    background: none !important;
+  }
+  /deep/ .number,
+  /deep/ .btn-prev,
+  /deep/ .btn-quicknext,
+  /deep/ .btn-next,
+  /deep/ .el-input__inner,
+  /deep/ .more {
+    color: #f2fff7 !important;
+    background: transparent !important;
+  }
+  /deep/ .number:hover,
+  /deep/ .btn-prev:hover,
+  /deep/ .btn-quicknext:hover,
+  /deep/ .btn-next:hover,
+  /deep/ .el-input__inner:hover,
+  /deep/ .more:hover {
+    color: #f7a588 !important;
+  }
+  /deep/ .active {
+    color: #f7a588 !important;
+  }
+  /deep/ .el-input__inner {
+    border: none;
+  }
+  /deep/ .el-pagination__jump {
+    color: #f7dd88 !important;
+  }
 }
 .iconhover {
   transition: 0.2s;

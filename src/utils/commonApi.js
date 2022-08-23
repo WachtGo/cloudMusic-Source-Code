@@ -79,7 +79,10 @@ const transMusicTime = (arr, dt) => {
   const getTimestamp = ()=>{
     return new Date().getTime()
   }
-  
+  //生成(min,max)之间的随机整数（包含min,不包含max）
+  const  randomRange = (min, max) => { 
+    return Math.floor(Math.random() * (max - min)) + min;
+}
 
 module.exports = {
     transtime,
@@ -87,4 +90,5 @@ module.exports = {
     transPlayCount,
     download,
     getTimestamp,
+    randomRange
 }

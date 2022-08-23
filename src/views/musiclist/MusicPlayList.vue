@@ -25,7 +25,8 @@
       <ul>
         <!-- 单曲列表 -->
         <div v-show="tagSwitch.songSwitch">
-          <h3 v-show="musicList.length === 0"><i class="el-icon-loading"></i></h3>
+          <h3 style="text-align:center"
+              v-show="musicList.length === 0"><i class="el-icon-loading"></i></h3>
           <li class="music-list"
               v-for="(item, index) in musicList"
               :key="item.id">
@@ -238,7 +239,7 @@
       </ul>
     </div>
 
-    <div style="text-align: center; margin-top: 10px; box-sizing: border-box">
+    <div class="pagination">
       <el-pagination v-show="count != 0"
                      @current-change="handleCurrentChange"
                      :current-page.sync="currentPage"
@@ -431,6 +432,7 @@ export default {
         offset: (that.currentPage - 1) * 30,
         type: 10, //代表获取专辑
       }
+      that.albumList = []
       getMusicInfo(params).then((res) => {
         that.albumList = res.data.result.albums
         that.count = res.data.result.albumCount
@@ -446,6 +448,7 @@ export default {
         offset: (that.currentPage - 1) * 15,
         type: 100, //代表获取歌手
       }
+      that.singerList = []
       getMusicInfo(params).then((res) => {
         // console.log("获取歌手列表----", res.data.result);
         that.singerList = res.data.result.artists
@@ -461,11 +464,12 @@ export default {
         offset: (that.currentPage - 1) * 15,
         type: 1000, //代表获取歌单
       }
+      that.playListTable = []
       getMusicInfo(params).then((res) => {
-        // console.log("获取歌单列表----", res.data.result);
+        // console.log('获取歌单列表----', res.data.result)
         that.playListTable = res.data.result.playlists
         that.count = res.data.result.playlistCount
-        transPlayCount(that.playListTable)
+        transPlayCount(that.playListTable, 'playCount')
       })
     },
     //通过搜索关键词获取对应视频列表
@@ -477,6 +481,7 @@ export default {
         offset: (that.currentPage - 1) * 12,
         type: 1014, //代表获取视频
       }
+      that.videoList = []
       getMusicInfo(params).then((res) => {
         // console.log("获取视频列表----", res.data.result);
         that.videoList = res.data.result.videos
@@ -497,6 +502,7 @@ export default {
         offset: (that.currentPage - 1) * 12,
         type: 1004, //代表获取MV
       }
+      that.mvList = []
       getMusicInfo(params).then((res) => {
         // console.log("获取MV列表----", res.data.result);
         that.mvList = res.data.result.mvs
@@ -629,7 +635,7 @@ export default {
     }
   }
 }
-// 歌曲播放列表样式
+// 歌单列表样式
 .playListClass {
   .recPlay {
     margin: auto;
@@ -652,7 +658,7 @@ export default {
       .playListTable {
         margin-bottom: 10px;
         width: 205px;
-        height: 250px;
+        height: 230px;
         box-sizing: border-box;
 
         .image {
@@ -920,74 +926,41 @@ h3 {
   box-sizing: border-box;
 }
 .list-wrap {
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
-  height: 730px;
+  // height: 730px;
   border-radius: 20px;
   background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
+  .tagWrap {
+    display: flex;
+    justify-content: space-around;
+    margin: 0 auto;
+    width: 320px;
+
+    span {
+      display: inline-block;
+      font-size: 18px;
+      width: 50px;
+      transition: 0.2s;
+
+      &:hover {
+        color: rgb(101, 195, 233);
+        cursor: pointer;
+      }
+    }
+  }
+
   ul {
-    height: 630px;
+    height: 650px;
     border-radius: 0 0 10px 10px;
     background: rgba(95, 158, 160, 0.05);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
       display: none;
-    }
-    .playListDetailes {
-      display: flex;
-      justify-content: space-between;
-      margin: 0 auto;
-      padding: 10px;
-      width: 98%;
-      height: 200px;
-      // border: 1px solid rgb(97, 226, 183);
-      border-radius: 10px;
-      background: rgba(34, 173, 197, 0.055);
-      box-sizing: border-box;
-
-      .playListImg {
-        display: inline-block;
-        // width: 180px;
-        // height: 180px;
-        border-radius: 10px;
-
-        img {
-          width: 180px;
-          height: 180px;
-          border-radius: 10px;
-          transition: 0.2s;
-
-          &:hover {
-            // color: aqua;
-            transform: scale(1.03);
-          }
-        }
-      }
-
-      .detailsRight {
-        width: 820px;
-        height: 180px;
-        // background: rgb(181, 209, 152);
-
-        .playListIntro {
-          margin: 10px 0 10px 0;
-          width: 100%;
-          max-height: 75px;
-          font-size: 14px;
-          overflow-x: hidden;
-
-          &::-webkit-scrollbar {
-            display: none;
-          }
-        }
-        .playListNickName {
-          color: antiquewhite;
-        }
-      }
     }
 
     .music-list {
@@ -1040,44 +1013,50 @@ h3 {
     }
   }
 }
-/deep/ .el-pager {
+.pagination {
+  text-align: center;
   background: none !important;
-}
-/deep/ .number,
-/deep/ .btn-prev,
-/deep/ .btn-quicknext,
-/deep/ .btn-next,
-/deep/ .el-input__inner,
-/deep/ .more {
-  color: #f2fff7 !important;
-  transition: 0.2s;
-  background: transparent !important;
-}
-/deep/ .number:hover,
-/deep/ .btn-prev:hover,
-/deep/ .btn-quicknext:hover,
-/deep/ .btn-next:hover,
-/deep/ .el-input__inner:hover,
-/deep/ .more:hover {
-  transform: scale(1.02);
-  color: #f7a588 !important;
-}
-/deep/ .active {
-  color: #f7a588 !important;
-}
-/deep/ .el-input__inner {
-  border: none;
-}
-/deep/ .el-pagination__jump {
-  color: #f7dd88 !important;
-}
-/deep/.el-pagination {
-  height: 100%;
-}
-.iconhover {
-  transition: 0.2s;
-  &:hover {
-    color: rgb(247, 243, 45);
+
+  /deep/ .el-pager {
+    height: 30px !important;
+    background: none !important;
+  }
+  /deep/ .number,
+  /deep/ .btn-prev,
+  /deep/ .btn-quicknext,
+  /deep/ .btn-next,
+  /deep/ .el-input__inner,
+  /deep/ .more {
+    color: #f2fff7 !important;
+    transition: 0.2s;
+    background: transparent !important;
+  }
+  /deep/ .number:hover,
+  /deep/ .btn-prev:hover,
+  /deep/ .btn-quicknext:hover,
+  /deep/ .btn-next:hover,
+  /deep/ .el-input__inner:hover,
+  /deep/ .more:hover {
+    transform: scale(1.02);
+    color: #f7a588 !important;
+  }
+  /deep/ .active {
+    color: #f7a588 !important;
+  }
+  /deep/ .el-input__inner {
+    border: none;
+  }
+  /deep/ .el-pagination__jump {
+    color: #f7dd88 !important;
+  }
+  /deep/.el-pagination {
+    height: 100%;
+  }
+  .iconhover {
+    transition: 0.2s;
+    &:hover {
+      color: rgb(247, 243, 45);
+    }
   }
 }
 </style>

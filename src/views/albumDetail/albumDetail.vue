@@ -4,8 +4,8 @@
     <div class="descript"></div>
     <div>
       <div class="ul">
-        <div class="albumDetails">
-          <div class="playListImg">
+        <div class="details">
+          <div class="details-img">
             <img :src="albumDesc.blurPicUrl"
                  alt="" />
           </div>
@@ -223,7 +223,7 @@ h3 {
   box-sizing: border-box;
 }
 .list-wrap {
-  margin: 10px auto;
+  margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
@@ -239,7 +239,7 @@ h3 {
     &::-webkit-scrollbar {
       display: none;
     }
-    .albumDetails {
+    .details {
       display: flex;
       justify-content: space-between;
       margin: 0 auto 10px;
@@ -251,7 +251,7 @@ h3 {
       background: rgba(221, 239, 243, 0.05);
       box-sizing: border-box;
 
-      .playListImg {
+      .details-img {
         display: inline-block;
         // width: 180px;
         // height: 180px;
@@ -432,40 +432,42 @@ h3 {
 .pagination {
   text-align: center;
   background: none !important;
-}
-/deep/ .el-pager {
-  background: none !important;
-}
-/deep/ .number,
-/deep/ .btn-prev,
-/deep/ .btn-quicknext,
-/deep/ .btn-next,
-/deep/ .el-input__inner,
-/deep/ .more {
-  color: #f2fff7 !important;
-  background: transparent !important;
-}
-/deep/ .number:hover,
-/deep/ .btn-prev:hover,
-/deep/ .btn-quicknext:hover,
-/deep/ .btn-next:hover,
-/deep/ .el-input__inner:hover,
-/deep/ .more:hover {
-  color: #f7a588 !important;
-}
-/deep/ .active {
-  color: #f7a588 !important;
-}
-/deep/ .el-input__inner {
-  border: none;
-}
-/deep/ .el-pagination__jump {
-  color: #f7dd88 !important;
-}
-.iconhover {
-  transition: 0.2s;
-  &:hover {
-    color: rgb(247, 243, 45);
+
+  /deep/ .el-pager {
+    height: 30px !important;
+    background: none !important;
+  }
+  /deep/ .number,
+  /deep/ .btn-prev,
+  /deep/ .btn-quicknext,
+  /deep/ .btn-next,
+  /deep/ .el-input__inner,
+  /deep/ .more {
+    color: #f2fff7 !important;
+    background: transparent !important;
+  }
+  /deep/ .number:hover,
+  /deep/ .btn-prev:hover,
+  /deep/ .btn-quicknext:hover,
+  /deep/ .btn-next:hover,
+  /deep/ .el-input__inner:hover,
+  /deep/ .more:hover {
+    color: #f7a588 !important;
+  }
+  /deep/ .active {
+    color: #f7a588 !important;
+  }
+  /deep/ .el-input__inner {
+    border: none;
+  }
+  /deep/ .el-pagination__jump {
+    color: #f7dd88 !important;
+  }
+  .iconhover {
+    transition: 0.2s;
+    &:hover {
+      color: rgb(247, 243, 45);
+    }
   }
 }
 </style>
