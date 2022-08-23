@@ -359,7 +359,7 @@ export default {
   margin: 10px auto 0;
   padding: 0 20px;
   width: 1120px;
-  height: 695px;
+  // height: 635px;
   border-radius: 20px;
   // background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
@@ -444,7 +444,7 @@ export default {
 //歌手列表样式
 .singerListClass {
   padding: 5px 0;
-  height: 630px;
+  height: 635px;
   box-sizing: border-box;
   // overflow-x: hidden;
 

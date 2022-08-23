@@ -205,7 +205,7 @@ export default {
   margin: 10px auto 0;
   padding: 0 20px;
   width: 1120px;
-  height: 700px;
+  height: 697px;
   border-radius: 20px;
   // background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
@@ -296,7 +296,7 @@ export default {
       flex-wrap: wrap; //根据宽度限制一行的盒子个数
       margin: 0 0 10px;
       width: 100%;
-      height: 100%;
+      // max-height: 100%;
       background: transparent;
       overflow-x: hidden;
       &::-webkit-scrollbar {

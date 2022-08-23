@@ -77,9 +77,9 @@ export default {
 <style lang="less">
 .Home {
   width: 100%;
-  height: 790px;
+  height: 785px;
   // background: rgba(93, 150, 140, 0.11);
-  // background: rgba(39, 83, 75, 0.808);
+  background: rgba(39, 83, 75, 0.808);
   box-sizing: border-box;
   overflow-x: hidden;
   &::-webkit-scrollbar {
