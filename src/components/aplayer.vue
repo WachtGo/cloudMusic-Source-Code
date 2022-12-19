@@ -1,148 +1,164 @@
-<template >
+<template>
   <!--music：当前播放的音乐。 list：播放列表 ：showlrc：是否显示歌词-->
   <div id="aplayerWrap">
     <ul class="musicWrap">
-      <div v-if="audio.length !== 0"
-           class="listTitle"
-           v-drag
-           style="text-align: center">
+      <div
+        v-if="audio.length !== 0"
+        class="listTitle"
+        v-drag
+        style="text-align: center"
+      >
         播放列表
       </div>
       <div class="wrapShow">
-        <li class="musicLi"
-            v-for="(item, index) in audio"
-            :key="item.id"
-            @click.self="playMusic(index)">
+        <li
+          class="musicLi"
+          v-for="(item, index) in audio"
+          :key="item.id"
+          @click.self="playMusic(index)"
+        >
           <span>{{ index + 1 }}.</span>&nbsp;
           <span class="musicName">{{ item.name }}</span>
           <span class="artist">{{ item.artist }}</span>
-          <span class="delete"
-                @click.stop="deleteMusic(index)"><i class="el-icon-delete iconhover"></i></span>
+          <span class="delete" @click.stop="deleteMusic(index)"
+            ><i class="el-icon-delete iconhover"></i
+          ></span>
         </li>
       </div>
     </ul>
-    <div class="audition"
-         v-if="audition.length!==0">
-      <div class="inline-block"
-           style="margin:0 auto;"
-           v-for="(item ,index) in audition"
-           :key='item.id'>
+    <div class="audition" v-if="audition.length !== 0">
+      <div
+        class="inline-block"
+        style="margin: 0 auto"
+        v-for="(item, index) in audition"
+        :key="item.id"
+      >
         <div class="auditionTitle">正在试听:</div>
-        <div class='auditionMusic'
-             @click="playAudition(index)">
+        <div class="auditionMusic" @click="playAudition(index)">
           <span class="inline-block auditionName">{{ item.name }}</span>
           <span class="inline-block auditionArtist">{{ item.artist }}</span>
 
-          <span class="inline-block auditionDelete"
-                @click.stop="deleteAudition(index)"><i class="el-icon-delete iconhover"></i></span>
-          <span class="inline-block auditionAdd"
-                @click.stop="addListenMusic(item.id)"><i class="el-icon-folder-add iconhover"></i></span>
+          <span
+            class="inline-block auditionDelete"
+            @click.stop="deleteAudition(index)"
+            ><i class="el-icon-delete iconhover"></i
+          ></span>
+          <span
+            class="inline-block auditionAdd"
+            @click.stop="addListenMusic(item.id)"
+            ><i class="el-icon-folder-add iconhover"></i
+          ></span>
         </div>
       </div>
-
     </div>
-    <aplayer v-if="audio.length !== 0 && musicAudioStatu === 0 "
-             fixed
-             ref="aplayer"
-             :audio="audio"
-             :lrcType="1"
-             style="color: rgb(120, 120, 120)">
+    <aplayer
+      v-show="audio.length !== 0 && musicAudioStatu === 0"
+      fixed
+      autoplay
+      ref="aplayer"
+      :audio="audio"
+      style="color: rgb(120, 120, 120)"
+    >
     </aplayer>
 
-    <div v-if="audition.length !== 0 && musicAudioStatu === 1 ">
-      <aplayer autoplay
-               :fixed="true"
-               ref="auditions"
-               :audio="audition"
-               :liric-type="1"></aplayer>
+    <div v-show="audition.length !== 0 && musicAudioStatu === 1">
+      <aplayer
+      autoplay
+        :fixed="true"
+        ref="auditions"
+        :audio="audition"
+        :liric-type="1"
+      ></aplayer>
     </div>
-
   </div>
-
 </template>
 <script>
-import { mapMutations, mapState } from 'vuex'
-import { getSongDetails } from '@/api/api'
-import { playMusic } from '@/utils/musicPlay'
+import { mapMutations, mapState } from "vuex";
+import { getSongDetails } from "@/api/api";
+import { playMusic } from "@/utils/musicPlay";
 export default {
   data() {
-    return {}
+    return {};
   },
   computed: {
-    ...mapState(['audio', 'audition', 'musicAudioStatu']),
+    ...mapState("aplayer", ["audio", "audition", "musicAudioStatu"]),
   },
   mounted() {},
-
+ 
   methods: {
-    ...mapMutations(['deleteMUSIC', 'deleteAUDITION', 'changeAPLAYER']),
+    ...mapMutations("aplayer", [
+      "deleteMUSIC",
+      "deleteAUDITION",
+      "changeAPLAYER",
+    ]),
 
     //播放指定歌曲
     playMusic(idx) {
-      this.changeAPLAYER(0) //切换播放器
-      let aplayer = this.$refs.aplayer //获取当前播放器
-      aplayer.switch(idx) //切换到播放当前下标的歌曲
-      aplayer.toggle() //切换播放/暂停
+      this.changeAPLAYER(0); //切换播放器
+      let aplayer = this.$refs.aplayer; //获取当前播放器
+      aplayer.switch(idx); //切换到播放当前下标的歌曲
+      aplayer.toggle(); //切换播放/暂停
     },
     //删除歌曲
     deleteMusic(idx) {
       // this.$store.commit('deleteMusic',idx)
-      this.deleteMUSIC(idx)
+      this.deleteMUSIC(idx);
     },
     //试听的播放/暂停
     playAudition(idx) {
-      this.changeAPLAYER(1) //切换到试听播放器
-      let auditions = this.$refs.auditions //获取当前播放器
-      auditions.switch(idx) //切换到播放当前下标的歌曲
-      auditions.toggle() //切换播放/暂停
+      this.changeAPLAYER(1); //切换到试听播放器
+      let auditions = this.$refs.auditions; //获取当前播放器
+      auditions.switch(idx); //切换到播放当前下标的歌曲
+      auditions.toggle(); //切换播放/暂停
     },
     //删除试听
     deleteAudition(idx) {
-      this.deleteAUDITION(idx)
+      this.deleteAUDITION(idx);
     },
     //添加到播放列表
     async addListenMusic(id) {
-      let that = this
-      let list = 'audition'
+      let that = this;
+      let list = "audition";
       await getSongDetails({ ids: id }).then((res) => {
-        playMusic(id, res.data.songs[0].fee, 0, list, that)
-      })
+        playMusic(id, res.data.songs[0].fee, 0, list, that);
+      });
     },
   },
   directives: {
     drag(el) {
       // let dragBox = el.parentElement.parentElement; //获取移动的元素
-      let dragBox = document.getElementsByClassName('musicWrap')
+      let dragBox = document.getElementsByClassName("musicWrap");
       el.onmousedown = (e) => {
         //鼠标点击时鼠标的的位置
         // console.log(e)
         // console.log(el.parentElement)
-        let downX = e.clientX
-        let downY = e.clientY
+        let downX = e.clientX;
+        let downY = e.clientY;
         //元素位置
-        let left = dragBox[0].offsetLeft
-        let top = dragBox[0].offsetTop
+        let left = dragBox[0].offsetLeft;
+        let top = dragBox[0].offsetTop;
         // console.log(e.clientX,e.clientY)
         // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
         document.onmousemove = (e) => {
           //鼠标移动的距离
-          let moveX = e.clientX - downX
-          let moveY = e.clientY - downY
+          let moveX = e.clientX - downX;
+          let moveY = e.clientY - downY;
           // console.log('鼠标移动:',moveX,moveY)
 
           //移动当前元素
-          dragBox[0].style.left = left + moveX + 'px'
-          dragBox[0].style.top = top + moveY + 'px'
-        }
+          dragBox[0].style.left = left + moveX + "px";
+          dragBox[0].style.top = top + moveY + "px";
+        };
         document.onmouseup = (e) => {
           //鼠标弹起来的时候不再移动
-          document.onmousemove = null
+          document.onmousemove = null;
           //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
-          document.onmouseup = null
-        }
-      }
+          document.onmouseup = null;
+        };
+      };
     },
   },
-}
+};
 </script>
 <style lang="less">
 .musicWrap {
@@ -161,6 +177,7 @@ export default {
     font-size: 13px;
     text-align: center;
     transition: 0.8s;
+
     &:hover {
       // display: none;
       cursor: default;
@@ -168,6 +185,7 @@ export default {
       transform: scale(1.02);
     }
   }
+
   .wrapShow {
     width: 100%;
     // max-height: 17px;
@@ -178,12 +196,14 @@ export default {
     background: rgba(160, 160, 160, 0.096);
     overflow-x: hidden;
     transition: 0.8s;
+
     &:hover {
       // cursor: pointer;
       max-height: 480px;
       // color: rgb(30, 205, 236) !important;
       // transform: scale(1.03);
     }
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -192,11 +212,13 @@ export default {
       position: relative;
       padding: 2px 10px;
       transition: 0.3s;
+
       &:hover {
         cursor: pointer;
         color: rgb(29, 236, 167);
         transform: scale(1.02);
       }
+
       // .musicName,
       // .artist {
       //   &:hover {
@@ -207,6 +229,7 @@ export default {
         position: absolute;
         right: 30px;
       }
+
       .delete {
         position: absolute;
         right: 5px;
@@ -220,10 +243,12 @@ export default {
     // color: rgb(30, 205, 236);
     // transform: scale(1.03);
   }
+
   &::-webkit-scrollbar {
     display: none;
   }
 }
+
 .audition {
   position: fixed;
   width: 500px;
@@ -236,6 +261,7 @@ export default {
   // color: rgba(218, 218, 218, 0.842);
 
   transition: 0.2s;
+
   .auditionTitle {
     position: relative;
     display: inline-block;
@@ -245,37 +271,44 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
   }
+
   .auditionMusic {
     // position: relative;
     display: inline-block;
     font-size: 13px;
     transition: 0.2s;
+
     &:hover {
       // color: aqua;
       color: rgb(29, 236, 167);
     }
+
     .auditionName {
       width: 300px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+
     .auditionArtist {
       width: 90px;
       text-align: center;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+
       &::-webkit-scrollbar {
         display: none;
       }
     }
+
     .auditionDelete {
       width: 22px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
     }
+
     .auditionAdd {
       width: 22px;
       overflow: hidden;
@@ -283,11 +316,13 @@ export default {
       text-overflow: ellipsis;
     }
   }
+
   &:hover {
     cursor: pointer;
     transform: scale(1.01);
   }
 }
+
 .bgmusicWrap {
   position: absolute;
   top: 0;
@@ -297,9 +332,11 @@ export default {
   max-height: 20px;
   overflow: hidden;
   transition: 0.3s;
+
   &:hover {
     max-height: 200px;
   }
+
   .bgmusic-ul {
     width: 100%;
     // height: 20px;
@@ -318,6 +355,7 @@ export default {
       border-radius: 10px;
       background: rgba(160, 160, 160, 0.096);
       transition: 0.2s;
+
       &:hover {
         cursor: pointer;
         color: rgb(29, 236, 167);
@@ -329,11 +367,13 @@ export default {
 
 .iconhover {
   transition: 0.3s;
+
   &:hover {
     cursor: pointer;
     color: rgb(238, 160, 57);
   }
 }
+
 .aplayer {
   .aplayer-body {
     // height: 200px !important;
@@ -407,6 +447,7 @@ export default {
     //   }
     // }
   }
+
   // .aplayer-list {
   //   .aplayer-list-light {
   //   }

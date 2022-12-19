@@ -14,7 +14,7 @@
           <div class="search">
             <div class="search-input">
               <input @focus="switchChange"
-                     @blur="switchNone"
+                     @blur="searchSwitch = false"
                      @keyup.enter="enterSearch"
                      type="text"
                      :placeholder="placeholder"
@@ -120,12 +120,6 @@ export default {
   methods: {
     goBack(val) {
       this.$router.go(val)
-    },
-    switchNone() {
-      //搜索框失去焦点时消失
-      setTimeout(() => {
-        this.searchSwitch = false
-      }, 100)
     },
     switchChange() {
       //显示搜索列表

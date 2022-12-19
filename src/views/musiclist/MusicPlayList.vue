@@ -27,32 +27,7 @@
         <div v-show="tagSwitch.songSwitch">
           <h3 style="text-align:center"
               v-show="musicList.length === 0"><i class="el-icon-loading"></i></h3>
-          <li class="music-list"
-              v-for="(item, index) in musicList"
-              :key="item.id">
-            <span style="width: 20px">{{ index + 1 }}.</span>
-            <div @dblclick="goSongDetails(item.id)">
-              <span class="music-list-span">{{ item.name }}</span>
-              <span class="music-list-span">{{ item.ar[0].name }}</span>
-              <span class="music-list-span">{{ item.dt }}</span>
-            </div>
-            <div class="option">
-              <!-- 试听 -->
-              <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-              <!-- 添加到播放列表 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-              </span>
-              <!-- 播放MV -->
-              <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
-              </span>
-              <!-- 下载 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click="getDownloadUrl(item.id, item.name)">
-                <i class="el-icon-download iconhover"></i></span>
-            </div>
-          </li>
+          <songlist :songlist="musicList"></songlist>
         </div>
         <!-- 专辑列表 -->
         <div class="albumListClass"
@@ -160,7 +135,7 @@
                       border-radius: 10px;
                     "
                        :src="item.coverUrl"
-                       alt=""
+                       alt="" 
                        title=""
                        @click="goVideo(item.vid, item.type)" />
                   <span class="videoPlayTime"><i class="el-icon-video-play"
@@ -255,8 +230,11 @@
 <script>
 import { getMusicInfo, getDownloadUrl } from '@/api/api'
 import { transMusicTime, transPlayCount, download } from '@/utils/commonApi'
-import { playMusic, listenMusic } from '@/utils/musicPlay'
+import songlist from '@/components/songlist.vue'
 export default {
+  components:{
+    songlist
+  },
   data() {
     return {
       //试听音乐
@@ -288,14 +266,14 @@ export default {
   created() {
     // console.log(this);
     var that = this
-    that.tagSwitch = that.$store.state.tagSwitch
+    that.tagSwitch = that.$store.state.musicPlayList.tagSwitch
     that.search()
   },
   methods: {
     //标签切换
     tagSelect(tag) {
       var that = this
-      that.$store.commit('tagSelect', tag)
+      that.$store.commit('musicPlayList/tagSelect', tag)
       that.$nextTick(() => {
         that.search()
       })
@@ -336,15 +314,7 @@ export default {
       }
     },
 
-    //获取歌曲详情,进入详情页面
-    goSongDetails(ids) {
-      this.$router.push({
-        name: 'songDetails',
-        params: {
-          songId: ids,
-        },
-      })
-    },
+    
     //获取专辑详情
     goAlbumDetail(id) {
       this.$router.push({
@@ -374,28 +344,9 @@ export default {
         params: { songListId: songListId },
       })
     },
-    playMV(mvId) {
-      //获取mv播放链接
-      this.$router.push({
-        name: 'mvPlay',
-        params: { mvId: mvId },
-      })
-    },
+    
 
-    //试听音乐
-    listenMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'musicList'
-      listenMusic(id, fee, index, list, that)
-    },
-    //添加歌曲到播放列表
-    playMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'musicList'
-      playMusic(id, fee, index, list, that)
-    },
+    
 
     //通过搜索关键词获取单曲（歌曲）
     getSingleMuscic() {
@@ -410,6 +361,7 @@ export default {
         offset: (that.currentPage - 1) * 30,
         type: 1, //代表获取单曲
       }
+      that.musicList = []
       getMusicInfo(params).then((res) => {
         that.musicList = res.data.result.songs
         // console.log(that.musicList)
@@ -515,27 +467,7 @@ export default {
       })
     },
 
-    //获取歌曲下载地址
-    getDownloadUrl(songId, songName) {
-      var that = this
-      that.$message({
-        type: 'success',
-        message: '正在尝试下载',
-      })
-      let params = {
-        id: songId,
-      }
-      getDownloadUrl(params).then((res) => {
-        // console.log('歌曲下载地址：', res.data)
-        // console.log("歌曲下载地址：", res.data.data.url);
-        // download(res.data.data.url, songName)
-        download(res.data.data[0].url, songName)
-        that.$message({
-          type: 'success',
-          message: '开始下载了',
-        })
-      })
-    },
+    
     goVideo(vid, type) {
       if (type === 0) {
         this.$router.push({

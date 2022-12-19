@@ -44,29 +44,7 @@
                 v-if="musicList.length !==0">{{musicList.length }}</span> 首 )</h3>
 
         <ul class="wrap-center">
-          <li class="music-list"
-              v-for="(item, index) in musicList"
-              :key="item.id">
-            <span style="display: inline-block; width: 20px">{{ index + 1 }}.</span>
-            <div @dblclick="goSongDetails(item.id)">
-              <span class="music-list-span">{{ item.name }}</span>
-              <span class="music-list-span">{{ item.ar[0].name }}</span>
-              <span class="music-list-span">{{ item.dt }}</span>
-            </div>
-            <div class="option">
-              <span @click="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-              <!-- 添加到播放列表 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-              </span>
-              <span v-if="Boolean(item.mv)"
-                    @click="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
-              </span>
-              <!-- <span v-if="!Boolean(item.mv)">&nbsp;&nbsp;&nbsp; </span> -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span><span v-if="item.fee != 0"> </span>
-            </div>
-          </li>
+          <songlist :songlist="musicList"></songlist>
         </ul>
         <div style="padding: 0px 50px">
           <h3 style="margin: 5px 0 10px 0">评论({{ commentCount }}条)</h3>
@@ -109,10 +87,11 @@ import {
   getPlayListComment,
 } from '@/api/api'
 import { getTimestamp, transMusicTime, download } from '@/utils/commonApi'
-import { playMusic, listenMusic } from '@/utils/musicPlay'
-// import { getToken } from "@/utils/auth";
+import songlist from '@/components/songlist.vue'
 export default {
-  // props: ['songListId'],
+  components:{
+    songlist
+  },
   data() {
     return {
       //歌单id
@@ -177,37 +156,6 @@ export default {
       })
     },
 
-    //获取歌曲详情,进入详情页面
-    goSongDetails(ids) {
-      this.$router.push({
-        name: 'songDetails',
-        params: {
-          songId: ids,
-        },
-      })
-    },
-    // 播放MV
-    playMV(mvId) {
-      //获取mv播放链接
-      this.$router.push({
-        name: 'mvPlay',
-        params: { mvId: mvId },
-      })
-    },
-    //试听音乐
-    listenMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'musicList'
-      listenMusic(id, fee, index, list, that)
-    },
-    //添加播放列表
-    playMusic(id, fee, index) {
-      var that = this
-      var list = 'musicList'
-      playMusic(id, fee, index, list, that)
-    },
-
     //分页
     handleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
@@ -216,21 +164,7 @@ export default {
       that.getPlaylistDetail(currentPage)
     },
 
-    //获取歌曲下载地址
-    getDownloadUrl(songId, songName) {
-      var that = this
-      let params = {
-        id: songId,
-      }
-      getDownloadUrl(params).then((res) => {
-        // console.log("歌曲下载地址：", res.data.data.url);
-        download(res.data.data.url, songName)
-        that.$message({
-          type: 'success',
-          message: '开始下载了',
-        })
-      })
-    },
+   
     getPlaylistDetail() {
       //传入歌单id获取歌曲id和歌单详情
       var that = this

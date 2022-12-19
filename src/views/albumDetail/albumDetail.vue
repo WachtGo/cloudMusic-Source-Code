@@ -49,42 +49,7 @@
         </div>
         <div id="singleSongs">
           <h3>专辑歌曲：{{ albumSongs.length }}首</h3>
-          <div class="SingsList"
-               v-for="(item, index) in albumSongs"
-               :key="index">
-            <span class="song-list"
-                  style="width: 20px">{{ index + 1 }}.</span>
-            <div @dblclick="goSongDetails(item.id)">
-              <span class="song-list"
-                    style="width: 350px">
-                {{ item.name }}
-              </span>
-              <span class="song-list"
-                    style="width: 250px; text-align: center">
-                {{ item.ar[0].name }}
-              </span>
-              <span class="song-list"
-                    style="width: 230px">
-                {{ item.dt }}
-              </span>
-              <span class="song-list"
-                    style="width: 150px">
-              </span>
-            </div>
-            <span class="song-list song-list-option">
-              <span @click.stop="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-              <!-- 添加到播放列表 -->
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-              </span>
-              <span v-if="Boolean(item.mv)"
-                    @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i>
-              </span>
-              <span v-if="item.fee == 0 || item.fee == 8"
-                    @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i>
-              </span>
-            </span>
-          </div>
+          <songlist :songlist="albumSongs"></songlist>
         </div>
       </div>
     </div>
@@ -101,16 +66,20 @@
 <script>
 import { getAlbumContent, getDownloadUrl } from '@/api/api'
 import { transMusicTime, download } from '@/utils/commonApi'
-import { playMusic, listenMusic } from '@/utils/musicPlay'
+import songlist from '@/components/songlist.vue'
 
 export default {
-  // props: ['albumId'],
+  components:{
+    songlist
+  },
   data() {
     return {
       listen: [],
       albumId: '',
       albumSongs: [],
-      albumDesc: {},
+      albumDesc: {
+        artist:{img1v1Url:'',}
+      },
     }
   },
   mounted() {
@@ -131,7 +100,7 @@ export default {
         id: that.albumId,
       }
       getAlbumContent(params).then((res) => {
-        // console.log("专辑信息---：", res.data.album);
+        console.log("专辑信息---：", res.data.album);
         // console.log("专辑歌曲---：", res.data.songs);
         that.albumDesc = res.data.album
         that.albumSongs = res.data.songs
@@ -144,64 +113,11 @@ export default {
       })
     },
 
-    //获取歌曲下载地址
-    getDownloadUrl(songId, songName) {
-      var that = this
-      let params = {
-        id: songId,
-      }
-      getDownloadUrl(params).then((res) => {
-        // console.log("歌曲下载地址：", res.data.data.url);
-        download(res.data.data.url, songName)
-        that.$message({
-          type: 'success',
-          message: '开始下载了',
-        })
-      })
-    },
-    //试听音乐
-    listenMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'albumSongs'
-      listenMusic(id, fee, index, list, that)
-    },
-    //将歌曲添加到播放列表或者播放
-    playMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'albumSongs'
-      playMusic(id, fee, index, list, that)
-    },
-    //跳转到歌曲详情
-    goSongDetails(ids) {
-      this.$router.push({
-        name: 'songDetails',
-        params: {
-          songId: ids,
-        },
-      })
-    },
-    //跳转到播放MV页面
-    playMV(mvId) {
-      //获取mv播放链接
-      this.$router.push({
-        name: 'mvPlay',
-        params: { mvId: mvId },
-      })
-    },
-    goMv(mvId) {
-      this.$router.push({
-        name: 'mvPlay',
-        params: {
-          mvId: mvId,
-        },
-      })
-    },
+   
     //根据主题更换播放器颜色
-    randomColor() {
-      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
-    },
+    // randomColor() {
+    //   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
+    // },
   },
 }
 </script>

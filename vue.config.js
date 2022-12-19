@@ -11,5 +11,8 @@ module.exports = defineConfig({
             // msTileImage: 'favicon.ico',
         }
     },
+    devServer:{
+        port:8080,
+    }
   
 })

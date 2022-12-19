@@ -27,7 +27,7 @@ export default {
     this.changehomeTAG(0)
   },
   methods: {
-    ...mapMutations(['changehomeTAG']),
+    ...mapMutations('homePage', ['changehomeTAG']),
   },
 }
 </script>

@@ -31,14 +31,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(['homeTags']),
+    ...mapState('homepage', ['homeTags']),
   },
   mounted() {
     this.tags = document.querySelectorAll('.tags-select')
     this.tagsChange(this.homeTags.routerPage) //首页重定向时，显示标签下划线
   },
   methods: {
-    ...mapMutations(['changehomeTAG']),
+    ...mapMutations("homepage", ["changehomeTAG"]),
     //切换标签
     tagsChange(page, goRouter) {
       //改变标签样式
@@ -79,7 +79,7 @@ export default {
   width: 100%;
   height: 785px;
   // background: rgba(93, 150, 140, 0.11);
-  background: rgba(39, 83, 75, 0.808);
+  // background: rgba(39, 83, 75, 0.808);
   box-sizing: border-box;
   overflow-x: hidden;
   &::-webkit-scrollbar {

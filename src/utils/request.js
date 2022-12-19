@@ -5,8 +5,7 @@ import axios from 'axios'
 // import { MessageBox, Message } from 'element-ui'
 //创建axois实例
 const service = axios.create({
-    baseURL: 'https://cloud-music-api-pied.vercel.app/',
-    // baseURL: 'http://localhost:3000/',
+    baseURL:'https://biejuanle.icu/'
     // changeOrigin: true,  //解决跨域
     // withCredentials: true,
 });

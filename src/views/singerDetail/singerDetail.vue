@@ -7,8 +7,10 @@
       <div class="ul">
         <div class="details">
           <div class="details-img">
-            <img :src="singerDesc.img1v1Url"
-                 alt="" />
+            <img
+              :src="singerDesc.img1v1Url"
+              alt=""
+            />
           </div>
           <div class="detailsRight">
             <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
@@ -16,119 +18,115 @@
             </h3>
             <div style="font-size: 14px">
               <div class="aliasClass">
-                <span class="playListNickName"
-                      v-if="singerDesc.alias[0]">{{
+                <span
+                  class="playListNickName"
+                  v-if="singerDesc.alias[0]"
+                >{{
                   singerDesc.alias[0]
                 }}</span>
-                <span class="playListNickName"
-                      v-if="singerDesc.alias[1]">-</span><span class="playListNickName2">{{ singerDesc.alias[1] }}</span><span><br />
+                <span
+                  class="playListNickName"
+                  v-if="singerDesc.alias[1]"
+                >-</span><span class="playListNickName2">{{ singerDesc.alias[1] }}</span><span><br />
                   <span style="color: antiquewhite"></span></span>
               </div>
 
               <div class="option">
                 <div class="flexBetween">
-                  <span class="inline-block"
-                        @click="getSingerSongList('songSwitch')">歌曲：<span class="musicSize">{{
+                  <span
+                    class="inline-block"
+                    @click="getSingerSongList('songSwitch')"
+                  >歌曲：<span class="musicSize">{{
                       singerDesc.musicSize
                     }}</span></span>
-                  <span class="inline-block"
-                        @click="getSingerAlbum('albumSwitch')">专辑：<span class="musicSize">{{
+                  <span
+                    class="inline-block"
+                    @click="getSingerAlbum('albumSwitch')"
+                  >专辑：<span class="musicSize">{{
                       singerDesc.albumSize
                     }}</span>
                   </span>
-                  <span class="inline-block"
-                        @click="getSingerMvList('mvSwitch')">MV：<span class="musicSize">{{ singerDesc.mvSize }}</span>
+                  <span
+                    class="inline-block"
+                    @click="getSingerMvList('mvSwitch')"
+                  >MV：<span class="musicSize">{{ singerDesc.mvSize }}</span>
                   </span>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="singerDetail"
-             v-if="tagSwitch.detailSwitch">
+        <div
+          class="singerDetail"
+          v-if="tagSwitch.detailSwitch"
+        >
           <h3 style="font-size: 15px">简介：</h3>
           <p>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ singerDesc.briefDesc }}
           </p>
         </div>
-        <div id="singleSongs"
-             v-if="tagSwitch.songSwitch">
+        <div
+          id="singleSongs"
+          v-if="tagSwitch.songSwitch"
+        >
           <!-- <h3>
             歌曲：{{ songCount }}
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span style="font-size：10px;"></span>
           </h3> -->
-          <h3 style="text-align:center"
-              v-show="songList.length === 0"><i class="el-icon-loading"></i></h3>
+          <h3
+            style="text-align:center"
+            v-show="songList.length === 0"
+          ><i class="el-icon-loading"></i></h3>
           <div v-if="songList.length !== 0">
             <ul class="song-album-wrap">
-              <li class="SingsList"
-                  v-for="(item, index) in songList"
-                  :key="index">
-                <span class="song-list"
-                      style="width: 25px">{{ index + 1 }}.</span>
-                <div @dblclick="goSongDetails(item.id)">
-                  <span class="song-list"
-                        style="width: 350px">
-                    {{ item.name }}
-                  </span>
-                  <span class="song-list"
-                        style="width: 250px; text-align: center">
-                    {{ item.ar[0].name }}
-                  </span>
-                  <span class="song-list"
-                        style="width: 220px">
-                    {{ item.dt }}
-                  </span>
-                  <span class="song-list"
-                        style="width: 150px"> </span>
-                </div>
-                <span class="song-list song-list-option">
-                  <span @click.stop="listenMusic(item.id, item.fee, index)"><i class="el-icon-headset iconhover"></i></span>
-                  <!-- 添加到播放列表 -->
-                  <span v-if="item.fee == 0 || item.fee == 8"
-                        @click.stop="playMusic(item.id, item.fee, index)"><i class="el-icon-folder-add iconhover"></i>
-                  </span>
-                  <span v-if="Boolean(item.mv)"
-                        @click.stop="playMV(item.mv)"><i class="el-icon-video-camera iconhover"></i></span>
-                  <span v-if="item.fee == 0 || item.fee == 8"
-                        @click.stop="getDownloadUrl(item.id, item.name)"><i class="el-icon-download iconhover"></i></span>
-                </span>
-              </li>
+              <songlist :songlist="songList"></songlist>
             </ul>
             <div class="pagination">
-              <el-pagination v-show="singerDesc.musicSize > 30"
-                             @current-change="songHandleCurrentChange"
-                             :current-page.sync="songcurrentPage"
-                             :page-size="30"
-                             layout="prev, pager, next, jumper"
-                             :total="singerDesc.musicSize"
-                             :background="true">
+              <el-pagination
+                v-show="singerDesc.musicSize > 30"
+                @current-change="songHandleCurrentChange"
+                :current-page.sync="songcurrentPage"
+                :page-size="30"
+                layout="prev, pager, next, jumper"
+                :total="singerDesc.musicSize"
+                :background="true"
+              >
               </el-pagination>
             </div>
           </div>
 
         </div>
 
-        <div id="albumList"
-             v-if="tagSwitch.albumSwitch">
-          <h3 style="text-align:center"
-              v-show="albumList.length === 0"><i class="el-icon-loading"></i></h3>
+        <div
+          id="albumList"
+          v-if="tagSwitch.albumSwitch"
+        >
+          <h3
+            style="text-align:center"
+            v-show="albumList.length === 0"
+          ><i class="el-icon-loading"></i></h3>
           <div v-if="albumList.length !== 0">
             <ul class="song-album-wrap">
-              <li class="liWrap"
-                  v-for="(item, index) in albumList"
-                  :key="index"
-                  @click="goAlbumDetail(item.id)">
+              <li
+                class="liWrap"
+                v-for="(item, index) in albumList"
+                :key="index"
+                @click="goAlbumDetail(item.id)"
+              >
                 <div class="liWrap-block1">
-                  <img :src="item.blurPicUrl"
-                       alt="" />
+                  <img
+                    :src="item.blurPicUrl"
+                    alt=""
+                  />
                 </div>
                 <div class="liWrap-block2">
                   <div class="div1">
                     <span class="albumName">{{ item.name }}
-                      <span v-if="item.alias[0]"
-                            class="albumName2">{{
+                      <span
+                        v-if="item.alias[0]"
+                        class="albumName2"
+                      >{{
                     item.alias[0]
                   }}</span></span>
                   </div>
@@ -136,10 +134,14 @@
                     <div class="divOther">
                       <!-- 作者：<span>{{ item.artist.name }}</span> -->
                     </div>
-                    <span class="inline-block"
-                          style="display: inline-block; width: 50px"></span>
-                    <div class="divOther"
-                         style="width: 100px">
+                    <span
+                      class="inline-block"
+                      style="display: inline-block; width: 50px"
+                    ></span>
+                    <div
+                      class="divOther"
+                      style="width: 100px"
+                    >
                       歌曲：<span>{{ item.size }}</span>
                     </div>
                   </div>
@@ -147,64 +149,98 @@
               </li>
             </ul>
             <div class="pagination">
-              <el-pagination v-show="singerDesc.albumSize > 6"
-                             @current-change="albumHandleCurrentChange"
-                             :current-page.sync="albumcurrentPage"
-                             :page-size="6"
-                             layout="prev, pager, next, jumper"
-                             :total="singerDesc.albumSize"
-                             :background="true">
+              <el-pagination
+                v-show="singerDesc.albumSize > 6"
+                @current-change="albumHandleCurrentChange"
+                :current-page.sync="albumcurrentPage"
+                :page-size="6"
+                layout="prev, pager, next, jumper"
+                :total="singerDesc.albumSize"
+                :background="true"
+              >
               </el-pagination>
             </div>
           </div>
 
         </div>
 
-        <div id="singerMvs"
-             v-if="tagSwitch.mvSwitch">
-          <h3 style="margin: 0 auto">
-            MV：{{ mvList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;">(这里最多获取10个-建议直接搜)</span>
-          </h3>
-
-          <ul class="videoPlaywrap">
-            <li class="videoPlayList"
+        <div
+          id="singerMvs"
+          v-if="tagSwitch.mvSwitch"
+        >
+          <!-- <h3 style="margin: 0 auto">
+            MV：{{ mvList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;"></span>
+          </h3> -->
+          <h3
+            style="text-align:center"
+            v-show="mvList.length === 0"
+          ><i class="el-icon-loading"></i></h3>
+          <div v-if="mvList.length !== 0">
+            <ul class="videoPlaywrap">
+              <li
+                class="videoPlayList"
                 v-for="(item, index) in mvList"
-                :key="index">
-              <div class="videoImage">
-                <img class="videoImg"
-                     style="
+                :key="index"
+              >
+                <div class="videoImage">
+                  <img
+                    class="videoImg"
+                    style="
                     position: absolute;
                     width: 240px;
                     height: 155px;
                     border-radius: 10px;
                   "
-                     :src="item.imgurl16v9"
-                     alt=""
-                     title=""
-                     @click="goMv(item.id)" />
-                <span class="videoPlayTime"><i class="el-icon-video-play"
-                     style="margin-right: 1px"></i>{{ item.playCount }}</span>
-                <span class="videoPlayTime"
-                      style="bottom: 0">{{
+                    :src="item.imgurl16v9"
+                    alt=""
+                    title=""
+                    @click="playMV(item.id)"
+                  />
+                  <span class="videoPlayTime"><i
+                      class="el-icon-video-play"
+                      style="margin-right: 1px"
+                    ></i>{{ item.playCount }}</span>
+                  <span
+                    class="videoPlayTime"
+                    style="bottom: 0"
+                  >{{
                   item.duration
                 }}</span>
-              </div>
+                </div>
 
-              <p class="List-title"
-                 style="font-size: 10px">
-                <span style="
+                <p
+                  class="List-title"
+                  style="font-size: 10px"
+                >
+                  <span style="
                     display: inline-block;
                     width: 100%;
                     overflow: hidden;
                     white-space: nowrap;
                     text-overflow: ellipsis;
-                  "><span v-if="!item.type"
-                        style="color: red">MV&nbsp;</span>{{ item.name }}</span><br />
-                <span style="color: rgb(199, 199, 199)"><span>by&nbsp;</span>
-                  <span>{{ item.artistName }}</span></span>
-              </p>
-            </li>
-          </ul>
+                  "><span
+                      v-if="!item.type"
+                      style="color: red"
+                    >MV&nbsp;</span>{{ item.name }}</span><br />
+                  <span style="color: rgb(199, 199, 199)"><span>by&nbsp;</span>
+                    <span>{{ item.artistName }}</span></span>
+                </p>
+              </li>
+            </ul>
+            <div class="pagination">
+              <el-pagination
+                v-show="singerDesc.mvSize > 8"
+                @current-change="mvHandleCurrentChange"
+                :current-page.sync="mvcurrentPage"
+                :page-size="8"
+                layout="prev, pager, next, jumper"
+                :total="singerDesc.mvSize"
+                :background="true"
+              >
+              </el-pagination>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -219,16 +255,18 @@ import {
   getSingerSongList,
   getSingerMvList,
   getSingerAlbum,
-} from '@/api/api'
-import { transMusicTime, transPlayCount, download } from '@/utils/commonApi'
-import { playMusic, listenMusic } from '@/utils/musicPlay'
-
+} from "@/api/api";
+import { transMusicTime, transPlayCount, download } from "@/utils/commonApi";
+import songlist from "@/components/songlist.vue";
 export default {
+  components: {
+    songlist,
+  },
   // props: ['singerId'],
   data() {
     return {
       //歌手信息
-      singerId: '',
+      singerId: "",
       singerDesc: {},
       songList: [],
       albumList: [],
@@ -241,165 +279,124 @@ export default {
       },
 
       songcurrentPage: 1,
-
       albumcurrentPage: 1,
-    }
+      mvcurrentPage: 1,
+    };
   },
   mounted() {
     ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
     if (this.$route.params.singerId) {
-      localStorage.setItem('singerId', this.$route.params.singerId)
+      localStorage.setItem("singerId", this.$route.params.singerId);
     }
     //判断是否使用缓存
     this.$route.params.singerId
       ? (this.singerId = this.$route.params.singerId)
-      : (this.singerId = localStorage.getItem('singerId'))
-    this.getSingerDesc()
+      : (this.singerId = localStorage.getItem("singerId"));
+    this.getSingerDesc();
   },
   methods: {
     //显示歌手单曲、专辑、mv列表开关
     switchChange(tag) {
-      var that = this
+      var that = this;
       for (let key in that.tagSwitch) {
         if (key != tag) {
-          that.tagSwitch[key] = false
+          that.tagSwitch[key] = false;
         }
       }
-      that.tagSwitch[tag] = true
+      that.tagSwitch[tag] = true;
     },
 
     //获取歌手单曲列表
     getSingerSongList(tag) {
-      var that = this
+      var that = this;
       let params = {
         id: that.singerId,
         limit: 30,
         offset: (that.songcurrentPage - 1) * 30,
-      }
-      that.detailShow = false
-      that.songList = []
+      };
+      that.detailShow = false;
+      that.songList = [];
       getSingerSongList(params).then((res) => {
         // console.log('歌手单曲列表：', res.data)
-        that.songList = res.data.songs
+        that.songList = res.data.songs;
         // that.songCount = res.data.total
         //给每首曲子添加防抖
         for (let item of that.songList) {
-          that.$set(item, 'timer', true)
+          that.$set(item, "timer", true);
         }
         //转换时间
-        let dt = 'dt'
-        transMusicTime(that.songList, dt)
-      })
-      that.switchChange(tag)
+        let dt = "dt";
+        transMusicTime(that.songList, dt);
+      });
+      that.switchChange(tag);
     },
     //获取歌手专辑列表
     getSingerAlbum(tag) {
-      var that = this
+      var that = this;
 
       let params = {
         id: that.singerId,
         limit: 6,
         offset: (that.albumcurrentPage - 1) * 6,
-      }
-      that.detailShow = false
-      that.albumList = []
+      };
+      that.detailShow = false;
+      that.albumList = [];
       getSingerAlbum(params).then((res) => {
         // console.log("歌手专辑列表", res.data.hotAlbums);
-        that.albumList = res.data.hotAlbums
-      })
+        that.albumList = res.data.hotAlbums;
+      });
 
-      that.switchChange(tag)
+      that.switchChange(tag);
     },
     //获取歌手mv
     getSingerMvList(tag) {
-      var that = this
+      var that = this;
       let params = {
         id: that.singerId,
-      }
+        limit: 8,
+        offset: (that.mvcurrentPage - 1) * 8,
+      };
+      that.mvList = [];
       getSingerMvList(params).then((res) => {
-        // console.log("获取到的歌手MV：", res.data.mvs);
-        that.mvList = res.data.mvs
+        console.log("获取到的歌手MV：", res.data.mvs);
+        that.mvList = res.data.mvs;
         // 转换时间单位
-        transMusicTime(that.mvList, 'duration')
+        transMusicTime(that.mvList, "duration");
         //转换播放量单位
-        transPlayCount(that.mvList, 'playCount')
-      })
-      that.switchChange(tag)
+        transPlayCount(that.mvList, "playCount");
+      });
+      that.switchChange(tag);
     },
     //获取歌手描述
     getSingerDesc() {
-      var that = this
+      var that = this;
       let params = {
         id: that.singerId,
-      }
+      };
       getSingerDesc(params).then((res) => {
         // console.log("歌手描述", res.data);
-        that.singerDesc = res.data.artist
-      })
+        that.singerDesc = res.data.artist;
+      });
     },
 
-    listenMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'songList'
-      listenMusic(id, fee, index, list, that)
-    },
-    //将歌曲添加到播放列表或者播放
-    playMusic(id, fee, index) {
-      //获取播放音乐链接
-      var that = this
-      var list = 'songList'
-      playMusic(id, fee, index, list, that)
-    },
-    //跳转到歌曲详情
-    goSongDetails(ids) {
-      this.$router.push({
-        name: 'songDetails',
-        params: {
-          songId: ids,
-        },
-      })
-    },
     //跳转到专辑详情
     goAlbumDetail(albumId) {
       this.$router.push({
-        name: 'albumDetail',
+        name: "albumDetail",
         params: {
           albumId: albumId,
         },
-      })
+      });
     },
     //跳转到播放MV页面
     playMV(mvId) {
       //获取mv播放链接
       this.$router.push({
-        name: 'mvPlay',
+        name: "mvPlay",
         params: { mvId: mvId },
-      })
+      });
     },
-    goMv(mvId) {
-      this.$router.push({
-        name: 'mvPlay',
-        params: {
-          mvId: mvId,
-        },
-      })
-    },
-    //获取歌曲下载地址
-    getDownloadUrl(songId, songName) {
-      var that = this
-      let params = {
-        id: songId,
-      }
-      getDownloadUrl(params).then((res) => {
-        // console.log("歌曲下载地址：", res.data.data.url);
-        download(res.data.data.url, songName)
-        that.$message({
-          type: 'success',
-          message: '开始下载了',
-        })
-      })
-    },
+
     // //根据主题更换播放器颜色
     // randomColor() {
     //   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
@@ -407,19 +404,26 @@ export default {
     //歌手歌曲分页
     songHandleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
-      var that = this
-      that.songcurrentPage = currentPage
-      that.getSingerSongList('songSwitch')
+      var that = this;
+      that.songcurrentPage = currentPage;
+      that.getSingerSongList("songSwitch");
     },
     //歌手专辑分页
     albumHandleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
-      var that = this
-      that.albumcurrentPage = currentPage
-      that.getSingerAlbum('albumSwitch')
+      var that = this;
+      that.albumcurrentPage = currentPage;
+      that.getSingerAlbum("albumSwitch");
+    },
+    // 歌手mv分页
+    mvHandleCurrentChange: function (currentPage) {
+      // console.log(`当前页: ${currentPage}`);
+      var that = this;
+      that.mvcurrentPage = currentPage;
+      that.getSingerMvList("mvSwitch");
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -771,18 +775,17 @@ h3 {
     margin: 0 auto;
     padding: 0px 10px 20px;
     width: 96%;
-    height: 420px;
+    height: 435px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
-    overflow-x: hidden;
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    // overflow-x: hidden;
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
     .videoPlaywrap {
       display: flex;
       margin: 0 auto;
-
       justify-content: space-evenly;
       flex-wrap: wrap; //根据宽度限制一行的盒子个数
       margin: 10px 0;
