@@ -267,7 +267,10 @@ export default {
     return {
       //歌手信息
       singerId: "",
-      singerDesc: {},
+      singerDesc: {
+        alias:[],
+        musicSize:'',
+      },
       songList: [],
       albumList: [],
       mvList: [],
@@ -369,6 +372,7 @@ export default {
     },
     //获取歌手描述
     getSingerDesc() {
+      console.log(Boolean(this.singerDesc))
       var that = this;
       let params = {
         id: that.singerId,
@@ -397,10 +401,7 @@ export default {
       });
     },
 
-    // //根据主题更换播放器颜色
-    // randomColor() {
-    //   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
-    // },
+  
     //歌手歌曲分页
     songHandleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
@@ -822,7 +823,6 @@ h3 {
           .videoPlayTime {
             position: absolute;
             z-index: 99;
-            right: 10px;
             background: transparent;
           }
         }

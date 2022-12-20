@@ -5,55 +5,77 @@
       <header class="head">
         <!-- 首页 -->
         <div class="cl">
-          <router-link :to="{name:'recommend'}">
-            <h3>首页</h3>
-          </router-link>
+          <h3
+            @click="goHome"
+            goHome
+          >首页</h3>
         </div>
         <!-- 搜索框 -->
         <div class="center cl">
           <div class="search">
             <div class="search-input">
-              <input @focus="switchChange"
-                     @blur="searchSwitch = false"
-                     @keyup.enter="enterSearch"
-                     type="text"
-                     :placeholder="placeholder"
-                     v-model="searchTerms" />
+              <input
+              id="searchInput"
+                @focus="switchChange"
+                @blur="searchSwitch = false"
+                @keyup.enter="enterSearch"
+                type="text"
+                :placeholder="placeholder"
+                v-model="searchTerms"
+              />
             </div>
           </div>
         </div>
         <!-- 返回 -->
         <div class="cl">
           <div class="gobackWrap">
-            <span class="goBack"
-                  @click="goBack(-1)">&lt;
-            </span>&nbsp;
-            <span class="goBack"
-                  @click="goBack(1)">&gt;
-            </span>
+            <div
+              class="goBack"
+              @click="goBack(-1)"
+            >&lt;
+            </div>&nbsp;
+            <div
+              class="goBack"
+              @click="goBack(1)"
+            >&gt;
+            </div>
           </div>
         </div>
       </header>
     </div>
 
     <!-- 搜索显示的搜索项列表 -->
-    <ul class="search-box"
-        v-show="searchSwitch">
+    <ul
+      class="search-box"
+      v-show="searchSwitch"
+    >
+    <h3
+            style="text-align:center"
+            v-show="musicList.length === 0"
+          ><i class="el-icon-loading"></i></h3>
       <!-- searchSwitch -->
-      <li class="suggest-list"
-          v-for="(item, index) in musicList"
-          :key="index"
-          @click="selectMusic(item.name, item.ar[0].name)">
-        <span class="suggest-list-music"
-              style="width: 310px">{{
+      <li
+        class="suggest-list"
+        v-for="(item, index) in musicList"
+        :key="index"
+        @mousedown="selectMusic(item.name, item.ar[0].name)"
+      >
+        <span
+          class="suggest-list-music"
+          style="width: 310px"
+        >{{
           item.name
         }}</span>
-        <span class="suggest-list-music"
-              style="width: 180px">{{
+        <span
+          class="suggest-list-music"
+          style="width: 180px"
+        >{{
           item.ar[0].name
         }}</span>
-        <span class="suggest-list-music"
-              style="width: 50px">{{
+        <span
+          class="suggest-list-music"
+          style="width: 50px"
+        >{{
           item.dt
         }}</span>
       </li>
@@ -64,154 +86,161 @@
 </template>
 
 <script>
-import { getSearchDefault, getMusicInfo } from '@/api/api'
+import { getSearchDefault, getMusicInfo } from "@/api/api";
 export default {
   data() {
     return {
       searchSwitch: false,
-      searchTerms: '',
-      placeholder: '',
+      searchTerms: "",
+      placeholder: "",
       musicList: [],
       inputTimer: null,
-    }
+    };
   },
   directives: {
     drag(el) {
       // let dragBox = el.parentElement.parentElement; //获取app元素
-      let dragBox = document.getElementById('app')
+      let dragBox = document.getElementById("app");
       el.onmousedown = (e) => {
         //鼠标点击时鼠标的的位置
         // console.log(e)
         // console.log(el.parentElement)
-        let downX = e.clientX
-        let downY = e.clientY
+        let downX = e.clientX;
+        let downY = e.clientY;
         //元素位置
-        let left = dragBox.offsetLeft
-        let top = dragBox.offsetTop
+        let left = dragBox.offsetLeft;
+        let top = dragBox.offsetTop;
         // console.log(e.clientX,e.clientY)
         // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
         document.onmousemove = (e) => {
           //鼠标移动的距离
-          let moveX = e.clientX - downX
-          let moveY = e.clientY - downY
+          let moveX = e.clientX - downX;
+          let moveY = e.clientY - downY;
           // console.log('鼠标移动:',moveX,moveY)
 
           //移动当前元素
-          dragBox.style.left = left + moveX + 'px'
-          dragBox.style.top = top + moveY + 'px'
-        }
+          dragBox.style.left = left + moveX + "px";
+          dragBox.style.top = top + moveY + "px";
+        };
         document.onmouseup = (e) => {
           //鼠标弹起来的时候不再移动
-          document.onmousemove = null
+          document.onmousemove = null;
           //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
-          document.onmouseup = null
-        }
-      }
+          document.onmouseup = null;
+        };
+      };
     },
   },
   watch: {
     searchTerms: function () {
-      this.search()
+      this.search();
     },
   },
   mounted() {
-    this.getSearchDefault()
+    this.getSearchDefault();
   },
   methods: {
     goBack(val) {
-      this.$router.go(val)
+      this.$router.go(val);
+    },
+    goHome() {
+      this.$router.push({ name: "HomePage" });
     },
     switchChange() {
       //显示搜索列表
-      this.searchSwitch = true
+      this.searchSwitch = true;
       if (!this.searchTerms.trim()) {
-        this.getMusicInfo(this.placeholder)
+        this.getMusicInfo(this.placeholder);
       }
     },
+   
     selectMusic(keywords, artist) {
-      this.placeholder = `${keywords}   -   ${artist}`
-      this.searchTerms = ''
+      this.placeholder = `${keywords}      ${artist}`;
+      console.log(this.placeholder,'---placeholde')
+      this.searchTerms = "";
       //选择歌曲进入列表
       this.$router.push({
-        name: 'emptyPage',
-        query: { keywords: keywords, reload: true },
-      })
-      this.searchSwitch = true
+        name: "emptyPage",
+        query: { keywords: this.keywords, reload: true },
+      });
+      this.searchSwitch = false;
     },
     enterSearch() {
       if (!this.searchTerms.trim()) {
         this.$router.push({
-          name: 'emptyPage',
+          name: "emptyPage",
           query: { keywords: this.placeholder, reload: true },
-        })
-        this.searchTerms = this.placeholder
+        });
+        this.searchTerms = this.placeholder;
       } else {
         this.$router.push({
-          name: 'emptyPage',
+          name: "emptyPage",
           query: { keywords: this.searchTerms, reload: true },
-        })
+        });
       }
-      this.searchSwitch = false
+      this.searchSwitch = false;
     },
     search() {
       //搜索列表
       if (this.searchTerms.trim) {
         if (this.inputTimer) {
-          clearTimeout(this.inputTimer)
+          clearTimeout(this.inputTimer);
         }
         this.inputTimer = setTimeout(() => {
-          this.getMusicInfo(this.searchTerms)
-          clearTimeout(this.inputTimer)
-        }, 500)
+          this.getMusicInfo(this.searchTerms);
+          clearTimeout(this.inputTimer);
+        }, 500);
       }
     },
     getMusicInfo(searchTerms) {
+      this.musicList = [];
       //获取歌曲列表
       let params = {
         keywords: searchTerms,
         limit: 50,
-        offset: '',
-        type: '',
-      }
+        offset: "",
+        type: "",
+      };
       getMusicInfo(params).then((res) => {
-        this.musicList = []
-        this.musicList = res.data.result.songs
-        this.count = res.data.result.songCount
+        
+        this.musicList = res.data.result.songs;
+        this.count = res.data.result.songCount;
         //将歌曲时长转换成分秒格式
         for (let i = 0; i < this.musicList.length; i++) {
-          let min = parseInt(this.musicList[i].dt / 1000 / 60)
-          let sec = parseInt((this.musicList[i].dt / 1000) % 60)
+          let min = parseInt(this.musicList[i].dt / 1000 / 60);
+          let sec = parseInt((this.musicList[i].dt / 1000) % 60);
           if (min < 10) {
-            min = '0' + min
+            min = "0" + min;
           }
           if (sec < 10) {
-            sec = '0' + sec
+            sec = "0" + sec;
           }
-          this.musicList[i].dt = min + ':' + sec
+          this.musicList[i].dt = min + ":" + sec;
           // console.log(this.musicList[i].song.duration)
         }
         // console.log("音乐列表：", res.data.result.songs);
-      })
+      });
     },
     getSearchDefault() {
       //默认搜索关键字
       getSearchDefault().then((res) => {
-        this.placeholder = res.data.data.realkeyword
+        this.placeholder = res.data.data.realkeyword;
         // console.log("搜索关键字：", res.data.data);
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
 .head {
   display: flex;
+  align-content: center;
   justify-content: space-between;
   padding: 10px 50px;
   height: 100%;
   // line-height: 50px;
-  background: rgba(127, 188, 190, 0.137);
+  background: rgba(0,0,0, 0.05);
   box-sizing: border-box;
 
   .cl {
@@ -226,13 +255,20 @@ export default {
       }
     }
     .gobackWrap {
+      display: flex;
+      align-content: center;
+      justify-content: center;
       height: 30px;
       line-height: 30px;
       transition: 0.2s;
 
       .goBack {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
         font-size: 15px;
         font-weight: bolder;
+        text-align: center;
         transition: 0.2s;
         &:hover {
           color: rgb(32, 147, 192);
@@ -283,9 +319,9 @@ export default {
   left: 0;
   margin: auto;
   width: 600px;
-  max-height: 300px;
+  height: 300px;
   border-radius: 0 0 20px 20px;
-  background: rgba(77, 114, 131, 0.87);
+  background: url(@/img/background8.jpeg);//-------------需要与主题更改
   overflow-x: hidden;
 
   cursor: default;

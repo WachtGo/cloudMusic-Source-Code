@@ -1,17 +1,21 @@
 <template>
 
   <div class="bgmusicWrap">
+    <div>推荐音乐</div>
     <ul class="bgmusic-ul">
-      <div>放松一下</div>
-      <li v-for="(item,index) in bgmusicSrc"
-          :key="item.src"
-          :class="['bgmusic-li',item.fontColor]"
-          @dblclick="reloadbgMusic(index)"
-          @click="playbgMusic(index)">
-        <audio class="bgmusicAudio"
-               :src="item.src"
-               @play="bgmusicPlayed"
-               type="video/mp3"></audio>
+      <li
+        v-for="(item,index) in bgmusicSrc"
+        :key="item.src"
+        :class="['bgmusic-li',item.fontColor]"
+        @dblclick="reloadbgMusic(index)"
+        @click="playbgMusic(index)"
+      >
+        <audio
+          class="bgmusicAudio"
+          :src="item.src"
+          @play="bgmusicPlayed"
+          type="video/mp3"
+        ></audio>
         <span>{{item.name}}</span>
       </li>
 
@@ -21,27 +25,46 @@
 </template>
 
 <script>
-import { randomRange } from '@/utils/commonApi'
 export default {
   data() {
     return {
       bgmusicSrc: [
         {
-          name: '夏天的日子',
-          src: require('../static/bgmusic/夏天的日子.mp3'),
-          fontColor: 'fontColorgray',
+          name: "夏天的日子",
+          src: "https://music.163.com/song/media/outer/url?id=1965308597.mp3",
+          fontColor: "fontColorgray",
         },
         {
-          name: '带走我的心啊 把他藏在行囊',
-          src: require('../static/bgmusic/带走我的心啊 把它藏在行囊.mp3'),
-          fontColor: 'fontColorgray',
+          name: "带走我的心啊 把他藏在行囊",
+          src: "https://music.163.com/song/media/outer/url?id=1883088998.mp3",
+          fontColor: "fontColorgray",
+        },
+        {
+          name: "Childhood Memory",
+          src: "https://music.163.com/song/media/outer/url?id=401767.mp3",
+          fontColor: "fontColorgray",
+        },
+        {
+          name: "Kiss The Rain",
+          src: "https://music.163.com/song/media/outer/url?id=28411989.mp3",
+          fontColor: "fontColorgray",
+        },
+        {
+          name: "Sundial Dreams",
+          src: "https://music.163.com/song/media/outer/url?id=5226753.mp3",
+          fontColor: "fontColorgray",
+        },
+        {
+          name: "Tears",
+          src: "https://music.163.com/song/media/outer/url?id=5331915.mp3",
+          fontColor: "fontColorgray",
         },
       ],
       bgmusic: [],
-    }
+    };
   },
   mounted() {
-    this.bgmusic = document.querySelectorAll('.bgmusicAudio')
+    this.bgmusic = document.querySelectorAll(".bgmusicAudio");
     // this.$nextTick(() => {
     //   this.autoplayBgmusic()
     // })
@@ -51,72 +74,63 @@ export default {
     playbgMusic(idx) {
       this.bgmusic.forEach((item, index) => {
         if (item.paused && index === idx) {
-          item.play()
+          item.play();
         } else {
-          item.pause()
+          item.pause();
         }
-      })
+      });
       // this.bgmusic[index].play()
     },
     //背景音乐播放时触发
     bgmusicPlayed() {
       this.bgmusic.forEach((item, index) => {
         if (item.paused) {
-          this.bgmusicSrc[index].fontColor = 'fontColorgray'
+          this.bgmusicSrc[index].fontColor = "fontColorgray";
         } else {
-          this.bgmusicSrc[index].fontColor = 'fontColorgreen'
+          this.bgmusicSrc[index].fontColor = "fontColorgreen";
         }
-      })
+      });
     },
     //背景音乐重头播放
     reloadbgMusic(idx) {
       this.bgmusic.forEach((item, index) => {
         if (item.paused && index === idx) {
-          item.load() //重新加载音频
-          item.play() //播放
+          item.load(); //重新加载音频
+          item.play(); //播放
         } else {
-          item.load() //重新加载
+          item.load(); //重新加载
         }
-      })
+      });
     },
-    //网页加载时，自动播放背景音乐
-    // autoplayBgmusic() {
-    //   this.reloadbgMusic(randomRange(0, this.bgmusic.length))
-    // },
   },
-}
+};
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
 .bgmusicWrap {
   position: absolute;
   top: 0;
   right: 5px;
   width: 250px;
   color: #ccc;
+  text-align: center;
   max-height: 20px;
   overflow: hidden;
   transition: 0.3s;
-  &:hover {
-    max-height: 200px;
-  }
+
   .bgmusic-ul {
     width: 100%;
-    // height: 20px;
-    // max-height: 20px;
-    text-align: center;
-    // overflow: hidden;
-    // background: rgb(190, 190, 189);
-    transition: 0.2s;
-    // &:hover {
-    //   max-height: 100%;
-    // }
 
+    transition: 0.2s;
+    max-height: 300px;
+    background: url(@/img/background8.jpeg);
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      display: none;
+    }
     .bgmusic-li {
-      height: 20px;
-      padding: 0 10px;
-      border-radius: 10px;
-      background: rgba(160, 160, 160, 0.096);
+      height: 30px;
+      line-height: 30px;
       transition: 0.2s;
       &:hover {
         cursor: pointer;
@@ -126,6 +140,7 @@ export default {
     }
   }
 }
+
 .fontColorgreen {
   color: rgb(29, 236, 167);
 }

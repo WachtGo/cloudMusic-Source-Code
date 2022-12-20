@@ -2,7 +2,7 @@
   <!-- 推荐歌单 -->
   <div class="recMv Ocenter">
     <!-- <h3 v-if="!vid" class="mvTitle">请先选择需要播放的视频</h3> -->
-    <div v-if="vid"
+    <div v-if="videoId"
          style="margin: 0 auto; width: 95%">
       <video controls
              autoplay
@@ -83,7 +83,16 @@ export default {
     return {
       mvUrl: '',
       videoUrl: '',
-      videoDetail: {},
+      videoDetail: {
+        creator:{},
+        title:'',
+        publishTime:'',
+        playTime:'',
+        videoGroup:[],
+        praisedCount:'',
+        subscribeCount:'',
+        shareCount:'',
+      },
       videoId: '',
       videoComments: [],
       count: '',
@@ -92,13 +101,13 @@ export default {
   },
   mounted() {
     //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
-    if (this.$route.params.albumId) {
-      localStorage.setItem('albumId', this.$route.params.albumId)
+    if (this.$route.params.videoId) {
+      localStorage.setItem('videoId', this.$route.params.videoId)
     }
     // 判断是否使用缓存
-    this.$route.params.albumId
-      ? (this.albumId = this.$route.params.albumId)
-      : (this.albumId = localStorage.getItem('albumId'))
+    this.$route.params.videoId
+      ? (this.videoId = this.$route.params.videoId)
+      : (this.videoId = localStorage.getItem('videoId'))
     this.playVideo()
   },
   methods: {

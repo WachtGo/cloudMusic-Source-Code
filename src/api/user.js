@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request'
 
 //获取用户详情
 export function getuserDetail(params){//传入uid

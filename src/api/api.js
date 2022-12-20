@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request from '@/api/request'
 
 //获取默认搜索关键字
 export const getSearchDefault = () => request.get('/search/default')

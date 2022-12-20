@@ -227,12 +227,12 @@ export default {
       // }
       .artist {
         position: absolute;
-        right: 30px;
+        right: 35px;
       }
 
       .delete {
         position: absolute;
-        right: 5px;
+        right: 15px;
       }
     }
   }
@@ -332,27 +332,18 @@ export default {
   max-height: 20px;
   overflow: hidden;
   transition: 0.3s;
-
   &:hover {
     max-height: 200px;
   }
 
   .bgmusic-ul {
     width: 100%;
-    // height: 20px;
-    // max-height: 20px;
     text-align: center;
-    // overflow: hidden;
-    // background: rgb(190, 190, 189);
     transition: 0.2s;
-    // &:hover {
-    //   max-height: 100%;
-    // }
 
     .bgmusic-li {
       height: 20px;
       padding: 0 10px;
-      border-radius: 10px;
       background: rgba(160, 160, 160, 0.096);
       transition: 0.2s;
 

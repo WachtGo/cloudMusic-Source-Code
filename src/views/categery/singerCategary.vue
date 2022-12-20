@@ -412,7 +412,7 @@ export default {
     width: 600px;
     height: 300px;
     padding: 10px;
-    background: rgba(77, 114, 131, 0.884);
+    background: url(@/img/background8.jpeg) ;//需要与主题一同更改
     border-radius: 20px;
     overflow-x: hidden;
     box-sizing: border-box;

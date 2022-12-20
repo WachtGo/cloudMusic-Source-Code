@@ -23,27 +23,6 @@
                 }}</span>
               </div>
 
-              <!-- <div class="option">
-                <div class="flexBetween">
-                  <span
-                    class="inline-block"
-                    @click="getSingerSongList('songSwitch')"
-                    >收藏：<span class="musicSize">{{
-                      albumDesc.musicSize
-                    }}</span></span
-                  >
-                  <span class="inline-block"
-                    >专辑：<span class="musicSize">{{
-                      albumDesc.albumSize
-                    }}</span>
-                  </span>
-                  <span
-                    class="inline-block"
-                    @click="getSingerMvList('mvSwitch')"
-                    >MV：<span class="musicSize">{{ albumDesc.mvSize }}</span>
-                  </span>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
@@ -122,7 +101,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
 h3 {
   height: 30px;
   line-height: 30px;
@@ -131,11 +110,11 @@ h3 {
 .descript {
   display: flex;
   justify-content: space-between;
-  color: aliceblue;
+  // color: aliceblue;
   font-weight: bolder;
   padding: 10px 20px;
   border-radius: 20px 20px 0 0;
-  background: rgba(221, 239, 243, 0.05);
+  // background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 }
 .list-wrap {
@@ -143,13 +122,13 @@ h3 {
   padding: 0 20px 10px;
   width: 1120px;
   border-radius: 20px;
-  background: rgba(221, 239, 243, 0.05);
+  // background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 
   .ul {
     height: 630px;
     border-radius: 0 0 10px 10px;
-    background: rgba(221, 239, 243, 0.05);
+    // background: rgba(221, 239, 243, 0.05);
     overflow-x: hidden;
 
     &::-webkit-scrollbar {
@@ -164,7 +143,7 @@ h3 {
       height: 170px;
       // border: 1px solid rgb(97, 226, 183);
       border-radius: 10px;
-      background: rgba(221, 239, 243, 0.05);
+      // background: rgba(221, 239, 243, 0.05);
       box-sizing: border-box;
 
       .details-img {
@@ -200,13 +179,7 @@ h3 {
               display: inline-block;
               margin-right: 40px;
               transition: 0.2s;
-              .musicSize {
-                color: rgb(193, 243, 226);
-                transition: 0.2s;
-                &:hover {
-                  color: rgb(109, 247, 201);
-                }
-              }
+             
 
               &:hover {
                 cursor: pointer;
@@ -238,10 +211,6 @@ h3 {
           display: inline-block;
           margin-right: 20px;
         }
-
-        .musicSize {
-          color: rgb(170, 240, 240);
-        }
       }
     }
     #singleSongs {
@@ -250,7 +219,7 @@ h3 {
       width: 96%;
       height: 420px;
       border-radius: 10px;
-      background: rgba(95, 158, 160, 0.05);
+      // background: rgba(95, 158, 160, 0.05);
       box-sizing: border-box;
       overflow-x: hidden;
 
@@ -258,91 +227,9 @@ h3 {
         display: none;
       }
 
-      .SingsList {
-        position: relative;
-        display: flex;
-        justify-content: space-between;
-        margin: 5px auto;
-        width: 100%;
-        height: 30px;
-        line-height: 30px;
-        padding: 0 10px;
-        background-color: rgba(99, 187, 162, 0.144);
-        border-radius: 15px;
-        box-sizing: border-box;
-        line-height: 30px;
-        transition: 0.2s;
-
-        .song-list {
-          display: inline-block;
-
-          text-align: center;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .song-list-option {
-          position: absolute;
-          width: 130px;
-          right: 10px;
-
-          span {
-            display: inline-block;
-            margin: 0 5px;
-            transition: 0.2s;
-
-            &:hover {
-              color: bisque;
-              cursor: pointer;
-            }
-          }
-        }
-
-        &:hover {
-          color: aqua;
-          transform: scale(1.01);
-        }
-      }
+      
     }
 
-    .music-list {
-      display: flex;
-      padding: 10px 10px;
-      width: 1080px;
-      overflow: hidden;
-      color: rgba(255, 255, 255, 1);
-      font-weight: bolder;
-      -o-text-overflow: ellipsis;
-      text-overflow: ellipsis;
-      // background: rgba(95, 158, 160, 0.322);
-      transition: 0.2s;
-
-      .music-list-span {
-        display: inline-block;
-        width: 270px;
-        text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-      .option {
-        display: inline-block;
-        width: 250px;
-        text-align: center;
-
-        span {
-          display: inline-block;
-          width: 30px;
-          &:hover {
-            cursor: pointer;
-          }
-        }
-      }
-      &:hover {
-        background: rgba(76, 152, 155, 0.527);
-      }
-    }
   }
 }
 .pagination {
