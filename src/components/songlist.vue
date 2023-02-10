@@ -17,11 +17,11 @@
 
       <div class="option">
         <!-- 试听 -->
-        <span @click="listenMusic(item.id, item.fee, index, item.noCopyrightRcmd)"><i class="el-icon-headset iconhover"></i></span>
+        <span @click="listenMusic(item)"><i class="el-icon-headset iconhover"></i></span>
         <!-- 添加到播放列表 -->
         <span
           v-if="item.fee == 0 || item.fee == 8"
-          @click.stop="playMusic(item.id, item.fee, index, item.noCopyrightRcmd)"
+          @click.stop="playMusic(item)"
         ><i class="el-icon-folder-add iconhover"></i>
         </span>
         <!-- 播放MV -->
@@ -64,18 +64,18 @@ export default {
       });
     },
     //试听音乐
-    listenMusic(id, fee, index) {
+    listenMusic(songDetals) {
       //获取播放音乐链接
       var that = this;
       var list = "songlist";
-      listenMusic(id, fee, index, list, that);
+      listenMusic(songDetals, that);
     },
     //添加歌曲到播放列表
-    playMusic(id, fee, index) {
+    playMusic(songDetals) {
       //获取播放音乐链接
       var that = this;
       var list = "songlist";
-      playMusic(id, fee, index, list, that);
+      playMusic(songDetals, that);
     },
     playMV(mvId) {
       //获取mv播放链接

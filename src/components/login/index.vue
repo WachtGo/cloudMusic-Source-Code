@@ -1,4 +1,5 @@
 <template>
+<!-- 暂时开启该功能 -->
   <div>
     <div class="login"
          @click="goLogin">登录</div>

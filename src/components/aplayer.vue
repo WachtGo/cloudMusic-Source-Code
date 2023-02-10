@@ -34,7 +34,7 @@
         :key="item.id"
       >
         <div class="auditionTitle">正在试听:</div>
-        <div class="auditionMusic" @click="playAudition(index)">
+        <div class="auditionMusic" @click="playAudition()">
           <span class="inline-block auditionName">{{ item.name }}</span>
           <span class="inline-block auditionArtist">{{ item.artist }}</span>
 
@@ -51,19 +51,20 @@
         </div>
       </div>
     </div>
-    <aplayer
-      v-show="audio.length !== 0 && musicAudioStatu === 0"
-      fixed
-      autoplay
-      ref="aplayer"
-      :audio="audio"
-      style="color: rgb(120, 120, 120)"
-    >
-    </aplayer>
-
-    <div v-show="audition.length !== 0 && musicAudioStatu === 1">
+    <div v-if="audio.length !== 0 && musicAudioStatu === 0">
       <aplayer
-      autoplay
+        autoplay
+        fixed
+        ref="aplayer"
+        :audio="audio"
+        style="color: rgb(120, 120, 120)"
+      >
+      </aplayer>
+    </div>
+
+    <div v-if="audition.length !== 0 && musicAudioStatu === 1">
+      <aplayer
+        autoplay
         :fixed="true"
         ref="auditions"
         :audio="audition"
@@ -84,7 +85,7 @@ export default {
     ...mapState("aplayer", ["audio", "audition", "musicAudioStatu"]),
   },
   mounted() {},
- 
+
   methods: {
     ...mapMutations("aplayer", [
       "deleteMUSIC",
@@ -105,10 +106,10 @@ export default {
       this.deleteMUSIC(idx);
     },
     //试听的播放/暂停
-    playAudition(idx) {
+    playAudition() {
       this.changeAPLAYER(1); //切换到试听播放器
       let auditions = this.$refs.auditions; //获取当前播放器
-      auditions.switch(idx); //切换到播放当前下标的歌曲
+      auditions.switch(); //切换到播放当前下标的歌曲
       auditions.toggle(); //切换播放/暂停
     },
     //删除试听

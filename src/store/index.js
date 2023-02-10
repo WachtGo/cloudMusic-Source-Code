@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import aplayer from "./aplayer";
-import homepage from "./homePage";
+import homePage from "./homePage";
 import musicPlayList from "./musicPlayList";
 import createPersistedState from "vuex-persistedstate";
 // import {getToken,setToken,removeToken} from "@/utils/auth"
@@ -16,7 +16,7 @@ export default new Vuex.Store({
   ],
   modules: {
     aplayer,
-    homepage,
+    homePage,
     musicPlayList,
   },
 });

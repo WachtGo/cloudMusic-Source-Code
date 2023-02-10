@@ -19,14 +19,15 @@
                 时长&nbsp;&nbsp;-&nbsp;&nbsp;<span style="color: antiquewhite">{{ songDetails.dt }}</span></span>
               <div class="option">
                 <div class="flexBetween">
+                  <!-- 试听 -->
                   <span class="inline-block"
                         style="margin-right: 5px"
-                        @click="listenMusic(songDetails.id, songDetails.fee)"><i class="el-icon-headset iconhover"></i></span>
+                        @click="listenMusic(songDetails)"><i class="el-icon-headset iconhover"></i></span>
                   <!-- 添加到播放列表 -->
                   <span class="inline-block"
                         style="margin-right: 5px"
                         v-if="songDetails.fee == 0 || songDetails.fee == 8"
-                        @click.stop="playMusic(songDetails.id, songDetails.fee)"><i class="el-icon-folder-add iconhover"></i>
+                        @click.stop="playMusic(songDetails)"><i class="el-icon-folder-add iconhover"></i>
                   </span>
                   <span class="inline-block"
                         style=""
@@ -85,12 +86,10 @@
 <script>
 import {
   getDownloadUrl,
-  playMusicUrl,
-  getSongLyric,
   getSongDetails,
   getSongComment,
 } from '@/api/api'
-import { download } from '@/utils/commonApi'
+import { download } from "@/utils/commonApi";
 export default {
   // props: ['songId'],
   data() {
@@ -160,143 +159,118 @@ export default {
         // console.log("歌曲评论：", res.data);
       })
     },
-    //获取播放音乐链接
-    listenMusic(id, fee) {
-      var that = this
-      var songUrlAdd = null //歌曲地址
-      var songlrc = '' //歌曲歌词
-      if (that.songDetails.timer) {
-        if (fee == 1) {
-          that.$message({
-            message: 'VIP歌曲 - 只能试听30s',
-            type: 'warning',
-          })
-        }
-        playMusicUrl({
-          id: id,
-        }).then((res) => {
-          // console.log("播放音乐链接", res.data.data[0].url);
-          if (res.data.data[0].url) {
-            songUrlAdd = res.data.data[0].url
-          } else {
-            that.$message({
-              message: '这首歌暂无版权',
-              type: 'error',
-            })
-            that.songDetails.timer = false
-            setTimeout(() => {
-              that.songDetails.timer = true
-            }, 3000)
-            return
-          }
-        }),
-          // 获取歌词
-          getSongLyric({
-            id: id,
-          }).then((res) => {
-            songlrc = res.data.lrc.lyric
-          }),
-          // 获取歌曲信息
-          getSongDetails({
-            ids: id,
-          }).then((res) => {
-            // console.log("获取歌曲信息：", res.data.songs);
-            if (songUrlAdd != null) {
-              that.$store.commit('addAUDITION', {
-                name: res.data.songs[0].name, //歌曲名
-                artist: res.data.songs[0].ar[0].name, //作者
-                url: songUrlAdd,
-                cover: res.data.songs[0].al.picUrl,
-                lrc: songlrc,
-                id: id,
-                timer: true, //试听中添加，防止用户连点消耗性能，在添加播放列表方法中可使用到
-              })
-              that.songDetails.timer = false
-              setTimeout(() => {
-                that.songDetails.timer = true
-              }, 3000)
-            }
-          })
+     //试听音乐
+    listenMusic(songDetails) {
+      console.log('歌曲信息---：',songDetails)
+      if (songDetails.timer) {
+      //获取播放音乐链接
+      if (songDetails.noCopyrightRcmd) {
+      this.$message({
+        message: "这首歌暂无版权",
+        type: "error",
+      });
+      songDetails.timer = false;
+      setTimeout(() => {
+        songDetails.timer = true;
+      }, 3000);
+      return;
+    }
+    if (songDetails.fee == 1) {
+      this.$message({
+        message: "VIP歌曲 - 只能试听30s",
+        type: "warning",
+      });
+    }
+    // 获取歌词
+    // getSongLyric({
+    //   id: id,
+    // }).then((res) => {
+    //   songlrc = res.data.lrc.lyric;
+    // }),
+    this.$store.commit("aplayer/addAUDITION", {
+      name: songDetails.name, //歌曲名
+      artist: songDetails.ar[0].name, //作者
+      // url: songUrlAdd,
+      url: `https://music.163.com/song/media/outer/url?id=${songDetails.id}.mp3`,
+      cover: songDetails.al.picUrl,
+      //   lrc: songlrc,
+      id: songDetails.id,
+    });
+    songDetails.timer = false;
+    setTimeout(() => {
+      songDetails.timer = true;
+    }, 3000);
       }
     },
-    //添加到播放列表
-    playMusic(id, fee) {
+    //添加歌曲到播放列表
+    playMusic(songDetails) {
+      if (songDetails.timer) {
       //获取播放音乐链接
-      var that = this
-      var songUrlAdd = null
-      var songlrc = ''
-      if (that.songDetails.timer) {
-        if (fee == 1) {
-          that.$message({
-            message: 'VIP歌曲 - 只能试听30s',
-            type: 'warning',
-          })
-        }
-        playMusicUrl({
-          id: id,
-        }).then((res) => {
-          // console.log("播放音乐链接", res.data.data[0].url);
-          if (res.data.data[0].url) {
-            songUrlAdd = res.data.data[0].url
-          } else {
-            that.$message({
-              message: '这首歌暂无版权',
-              type: 'error',
-            })
-            that.songDetails.timer = false
-            setTimeout(() => {
-              that.songDetails.timer = true
-            }, 3000)
-            return
-          }
-        }),
-          // 获取歌词
-          getSongLyric({
-            id: id,
-          }).then((res) => {
-            songlrc = res.data.lrc.lyric
-          }),
-          // 获取歌曲信息
-          getSongDetails({
-            ids: id,
-          }).then((res) => {
-            // console.log("获取歌曲信息，添加到播放器：", res.data.songs);
-            if (songUrlAdd != null) {
-              that.$store.commit('addSONG', {
-                name: res.data.songs[0].name, //歌曲名
-                artist: res.data.songs[0].ar[0].name, //作者
-                url: songUrlAdd,
-                cover: res.data.songs[0].al.picUrl,
-                lrc: songlrc,
-                id: id,
-                // theme: that.randomColor(),
-              })
-              // console.log(
-              //   that.$store.state.audio,
-              //   "添加歌曲后的歌曲播放列表-----"
-              // );
-              that.songDetails.timer = false
-              setTimeout(() => {
-                that.songDetails.timer = true
-              }, 3000)
-            }
-          })
+      if (songDetails.noCopyrightRcmd) {
+      this.$message({
+        message: "这首歌暂无版权",
+        type: "error",
+      });
+      songDetails.timer = false;
+      setTimeout(() => {
+        songDetails.timer = true;
+      }, 3000);
+      return;
+    }
+    if (songDetails.fee == 1) {
+      this.$message({
+        message: "VIP歌曲 - 只能试听30s",
+        type: "warning",
+      });
+    }
+    // 获取歌词
+    // getSongLyric({
+    //   id: id,
+    // }).then((res) => {
+    //   songlrc = res.data.lrc.lyric;
+    // }),
+    this.$store.commit("aplayer/addSONG", {
+      name: songDetails.name, //歌曲名
+      artist: songDetails.ar[0].name, //作者
+      // url: songUrlAdd,
+      url: `https://music.163.com/song/media/outer/url?id=${songDetails.id}.mp3`,
+      cover: songDetails.al.picUrl,
+      //   lrc: songlrc,
+      id: songDetails.id,
+    });
+    songDetails.timer = false;
+    setTimeout(() => {
+      songDetails.timer = true;
+    }, 3000);
       }
+    },
+    playMV(mvId) {
+      //获取mv播放链接
+      this.$router.push({
+        name: "mvPlay",
+        params: { mvId: mvId },
+      });
     },
     //获取歌曲下载地址
     getDownloadUrl(songId, songName) {
-      var that = this
+      var that = this;
+      that.$message({
+        type: "success",
+        message: "正在尝试下载",
+      });
       let params = {
         id: songId,
-      }
+      };
       getDownloadUrl(params).then((res) => {
+        // console.log('歌曲下载地址：', res.data)
         // console.log("歌曲下载地址：", res.data.data.url);
-        download(res.data.data.url, songName)
+        // download(res.data.data.url, songName)
+        download(res.data.data[0].url, songName);
         that.$message({
-          type: 'success',
-          message: '开始下载了',
-        })
-      })
+          type: "success",
+          message: "开始下载了",
+        });
+      });
     },
     playMV(mvId) {
       //获取mv播放链接

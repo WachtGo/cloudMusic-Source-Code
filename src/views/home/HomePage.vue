@@ -31,14 +31,14 @@ export default {
     }
   },
   computed: {
-    ...mapState('homepage', ['homeTags']),
+    ...mapState('homePage', ['homeTags']),
   },
   mounted() {
     this.tags = document.querySelectorAll('.tags-select')
     this.tagsChange(this.homeTags.routerPage) //首页重定向时，显示标签下划线
   },
   methods: {
-    ...mapMutations("homepage", ["changehomeTAG"]),
+    ...mapMutations("homePage", ["changehomeTAG"]),
     //切换标签
     tagsChange(page, goRouter) {
       //改变标签样式
