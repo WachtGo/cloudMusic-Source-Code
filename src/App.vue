@@ -66,7 +66,7 @@ export default {
   width: 1200px;
   height: 820px;
   #app{
-     background: url(@/img/background8.jpeg);
+     background: url(@/static/img/background8.jpeg);
   }
  
 }

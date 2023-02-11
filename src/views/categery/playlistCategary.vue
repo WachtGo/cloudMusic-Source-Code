@@ -250,7 +250,8 @@ export default {
     width: 600px;
     height: 300px;
     padding: 10px;
-    background: url(@/img/background8.jpeg);;//---------------需要与主题一同更改
+    background: url(@/static/img/background8.jpeg);//---------------需要与主题一同更改
+    // background-size: cover;
     border-radius: 20px;
     overflow-x: hidden;
     box-sizing: border-box;

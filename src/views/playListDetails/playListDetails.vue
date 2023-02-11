@@ -39,9 +39,9 @@
           </div>
         </div>
         <!-- 歌单歌曲列表 -->
-        <h3 style="margin: 5px 0 10px 0">歌曲 (<i v-if="musicList.length === 0"
+        <h3 style="margin: 5px 0 10px 0">歌曲 -<i v-if="musicList.length === 0"
              class="el-icon-loading"></i> <span style="font-size:18px;"
-                v-if="musicList.length !==0">{{musicList.length }}</span> 首 )</h3>
+                v-if="musicList.length !==0">{{musicList.length }}</span> 首 </h3>
 
         <ul class="wrap-center">
           <songlist :songlist="musicList"></songlist>

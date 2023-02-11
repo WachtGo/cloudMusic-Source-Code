@@ -114,7 +114,7 @@ export default {
   width: 250px;
   color: #ccc;
   text-align: center;
-  max-height: 20px;
+  max-height: 19px;
   overflow: hidden;
   transition: 0.3s;
 
@@ -123,7 +123,7 @@ export default {
 
     transition: 0.2s;
     max-height: 300px;
-    background: url(@/img/background8.jpeg);
+    background: url(@/static/img/background8.jpeg);
     overflow-x: hidden;
     &::-webkit-scrollbar {
       display: none;

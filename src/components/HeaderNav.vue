@@ -5,80 +5,47 @@
       <header class="head">
         <!-- 首页 -->
         <div class="cl">
-          <h3
-            @click="goHome"
-            goHome
-          >首页</h3>
+          <h3 @click="goHome" goHome>首页</h3>
         </div>
         <!-- 搜索框 -->
         <div class="center cl">
           <div class="search">
             <div class="search-input">
-              <input
-              id="searchInput"
-                @focus="switchChange"
-                @blur="searchSwitch = false"
-                @keyup.enter="enterSearch"
-                type="text"
-                :placeholder="placeholder"
-                v-model="searchTerms"
-              />
+              <input id="searchInput" @focus="switchChange" @blur="searchSwitch = false" @keyup.enter="enterSearch"
+                type="text" :placeholder="placeholder" v-model="searchTerms" />
             </div>
           </div>
         </div>
         <!-- 返回 -->
         <div class="cl">
           <div class="gobackWrap">
-            <div
-              class="goBack"
-              @click="goBack(-1)"
-            >&lt;
-            </div>&nbsp;
-            <div
-              class="goBack"
-              @click="goBack(1)"
-            >&gt;
-            </div>
+            <div class="goBack" @click="goBack(-1)">&lt;</div>
+            &nbsp;
+            <div class="goBack" @click="goBack(1)">&gt;</div>
           </div>
         </div>
       </header>
     </div>
 
     <!-- 搜索显示的搜索项列表 -->
-    <ul
-      class="search-box"
-      v-show="searchSwitch"
-    >
-    <h3
-            style="text-align:center"
-            v-show="musicList.length === 0"
-          ><i class="el-icon-loading"></i></h3>
+    <ul id="search-box" v-show="searchSwitch" @scroll="searchScroll">
+      
       <!-- searchSwitch -->
-      <li
-        class="suggest-list"
-        v-for="(item, index) in musicList"
-        :key="index"
-        @mousedown="selectMusic(item.name, item.ar[0].name)"
-      >
-        <span
-          class="suggest-list-music"
-          style="width: 310px"
-        >{{
+      <li class="suggest-list" v-for="(item, index) in musicList" :key="index"
+        @mousedown="selectMusic(item.name, item.ar[0].name)">
+        <span class="suggest-list-music" style="width: 310px">{{
           item.name
         }}</span>
-        <span
-          class="suggest-list-music"
-          style="width: 180px"
-        >{{
+        <span class="suggest-list-music" style="width: 180px">{{
           item.ar[0].name
         }}</span>
-        <span
-          class="suggest-list-music"
-          style="width: 50px"
-        >{{
+        <span class="suggest-list-music" style="width: 50px">{{
           item.dt
         }}</span>
       </li>
+      <h3 style="text-align: center" v-if="reloadShow">
+        <i class="el-icon-loading"></i>
+      </h3>
     </ul>
 
     <!-- <router-view></router-view> -->
@@ -90,11 +57,15 @@ import { getSearchDefault, getMusicInfo } from "@/api/api";
 export default {
   data() {
     return {
-      searchSwitch: false,
-      searchTerms: "",
+      searchSwitch: false,//搜索窗口开关
+      searchTerms: "",//输入框内容
       placeholder: "",
-      musicList: [],
-      inputTimer: null,
+      musicList: [],//搜索列表
+      inputTimer: null,//搜索节流
+      reloadShow:null,//是否在请求数据
+      page: 1,//搜索列表页数
+      limit: 30,//搜索每次请求的数
+      count:15,//最后一次搜索请求的数量，用于判断是否全部加载完毕
     };
   },
   directives: {
@@ -153,10 +124,10 @@ export default {
         this.getMusicInfo(this.placeholder);
       }
     },
-   
+
     selectMusic(keywords, artist) {
       this.placeholder = `${keywords}      ${artist}`;
-      console.log(this.placeholder,'---placeholde')
+      // console.log(this.placeholder, "---placeholde");
       this.searchTerms = "";
       //选择歌曲进入列表
       this.$router.push({
@@ -187,39 +158,66 @@ export default {
           clearTimeout(this.inputTimer);
         }
         this.inputTimer = setTimeout(() => {
+          this.musicList = [];
+          this.page = 1;
           this.getMusicInfo(this.searchTerms);
           clearTimeout(this.inputTimer);
         }, 500);
       }
     },
-    getMusicInfo(searchTerms) {
-      this.musicList = [];
+
+    //搜索懒加载
+    searchScroll() {
+      //获取现在滚动高度
+      let scrollTop = document.getElementById('search-box').scrollTop
+      // console.log('滚动高度----:',scrollTop)
+      // 获取可视区域高度
+      let clientHeight = document.getElementById('search-box').clientHeight;
+      // 获取文档总高度
+      let scrollHeight = document.getElementById('search-box').scrollHeight;
+      // 滚动到底部
+      if (scrollTop + clientHeight === scrollHeight) {
+        // console.log('到底部了');
+        // console.log(this.reloadShow,this.count)
+        if(this.reloadShow || this.limit>this.count) return
+        this.page += 1
+        this.getMusicInfo(this.searchTerms);
+      }
+    },
+    //搜索
+   async getMusicInfo(searchTerms) {
+    this.reloadShow = true
       //获取歌曲列表
       let params = {
         keywords: searchTerms,
-        limit: 50,
-        offset: "",
+        limit: this.limit,
+        offset: this.limit * this.page,
         type: "",
       };
-      getMusicInfo(params).then((res) => {
-        
-        this.musicList = res.data.result.songs;
+     await getMusicInfo(params).then((res) => {
+        // console.log(res)
+        let listBox = res.data.result.songs;
         this.count = res.data.result.songCount;
+        // this.count = res.data.result.songs.length;
+
         //将歌曲时长转换成分秒格式
-        for (let i = 0; i < this.musicList.length; i++) {
-          let min = parseInt(this.musicList[i].dt / 1000 / 60);
-          let sec = parseInt((this.musicList[i].dt / 1000) % 60);
+        for (let i = 0; i < listBox.length; i++) {
+          let min = parseInt(listBox[i].dt / 1000 / 60);
+          let sec = parseInt((listBox[i].dt / 1000) % 60);
           if (min < 10) {
             min = "0" + min;
           }
           if (sec < 10) {
             sec = "0" + sec;
           }
-          this.musicList[i].dt = min + ":" + sec;
+          listBox[i].dt = min + ":" + sec;
           // console.log(this.musicList[i].song.duration)
         }
+        this.musicList = this.musicList.concat(listBox)
+        this.reloadShow = false
         // console.log("音乐列表：", res.data.result.songs);
       });
+      
     },
     getSearchDefault() {
       //默认搜索关键字
@@ -240,20 +238,23 @@ export default {
   padding: 10px 50px;
   height: 100%;
   // line-height: 50px;
-  background: rgba(0,0,0, 0.05);
+  background: rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
 
   .cl {
     height: 100%;
+
     h3 {
       height: 30px;
       line-height: 30px;
       transition: 0.2s;
+
       &:hover {
         cursor: pointer;
         color: rgb(95, 205, 248);
       }
     }
+
     .gobackWrap {
       display: flex;
       align-content: center;
@@ -270,20 +271,25 @@ export default {
         font-weight: bolder;
         text-align: center;
         transition: 0.2s;
+
         &:hover {
           color: rgb(32, 147, 192);
         }
       }
+
       &:hover {
         cursor: pointer;
       }
     }
   }
+
   .search {
     height: 30px;
+
     h3 {
       display: inline-block;
     }
+
     .search-input {
       height: 100%;
       display: inline-block;
@@ -293,7 +299,8 @@ export default {
         font-size: 16px;
         width: 300px;
         height: 30px;
-        font-weight: bolder;
+        font-family: 三极行楷;
+        // font-weight: bolder;
         border-style: none;
         border-radius: 10px;
         text-align: center;
@@ -305,6 +312,7 @@ export default {
           outline: none;
         }
       }
+
       ::-webkit-input-placeholder {
         font-size: 16px;
         color: rgba(253, 253, 253, 0.61);
@@ -312,7 +320,8 @@ export default {
     }
   }
 }
-.search-box {
+
+#search-box {
   z-index: 100;
   position: absolute;
   right: 0;
@@ -321,7 +330,7 @@ export default {
   width: 600px;
   height: 300px;
   border-radius: 0 0 20px 20px;
-  background: url(@/img/background8.jpeg);//-------------需要与主题更改
+  background: url(@/static/img/background8.jpeg); //-------------需要与主题更改
   overflow-x: hidden;
 
   cursor: default;
@@ -329,6 +338,7 @@ export default {
   &::-webkit-scrollbar {
     display: none;
   }
+
   .suggest-list {
     margin: 5px 10px;
     padding: 0 10px;
@@ -349,6 +359,7 @@ export default {
       // color: rgb(94, 211, 211);
       background: rgba(250, 250, 250, 0.062);
     }
+
     .suggest-list-music {
       display: inline-block;
       margin-left: 5px;

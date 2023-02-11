@@ -79,7 +79,7 @@ export default {
         id: that.albumId,
       }
       getAlbumContent(params).then((res) => {
-        console.log("专辑信息---：", res.data.album);
+        // console.log("专辑信息---：", res.data.album);
         // console.log("专辑歌曲---：", res.data.songs);
         that.albumDesc = res.data.album
         that.albumSongs = res.data.songs

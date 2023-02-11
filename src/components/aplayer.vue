@@ -34,7 +34,7 @@
         :key="item.id"
       >
         <div class="auditionTitle">正在试听:</div>
-        <div class="auditionMusic" @click="playAudition()">
+        <div class="auditionMusic" @click="playAudition(0)">
           <span class="inline-block auditionName">{{ item.name }}</span>
           <span class="inline-block auditionArtist">{{ item.artist }}</span>
 
@@ -64,7 +64,7 @@
 
     <div v-if="audition.length !== 0 && musicAudioStatu === 1">
       <aplayer
-        autoplay
+       autoplay
         :fixed="true"
         ref="auditions"
         :audio="audition"
@@ -94,9 +94,11 @@ export default {
     ]),
 
     //播放指定歌曲
-    playMusic(idx) {
-      this.changeAPLAYER(0); //切换播放器
+  async  playMusic(idx) {
+    //await,防止还未切换播放器就开始请求，使得aplayer出现undefine
+    await  this.changeAPLAYER(0); //切换播放器
       let aplayer = this.$refs.aplayer; //获取当前播放器
+      // console.log(aplayer)
       aplayer.switch(idx); //切换到播放当前下标的歌曲
       aplayer.toggle(); //切换播放/暂停
     },
@@ -106,10 +108,11 @@ export default {
       this.deleteMUSIC(idx);
     },
     //试听的播放/暂停
-    playAudition() {
-      this.changeAPLAYER(1); //切换到试听播放器
+   async playAudition() {
+     await this.changeAPLAYER(1); //切换到试听播放器
       let auditions = this.$refs.auditions; //获取当前播放器
-      auditions.switch(); //切换到播放当前下标的歌曲
+      // console.log(auditions)
+      // auditions.switch(0); //切换到播放当前下标的歌曲
       auditions.toggle(); //切换播放/暂停
     },
     //删除试听

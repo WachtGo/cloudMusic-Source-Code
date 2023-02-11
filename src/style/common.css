@@ -19,7 +19,7 @@ img {
 }
 body {
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffe5cc+0,b2f497+17,e2d69c+35,5edce0+50,bbe298+69,f9eaf7+86,91e2a2+100 */
-  background-image: url(../img/background.jpg);
+  background-image: url(../img/bg1.jpg);
 }
 body::-webkit-scrollbar {
   /* display: none; */

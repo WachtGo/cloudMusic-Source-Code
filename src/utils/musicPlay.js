@@ -3,7 +3,7 @@ import { playMusicUrl, getSongLyric } from "@/api/api";
 //添加歌曲到播放列表
 export async function playMusic(songDetals, that) {
   //获取播放音乐链接
-  console.log(songDetals, "歌曲信息----");
+  // console.log(songDetals, "歌曲信息----");
   let songlrc = ""; //歌词
   if (songDetals.timer) {
     if (songDetals.noCopyrightRcmd) {
@@ -47,7 +47,7 @@ export async function playMusic(songDetals, that) {
 
 //播放试听音乐
 export async function listenMusic(songDetals, that) {
-  console.log(songDetals, "歌曲信息----");
+  // console.log(songDetals, "歌曲信息----");
   let songUrlAdd = null;
   let songlrc = "";
   if (songDetals.timer) {

@@ -4,11 +4,9 @@
     <div class="descript"></div>
     <div>
       <ul>
-        <div class="details"
-             v-if="songId">
+        <div class="details" v-if="songId">
           <div class="details-img">
-            <img :src="songDetails.al.picUrl"
-                 alt="" />
+            <img :src="songDetails.al.picUrl" alt="" />
           </div>
           <div class="detailsRight">
             <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
@@ -20,25 +18,22 @@
               <div class="option">
                 <div class="flexBetween">
                   <!-- 试听 -->
-                  <span class="inline-block"
-                        style="margin-right: 5px"
-                        @click="listenMusic(songDetails)"><i class="el-icon-headset iconhover"></i></span>
+                  <span class="inline-block" style="margin-right: 5px" @click="listenMusic(songDetails)"><i
+                      class="el-icon-headset iconhover"></i></span>
                   <!-- 添加到播放列表 -->
-                  <span class="inline-block"
-                        style="margin-right: 5px"
-                        v-if="songDetails.fee == 0 || songDetails.fee == 8"
-                        @click.stop="playMusic(songDetails)"><i class="el-icon-folder-add iconhover"></i>
+                  <span class="inline-block" style="margin-right: 5px"
+                    v-if="songDetails.fee === 0 || songDetails.fee === 8" @click.stop="playMusic(songDetails)"><i
+                      class="el-icon-folder-add iconhover"></i>
                   </span>
-                  <span class="inline-block"
-                        style=""
-                        v-if="Boolean(songDetails.mv)"
-                        @click="playMV(songDetails.mv)"><i class="el-icon-video-camera iconhover"></i>&nbsp;
+                  <span class="inline-block" style="" v-if="Boolean(songDetails.mv)" @click="playMV(songDetails.mv)"><i
+                      class="el-icon-video-camera iconhover"></i>&nbsp;
                   </span>
 
-                  <span class="inline-block"
-                        style="margin-right: 5px"
-                        v-if="songDetails.fee == 0 || songDetails.fee == 8"
-                        @click="getDownloadUrl(songDetails.id, songDetails.name)"><i class="el-icon-download iconhover"></i>&nbsp;</span><span v-if="songDetails.fee != 0">&nbsp;&nbsp;&nbsp; </span>
+                  <span class="inline-block" style="margin-right: 5px"
+                    v-if="songDetails.fee === 0 || songDetails.fee === 8"
+                    @click="getDownloadUrl(songDetails.id, songDetails.name)"><i
+                      class="el-icon-download iconhover"></i>&nbsp;</span><span
+                    v-if="songDetails.fee !== 0">&nbsp;&nbsp;&nbsp; </span>
                 </div>
               </div>
             </div>
@@ -53,28 +48,24 @@
           <h3 style="margin: 5px 0 10px 0">
             <span v-if="commentCount">评论({{ commentCount }}条)</span>
           </h3>
-          <div class="hoverBackColor"
-               v-for="item in songComment"
-               :key="item.id">
-            <img :src="item.user.avatarUrl"
-                 style="width: 50px; border-radius: 25px" />
-            <span style="display: inline-block; margin-left: 10px; font-size: 15px">{{ item.user.nickname }}&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+          <div class="hoverBackColor" v-for="item in songComment" :key="item.id">
+            <img :src="item.user.avatarUrl" style="width: 50px; border-radius: 25px" />
+            <span style="display: inline-block; margin-left: 10px; font-size: 15px">{{
+              item.user.nickname
+            }}&nbsp;&nbsp;:&nbsp;&nbsp;</span>
             <span style="margin-left: 20px; width: 750px">
               {{ item.content }}
             </span>
             <div style="height: 30px">
-              <span style="float: right; width: 130px">&nbsp;&nbsp;时间：{{ item.timeStr }}</span><span style="float: right">{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span>
+              <span style="float: right; width: 130px">&nbsp;&nbsp;时间：{{ item.timeStr }}</span><span
+                style="float: right">{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span>
             </div>
           </div>
 
           <div class="pagination">
-            <el-pagination v-if="commentCount != 0"
-                           @current-change="songhandleCurrentChange"
-                           :current-page.sync="currentPage"
-                           :page-size="7"
-                           layout="prev, pager, next, jumper"
-                           :total="commentCount"
-                           :background="true">
+            <el-pagination v-if="commentCount !== 0" @current-change="songhandleCurrentChange"
+              :current-page.sync="currentPage" :page-size="7" layout="prev, pager, next, jumper" :total="commentCount"
+              :background="true">
             </el-pagination>
           </div>
         </div>
@@ -98,11 +89,11 @@ export default {
       currentPage: 1,
       songUrlAdd: null,
       songId: '', //接收的歌曲id
-      songDetails: { al: { picUrl: '' } }, //歌曲详情
+      songDetails: { al: { picUrl: '' }, ar:[{name:''}],alia:[], fee: 0 }, //歌曲详情
       songComment: [],
       commentCount: 0,
       //搜索歌曲总数
-      count: '',
+      count: 0,
     }
   },
   mounted() {
@@ -125,12 +116,12 @@ export default {
       that.getSongComment()
     },
     //获取歌曲详情
-    getSongDetails() {
+    async getSongDetails() {
       var that = this
       let params = {
         ids: that.songId,
       }
-      getSongDetails(params).then((res) => {
+      await getSongDetails(params).then((res) => {
         that.songDetails = res.data.songs[0]
         that.$set(that.songDetails, 'timer', true)
         let min = parseInt(that.songDetails.dt / 1000 / 60)
@@ -159,89 +150,89 @@ export default {
         // console.log("歌曲评论：", res.data);
       })
     },
-     //试听音乐
+    //试听音乐
     listenMusic(songDetails) {
-      console.log('歌曲信息---：',songDetails)
+      // console.log('歌曲信息---：',songDetails)
       if (songDetails.timer) {
-      //获取播放音乐链接
-      if (songDetails.noCopyrightRcmd) {
-      this.$message({
-        message: "这首歌暂无版权",
-        type: "error",
-      });
-      songDetails.timer = false;
-      setTimeout(() => {
-        songDetails.timer = true;
-      }, 3000);
-      return;
-    }
-    if (songDetails.fee == 1) {
-      this.$message({
-        message: "VIP歌曲 - 只能试听30s",
-        type: "warning",
-      });
-    }
-    // 获取歌词
-    // getSongLyric({
-    //   id: id,
-    // }).then((res) => {
-    //   songlrc = res.data.lrc.lyric;
-    // }),
-    this.$store.commit("aplayer/addAUDITION", {
-      name: songDetails.name, //歌曲名
-      artist: songDetails.ar[0].name, //作者
-      // url: songUrlAdd,
-      url: `https://music.163.com/song/media/outer/url?id=${songDetails.id}.mp3`,
-      cover: songDetails.al.picUrl,
-      //   lrc: songlrc,
-      id: songDetails.id,
-    });
-    songDetails.timer = false;
-    setTimeout(() => {
-      songDetails.timer = true;
-    }, 3000);
+        //获取播放音乐链接
+        if (songDetails.noCopyrightRcmd) {
+          this.$message({
+            message: "这首歌暂无版权",
+            type: "error",
+          });
+          songDetails.timer = false;
+          setTimeout(() => {
+            songDetails.timer = true;
+          }, 3000);
+          return;
+        }
+        if (songDetails.fee == 1) {
+          this.$message({
+            message: "VIP歌曲 - 只能试听30s",
+            type: "warning",
+          });
+        }
+        // 获取歌词
+        // getSongLyric({
+        //   id: id,
+        // }).then((res) => {
+        //   songlrc = res.data.lrc.lyric;
+        // }),
+        this.$store.commit("aplayer/addAUDITION", {
+          name: songDetails.name, //歌曲名
+          artist: songDetails.ar[0].name, //作者
+          // url: songUrlAdd,
+          url: `https://music.163.com/song/media/outer/url?id=${songDetails.id}.mp3`,
+          cover: songDetails.al.picUrl,
+          //   lrc: songlrc,
+          id: songDetails.id,
+        });
+        songDetails.timer = false;
+        setTimeout(() => {
+          songDetails.timer = true;
+        }, 3000);
       }
     },
     //添加歌曲到播放列表
     playMusic(songDetails) {
       if (songDetails.timer) {
-      //获取播放音乐链接
-      if (songDetails.noCopyrightRcmd) {
-      this.$message({
-        message: "这首歌暂无版权",
-        type: "error",
-      });
-      songDetails.timer = false;
-      setTimeout(() => {
-        songDetails.timer = true;
-      }, 3000);
-      return;
-    }
-    if (songDetails.fee == 1) {
-      this.$message({
-        message: "VIP歌曲 - 只能试听30s",
-        type: "warning",
-      });
-    }
-    // 获取歌词
-    // getSongLyric({
-    //   id: id,
-    // }).then((res) => {
-    //   songlrc = res.data.lrc.lyric;
-    // }),
-    this.$store.commit("aplayer/addSONG", {
-      name: songDetails.name, //歌曲名
-      artist: songDetails.ar[0].name, //作者
-      // url: songUrlAdd,
-      url: `https://music.163.com/song/media/outer/url?id=${songDetails.id}.mp3`,
-      cover: songDetails.al.picUrl,
-      //   lrc: songlrc,
-      id: songDetails.id,
-    });
-    songDetails.timer = false;
-    setTimeout(() => {
-      songDetails.timer = true;
-    }, 3000);
+        //获取播放音乐链接
+        if (songDetails.noCopyrightRcmd) {
+          this.$message({
+            message: "这首歌暂无版权",
+            type: "error",
+          });
+          songDetails.timer = false;
+          setTimeout(() => {
+            songDetails.timer = true;
+          }, 3000);
+          return;
+        }
+        if (songDetails.fee == 1) {
+          this.$message({
+            message: "VIP歌曲 - 只能试听30s",
+            type: "warning",
+          });
+        }
+        // 获取歌词
+        // getSongLyric({
+        //   id: id,
+        // }).then((res) => {
+        //   songlrc = res.data.lrc.lyric;
+        // }),
+        this.$store.commit("aplayer/addSONG", {
+          name: songDetails.name, //歌曲名
+          artist: songDetails.ar[0].name, //作者
+          // url: songUrlAdd,
+          url: `https://music.163.com/song/media/outer/url?id=${songDetails.id}.mp3`,
+          cover: songDetails.al.picUrl,
+          //   lrc: songlrc,
+          id: songDetails.id,
+        });
+        songDetails.timer = false;
+        setTimeout(() => {
+          songDetails.timer = true;
+        }, 3000);
       }
     },
     playMV(mvId) {
@@ -252,23 +243,23 @@ export default {
       });
     },
     //获取歌曲下载地址
-    getDownloadUrl(songId, songName) {
+    async getDownloadUrl(songId, songName) {
       var that = this;
       that.$message({
-        type: "success",
+        type: "warning",
         message: "正在尝试下载",
       });
       let params = {
         id: songId,
       };
-      getDownloadUrl(params).then((res) => {
+      await getDownloadUrl(params).then(async (res) => {
         // console.log('歌曲下载地址：', res.data)
         // console.log("歌曲下载地址：", res.data.data.url);
         // download(res.data.data.url, songName)
-        download(res.data.data[0].url, songName);
+        await download(res.data.data[0].url, songName);
         that.$message({
           type: "success",
-          message: "开始下载了",
+          message: "可以开始下载了",
         });
       });
     },
@@ -293,6 +284,7 @@ h3 {
   line-height: 30px;
   text-align: center;
 }
+
 .descript {
   display: flex;
   justify-content: space-between;
@@ -303,6 +295,7 @@ h3 {
   background: rgba(221, 239, 243, 0.05);
   box-sizing: border-box;
 }
+
 .list-wrap {
   margin: 10px auto 0;
   padding: 0 20px 10px;
@@ -321,6 +314,7 @@ h3 {
     &::-webkit-scrollbar {
       display: none;
     }
+
     .details {
       display: flex;
       justify-content: space-between;
@@ -373,6 +367,7 @@ h3 {
             }
           }
         }
+
         .songTns {
           margin: 10px 0 10px 0;
           width: 100%;
@@ -384,6 +379,7 @@ h3 {
             display: none;
           }
         }
+
         .playListNickName {
           display: inline-block;
           margin-bottom: 10px;
@@ -412,6 +408,7 @@ h3 {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
       .option {
         display: inline-block;
         width: 250px;
@@ -420,6 +417,7 @@ h3 {
         span {
           display: inline-block;
           width: 30px;
+
           &:hover {
             cursor: pointer;
           }
@@ -432,14 +430,17 @@ h3 {
     }
   }
 }
+
 .pagination {
   text-align: center;
   background: none !important;
 }
+
 /deep/ .el-pager {
   height: 30px !important;
   background: none !important;
 }
+
 /deep/ .number,
 /deep/ .btn-prev,
 /deep/ .btn-quicknext,
@@ -449,6 +450,7 @@ h3 {
   color: #f2fff7 !important;
   background: transparent !important;
 }
+
 /deep/ .number:hover,
 /deep/ .btn-prev:hover,
 /deep/ .btn-quicknext:hover,
@@ -457,20 +459,26 @@ h3 {
 /deep/ .more:hover {
   color: #f7a588 !important;
 }
+
 /deep/ .active {
   color: #f7a588 !important;
 }
+
 /deep/ .el-input__inner {
   border: none;
 }
+
 /deep/ .el-pagination__jump {
   color: #f7dd88 !important;
 }
+
 /deep/ .el-pagination {
   height: 30px !important;
 }
+
 .iconhover {
   transition: 0.2s;
+
   &:hover {
     color: rgb(247, 243, 45);
   }
