@@ -1,7 +1,7 @@
 
 <template>
   <div class="list-wrap">
-    <h3>歌手详情</h3>
+    <div class="pageName">歌手详情</div>
     <div class="descript"></div>
     <div>
       <div class="ul">
@@ -10,32 +10,43 @@
             <img :src="singerDesc.img1v1Url" alt="" />
           </div>
           <div class="detailsRight">
-            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
+            <div style="margin-left: 0px; text-align: left; font-size: 20px">
               {{ singerDesc.name }}
-            </h3>
+            </div>
             <div style="font-size: 14px">
               <div class="aliasClass">
                 <span class="playListNickName" v-if="singerDesc.alias[0]">{{
                   singerDesc.alias[0]
                 }}</span>
-                <span class="playListNickName" v-if="singerDesc.alias[1]">-</span><span class="playListNickName2">{{
-                  singerDesc.alias[1]
-                }}</span><span><br />
-                  <span style="color: antiquewhite"></span></span>
+                <span class="playListNickName" v-if="singerDesc.alias[1]"
+                  >-</span
+                ><span class="playListNickName2">{{ singerDesc.alias[1] }}</span
+                ><span
+                  ><br />
+                  <span style="color: antiquewhite"></span
+                ></span>
               </div>
 
               <div class="option">
                 <div class="flexBetween">
-                  <span class="inline-block" @click="getSingerSongList('songSwitch')">歌曲：<span class="musicSize">{{
-                    singerDesc.musicSize
-                  }}</span></span>
-                  <span class="inline-block" @click="getSingerAlbum('albumSwitch')">专辑：<span class="musicSize">{{
-                    singerDesc.albumSize
-                  }}</span>
+                  <span
+                    class="inline-block"
+                    @click="getSingerSongList('songSwitch')"
+                    >歌曲：<span class="musicSize">{{
+                      singerDesc.musicSize
+                    }}</span></span
+                  >
+                  <span
+                    class="inline-block"
+                    @click="getSingerAlbum('albumSwitch')"
+                    >专辑：<span class="musicSize">{{
+                      singerDesc.albumSize
+                    }}</span>
                   </span>
-                  <span class="inline-block" @click="getSingerMvList('mvSwitch')">MV：<span class="musicSize">{{
-                    singerDesc.mvSize
-                  }}</span>
+                  <span
+                    class="inline-block"
+                    @click="getSingerMvList('mvSwitch')"
+                    >MV：<span class="musicSize">{{ singerDesc.mvSize }}</span>
                   </span>
                 </div>
               </div>
@@ -43,7 +54,7 @@
           </div>
         </div>
         <div class="singerDetail" v-if="tagSwitch.detailSwitch">
-          <h3 style="font-size: 15px">简介：</h3>
+          <div style="font-size: 15px">简介：</div>
           <p>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ singerDesc.briefDesc }}
           </p>
@@ -54,41 +65,60 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span style="font-size：10px;"></span>
           </h3> -->
-          <h3 style="text-align:center" v-show="songList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="loading" v-show="songList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <div v-if="songList.length !== 0">
             <ul class="song-album-wrap">
               <songlist :songlist="songList"></songlist>
             </ul>
             <div class="pagination">
-              <el-pagination v-show="singerDesc.musicSize > 30" @current-change="songHandleCurrentChange"
-                :current-page.sync="songcurrentPage" :page-size="30" layout="prev, pager, next, jumper"
-                :total="singerDesc.musicSize" :background="true">
+              <el-pagination
+                v-show="singerDesc.musicSize > 30"
+                @current-change="songHandleCurrentChange"
+                :current-page.sync="songcurrentPage"
+                :page-size="30"
+                layout="prev, pager, next, jumper"
+                :total="singerDesc.musicSize"
+                :background="true"
+              >
               </el-pagination>
             </div>
           </div>
-
         </div>
 
         <div id="albumList" v-if="tagSwitch.albumSwitch">
-          <h3 style="text-align:center" v-show="albumList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="loading" v-show="albumList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <div v-if="albumList.length !== 0">
             <ul class="song-album-wrap">
-              <li class="liWrap" v-for="(item, index) in albumList" :key="index" @click="goAlbumDetail(item.id)">
+              <li
+                class="liWrap"
+                v-for="(item, index) in albumList"
+                :key="index"
+                @click="goAlbumDetail(item.id)"
+              >
                 <div class="liWrap-block1">
                   <img :src="item.blurPicUrl" alt="" />
                 </div>
                 <div class="liWrap-block2">
                   <div class="div1">
-                    <span class="albumName">{{ item.name }}
+                    <span class="albumName"
+                      >{{ item.name }}
                       <span v-if="item.alias[0]" class="albumName2">{{
                         item.alias[0]
-                      }}</span></span>
+                      }}</span></span
+                    >
                   </div>
                   <div>
                     <div class="divOther">
                       <!-- 作者：<span>{{ item.artist.name }}</span> -->
                     </div>
-                    <span class="inline-block" style="display: inline-block; width: 50px"></span>
+                    <span
+                      class="inline-block"
+                      style="display: inline-block; width: 50px"
+                    ></span>
                     <div class="divOther" style="width: 100px">
                       歌曲：<span>{{ item.size }}</span>
                     </div>
@@ -97,64 +127,93 @@
               </li>
             </ul>
             <div class="pagination">
-              <el-pagination v-show="singerDesc.albumSize > 6" @current-change="albumHandleCurrentChange"
-                :current-page.sync="albumcurrentPage" :page-size="6" layout="prev, pager, next, jumper"
-                :total="singerDesc.albumSize" :background="true">
+              <el-pagination
+                v-show="singerDesc.albumSize > 6"
+                @current-change="albumHandleCurrentChange"
+                :current-page.sync="albumcurrentPage"
+                :page-size="6"
+                layout="prev, pager, next, jumper"
+                :total="singerDesc.albumSize"
+                :background="true"
+              >
               </el-pagination>
             </div>
           </div>
-
         </div>
 
         <div id="singerMvs" v-if="tagSwitch.mvSwitch">
           <!-- <h3 style="margin: 0 auto">
             MV：{{ mvList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;"></span>
           </h3> -->
-          <h3 style="text-align:center" v-show="mvList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="loading" v-show="mvList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <div v-if="mvList.length !== 0">
             <ul class="videoPlaywrap">
-              <li class="videoPlayList" v-for="(item, index) in mvList" :key="index">
+              <li
+                class="videoPlayList"
+                v-for="(item, index) in mvList"
+                :key="index"
+              >
                 <div class="videoImage">
-                  <img class="videoImg" style="
-                    position: absolute;
-                    width: 240px;
-                    height: 155px;
-                    border-radius: 10px;
-                  " :src="item.imgurl16v9" alt="" title="" @click="playMV(item.id)" />
-                  <span class="videoPlayTime"><i class="el-icon-video-play" style="margin-right: 1px"></i>{{
-                    item.playCount
-                  }}</span>
+                  <img
+                    class="videoImg"
+                    style="
+                      position: absolute;
+                      width: 240px;
+                      height: 155px;
+                      border-radius: 10px;
+                    "
+                    :src="item.imgurl16v9"
+                    alt=""
+                    title=""
+                    @click="playMV(item.id)"
+                  />
+                  <span class="videoPlayTime"
+                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
+                    >{{ item.playCount }}</span
+                  >
                   <span class="videoPlayTime" style="bottom: 0">{{
                     item.duration
                   }}</span>
                 </div>
 
                 <p class="List-title" style="font-size: 10px">
-                  <span style="
-                    display: inline-block;
-                    width: 100%;
-                    overflow: hidden;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                  "><span v-if="!item.type" style="color: red">MV&nbsp;</span>{{ item.name }}</span><br />
-                  <span style="color: rgb(199, 199, 199)"><span>by&nbsp;</span>
-                    <span>{{ item.artistName }}</span></span>
+                  <span
+                    style="
+                      display: inline-block;
+                      width: 100%;
+                      overflow: hidden;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                    "
+                    ><span v-if="!item.type" style="color: red">MV&nbsp;</span
+                    >{{ item.name }}</span
+                  ><br />
+                  <span style="color: rgb(199, 199, 199)"
+                    ><span>by&nbsp;</span>
+                    <span>{{ item.artistName }}</span></span
+                  >
                 </p>
               </li>
             </ul>
             <div class="pagination">
-              <el-pagination v-show="singerDesc.mvSize > 8" @current-change="mvHandleCurrentChange"
-                :current-page.sync="mvcurrentPage" :page-size="8" layout="prev, pager, next, jumper"
-                :total="singerDesc.mvSize" :background="true">
+              <el-pagination
+                v-show="singerDesc.mvSize > 8"
+                @current-change="mvHandleCurrentChange"
+                :current-page.sync="mvcurrentPage"
+                :page-size="8"
+                layout="prev, pager, next, jumper"
+                :total="singerDesc.mvSize"
+                :background="true"
+              >
               </el-pagination>
             </div>
           </div>
-
         </div>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -178,7 +237,7 @@ export default {
       singerId: "",
       singerDesc: {
         alias: [],
-        musicSize: '',
+        musicSize: "",
       },
       songList: [],
       albumList: [],
@@ -310,7 +369,6 @@ export default {
       });
     },
 
-
     //歌手歌曲分页
     songHandleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
@@ -337,12 +395,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-h3 {
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-}
-
 .descript {
   display: flex;
   justify-content: space-between;
@@ -358,12 +410,13 @@ h3 {
   margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
+  height: 720px;
   border-radius: 20px;
   background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   .ul {
-    height: 630px;
+    height: 650px;
     border-radius: 0 0 10px 10px;
     background: rgba(95, 158, 160, 0.11);
     // overflow-x: hidden;
@@ -450,7 +503,8 @@ h3 {
         }
 
         .playListNickName,
-        .playListNickName2 {}
+        .playListNickName2 {
+        }
 
         .playListNickName {
           display: inline-block;

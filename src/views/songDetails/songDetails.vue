@@ -1,39 +1,58 @@
 <template>
   <div class="list-wrap">
-    <h3>歌曲详情</h3>
+    <div class="pageName">歌曲详情</div>
     <div class="descript"></div>
     <div>
       <ul>
-        <div class="details" v-if="songId">
+        <div class="details">
           <div class="details-img">
             <img :src="songDetails.al.picUrl" alt="" />
           </div>
           <div class="detailsRight">
-            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
+            <div style="margin-left: 0px; text-align: left; font-size: 20px">
               {{ songDetails.name }}
-            </h3>
+            </div>
             <div style="margin: 10px 0 10px 0; height: 30px; font-size: 14px">
-              <span class="playListNickName">{{ songDetails.ar[0].name }}</span><span><br />
-                时长&nbsp;&nbsp;-&nbsp;&nbsp;<span style="color: antiquewhite">{{ songDetails.dt }}</span></span>
+              <span class="playListNickName">{{ songDetails.ar[0].name }}</span
+              ><span
+                ><br />
+                时长&nbsp;&nbsp;-&nbsp;&nbsp;<span
+                  style="color: antiquewhite"
+                  >{{ songDetails.dt }}</span
+                ></span
+              >
               <div class="option">
                 <div class="flexBetween">
                   <!-- 试听 -->
-                  <span class="inline-block" style="margin-right: 5px" @click="listenMusic(songDetails)"><i
-                      class="el-icon-headset iconhover"></i></span>
+                  <span
+                    class="inline-block"
+                    style="margin-right: 5px"
+                    @click="listenMusic(songDetails)"
+                    ><i class="el-icon-headset iconhover"></i
+                  ></span>
                   <!-- 添加到播放列表 -->
-                  <span class="inline-block" style="margin-right: 5px"
-                    v-if="songDetails.fee === 0 || songDetails.fee === 8" @click.stop="playMusic(songDetails)"><i
-                      class="el-icon-folder-add iconhover"></i>
+                  <span
+                    class="inline-block"
+                    style="margin-right: 5px"
+                    v-if="songDetails.fee === 0 || songDetails.fee === 8"
+                    @click.stop="playMusic(songDetails)"
+                    ><i class="el-icon-folder-add iconhover"></i>
                   </span>
-                  <span class="inline-block" style="" v-if="Boolean(songDetails.mv)" @click="playMV(songDetails.mv)"><i
-                      class="el-icon-video-camera iconhover"></i>&nbsp;
+                  <span
+                    class="inline-block"
+                    style=""
+                    v-if="Boolean(songDetails.mv)"
+                    @click="playMV(songDetails.mv)"
+                    ><i class="el-icon-video-camera iconhover"></i>&nbsp;
                   </span>
 
-                  <span class="inline-block" style="margin-right: 5px"
+                  <span
+                    class="inline-block"
+                    style="margin-right: 5px"
                     v-if="songDetails.fee === 0 || songDetails.fee === 8"
-                    @click="getDownloadUrl(songDetails.id, songDetails.name)"><i
-                      class="el-icon-download iconhover"></i>&nbsp;</span><span
-                    v-if="songDetails.fee !== 0">&nbsp;&nbsp;&nbsp; </span>
+                    @click="getDownloadUrl(songDetails.id, songDetails.name)"
+                    ><i class="el-icon-download iconhover"></i>&nbsp;</span
+                  ><span v-if="songDetails.fee !== 0">&nbsp;&nbsp;&nbsp; </span>
                 </div>
               </div>
             </div>
@@ -44,28 +63,45 @@
           </div>
         </div>
 
-        <div style="padding: 0px 50px ;">
-          <h3 style="margin: 5px 0 10px 0">
+        <div style="padding: 0px 50px">
+          <div class="countLine">
             <span v-if="commentCount">评论({{ commentCount }}条)</span>
-          </h3>
-          <div class="hoverBackColor" v-for="item in songComment" :key="item.id">
-            <img :src="item.user.avatarUrl" style="width: 50px; border-radius: 25px" />
-            <span style="display: inline-block; margin-left: 10px; font-size: 15px">{{
-              item.user.nickname
-            }}&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+          </div>
+          <div
+            class="hoverBackColor"
+            v-for="item in songComment"
+            :key="item.id"
+          >
+            <img
+              :src="item.user.avatarUrl"
+              style="width: 50px; border-radius: 25px"
+            />
+            <span
+              style="display: inline-block; margin-left: 10px; font-size: 15px"
+              >{{ item.user.nickname }}&nbsp;&nbsp;:&nbsp;&nbsp;</span
+            >
             <span style="margin-left: 20px; width: 750px">
               {{ item.content }}
             </span>
             <div style="height: 30px">
-              <span style="float: right; width: 130px">&nbsp;&nbsp;时间：{{ item.timeStr }}</span><span
-                style="float: right">{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span>
+              <span style="float: right; width: 130px"
+                >&nbsp;&nbsp;时间：{{ item.timeStr }}</span
+              ><span style="float: right"
+                >{{ item.likedCount }} 赞&nbsp;&nbsp;&nbsp;</span
+              >
             </div>
           </div>
 
           <div class="pagination">
-            <el-pagination v-if="commentCount !== 0" @current-change="songhandleCurrentChange"
-              :current-page.sync="currentPage" :page-size="7" layout="prev, pager, next, jumper" :total="commentCount"
-              :background="true">
+            <el-pagination
+              v-if="commentCount !== 0"
+              @current-change="songhandleCurrentChange"
+              :current-page.sync="currentPage"
+              :page-size="7"
+              layout="prev, pager, next, jumper"
+              :total="commentCount"
+              :background="true"
+            >
             </el-pagination>
           </div>
         </div>
@@ -75,11 +111,7 @@
 </template>
 
 <script>
-import {
-  getDownloadUrl,
-  getSongDetails,
-  getSongComment,
-} from '@/api/api'
+import { getDownloadUrl, getSongDetails, getSongComment } from "@/api/api";
 import { download } from "@/utils/commonApi";
 export default {
   // props: ['songId'],
@@ -88,67 +120,70 @@ export default {
       //评论分页
       currentPage: 1,
       songUrlAdd: null,
-      songId: '', //接收的歌曲id
-      songDetails: { al: { picUrl: '' }, ar:[{name:''}],alia:[], fee: 0 }, //歌曲详情
+      // songId: '', //接收的歌曲id
+      songDetails: { al: { picUrl: "" }, ar: [{ name: "" }], alia: [], fee: 0 }, //歌曲详情
       songComment: [],
       commentCount: 0,
       //搜索歌曲总数
       count: 0,
-    }
+    };
   },
   mounted() {
     ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
-    if (this.$route.params.songId) {
-      localStorage.setItem('songId', this.$route.params.songId)
+    if (this.$route.params.songDetails) {
+      localStorage.setItem(
+        "songDetails",
+        JSON.stringify(this.$route.params.songDetails)
+      );
     }
     //判断是否使用缓存
-    this.$route.params.songId
-      ? (this.songId = this.$route.params.songId)
-      : (this.songId = localStorage.getItem('songId'))
-    this.getSongDetails()
-    this.getSongComment()
+    this.$route.params.songDetails
+      ? (this.songDetails = this.$route.params.songDetails)
+      : (this.songDetails = JSON.parse(localStorage.getItem("songDetails")));
+    // this.getSongDetails()
+    this.getSongComment();
   },
   methods: {
     // 分页
     songhandleCurrentChange(currentPage) {
-      var that = this
-      that.currentPage = currentPage
-      that.getSongComment()
+      var that = this;
+      that.currentPage = currentPage;
+      that.getSongComment();
     },
     //获取歌曲详情
-    async getSongDetails() {
-      var that = this
-      let params = {
-        ids: that.songId,
-      }
-      await getSongDetails(params).then((res) => {
-        that.songDetails = res.data.songs[0]
-        that.$set(that.songDetails, 'timer', true)
-        let min = parseInt(that.songDetails.dt / 1000 / 60)
-        let sec = parseInt((that.songDetails.dt / 1000) % 60)
-        if (min < 10) {
-          min = '0' + min
-        }
-        if (sec < 10) {
-          sec = '0' + sec
-        }
-        that.songDetails.dt = min + ':' + sec
-        // console.log("歌曲详情", res.data.songs[0]);
-      })
-    },
+    // async getSongDetails() {
+    //   var that = this
+    //   let params = {
+    //     ids: that.songId,
+    //   }
+    //   await getSongDetails(params).then((res) => {
+    //     that.songDetails = res.data.songs[0]
+    //     that.$set(that.songDetails, 'timer', true)
+    //     let min = parseInt(that.songDetails.dt / 1000 / 60)
+    //     let sec = parseInt((that.songDetails.dt / 1000) % 60)
+    //     if (min < 10) {
+    //       min = '0' + min
+    //     }
+    //     if (sec < 10) {
+    //       sec = '0' + sec
+    //     }
+    //     that.songDetails.dt = min + ':' + sec
+    //     // console.log("歌曲详情", res.data.songs[0]);
+    //   })
+    // },
     //获取歌曲评论
     getSongComment() {
-      var that = this
+      var that = this;
       let params = {
-        id: that.songId,
+        id: that.songDetails.id,
         limit: 7,
         offset: (that.currentPage - 1) * 7,
-      }
+      };
       getSongComment(params).then((res) => {
-        that.songComment = res.data.comments
-        that.commentCount = res.data.total
+        that.songComment = res.data.comments;
+        that.commentCount = res.data.total;
         // console.log("歌曲评论：", res.data);
-      })
+      });
     },
     //试听音乐
     listenMusic(songDetails) {
@@ -266,25 +301,19 @@ export default {
     playMV(mvId) {
       //获取mv播放链接
       this.$router.push({
-        name: 'mvPlay',
+        name: "mvPlay",
         params: { mvId: mvId },
-      })
+      });
     },
     //根据主题更换播放器颜色
-    randomColor() {
-      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
-    },
+    // randomColor() {
+    //   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
+    // },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
-h3 {
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-}
-
 .descript {
   display: flex;
   justify-content: space-between;

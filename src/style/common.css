@@ -2,28 +2,35 @@
   margin: 0;
   padding: 0;
 }
+
 a {
   text-decoration: none;
   color: #fff;
 }
+
 a:hover {
   color: #5fcdf8;
 }
+
 li {
   list-style: none;
 }
+
 img {
   vertical-align: middle;
   width: 30px;
   height: 50px;
 }
+
 body {
   /* Permalink - use to edit and share this gradient: https://colorzilla.com/gradient-editor/#ffe5cc+0,b2f497+17,e2d69c+35,5edce0+50,bbe298+69,f9eaf7+86,91e2a2+100 */
   background-image: url(../img/bg1.jpg);
 }
+
 body::-webkit-scrollbar {
   /* display: none; */
 }
+
 #app {
   position: fixed;
   top: 0;
@@ -43,25 +50,30 @@ body::-webkit-scrollbar {
   -moz-user-select: none;
   -webkit-user-select: none;
 }
+
 .flexBetween {
   display: flex;
   justify-content: space-between;
 }
+
 .tagWrap {
   display: flex;
   justify-content: space-around;
   margin: 0 auto;
   width: 320px;
 }
+
 .tagWrap span {
   display: inline-block;
   width: 50px;
   transition: 0.2s;
 }
+
 .tagWrap span:hover {
   color: #8bbfd3;
   cursor: pointer;
 }
+
 .singerDetail {
   margin: 0 auto;
   padding: 10px;
@@ -71,6 +83,7 @@ body::-webkit-scrollbar {
   background: rgba(219, 255, 242, 0.151);
   box-sizing: border-box;
 }
+
 #singleSongs {
   margin: 0 auto;
   padding: 0px 10px 20px;
@@ -81,9 +94,11 @@ body::-webkit-scrollbar {
   box-sizing: border-box;
   overflow-x: hidden;
 }
+
 #singleSongs::-webkit-scrollbar {
   display: none;
 }
+
 #singleSongs .SingsList {
   position: relative;
   display: flex;
@@ -98,6 +113,7 @@ body::-webkit-scrollbar {
   line-height: 30px;
   transition: 0.2s;
 }
+
 #singleSongs .SingsList .song-list {
   display: inline-block;
   text-align: center;
@@ -105,20 +121,24 @@ body::-webkit-scrollbar {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 #singleSongs .SingsList .song-list-option {
   position: absolute;
   width: 130px;
   right: 10px;
 }
+
 #singleSongs .SingsList .song-list-option span {
   display: inline-block;
   margin: 0 5px;
   transition: 0.2s;
 }
+
 #singleSongs .SingsList .song-list-option span:hover {
   color: bisque;
   cursor: pointer;
 }
+
 #singleSongs .SingsList:hover {
   color: aqua;
   transform: scale(1.01);

@@ -4,19 +4,19 @@
     <h3 class="h2title">推荐歌单 :</h3>
     <div class="recPlay Ocenter">
       <ul class="recPlaywrap">
-        <li class="recPlayList"
-            v-for="(item, index) in recPlayList"
-            :key="index">
+        <li
+          class="recPlayList"
+          v-for="(item, index) in recPlayList"
+          :key="index"
+        >
           <div class="image">
-            <img :src="item.picUrl"
-                 alt=""
-                 title=""
-                 @click="goSongList(item.id)" />
-            <span class="playCount"><i class="el-icon-video-play"
-                 style="margin-right: 1px"></i>{{ item.playCount }}</span>
+            <img :src="item.picUrl" alt="" title="" @click="goSongList(item)" />
+            <span class="playCount"
+              ><i class="el-icon-video-play" style="margin-right: 1px"></i
+              >{{ item.playCount }}</span
+            >
           </div>
-          <p class="List-title"
-             @click="goSongList(item.id)">
+          <p class="List-title" @click="goSongList(item)">
             <span>{{ item.name }}</span>
           </p>
         </li>
@@ -26,42 +26,54 @@
 </template>
 
 <script>
-import { getSuggestPlayList } from '@/api/api'
-import { transPlayCount } from '@/utils/commonApi'
+import { getSuggestPlayList } from "@/api/api";
+import { transPlayCount } from "@/utils/commonApi";
 export default {
   data() {
     return {
       limit: 10,
       recPlayList: [],
-    }
+    };
   },
-  mounted() {
-    this.getSuggestPlayList()
+  async mounted() {
+    await this.getSuggestPlayList();
+    // await this.$nextTick(()=>{
+    //   // console.log(6)
+    // })
   },
   methods: {
-    getSuggestPlayList() {
+    async getSuggestPlayList() {
       //获取推荐歌单
-      var that = this
+      var that = this;
       let params = {
         limit: that.limit,
-      }
-      getSuggestPlayList(params).then((res) => {
-        that.recPlayList = res.data.result
+      };
+      await getSuggestPlayList(params).then((res) => {
+        // console.log("推荐歌单：---",res.data);
+        that.recPlayList = res.data.result;
         // console.log("推荐歌单：--", res.data.result);
         //将播放量转成亿,万单位
-        transPlayCount(that.recPlayList, 'playCount')
-      })
+        transPlayCount(that.recPlayList, "playCount");
+      });
     },
     goSongList(songListId) {
       //传入歌单id进入歌曲列表
-      var that = this
+      var that = this;
       that.$router.push({
-        name: 'playListDetails',
+        name: "playListDetails",
         params: { songListId: songListId },
-      })
+      });
+    },
+    goSongList(songListDetail) {
+      //传入歌单id进入歌曲列表
+      var that = this;
+      that.$router.push({
+        name: "playListDetails",
+        params: { songListDetail: songListDetail },
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

@@ -1,15 +1,8 @@
 <template>
   <div>
-    <div
-      class="music-list"
-      v-for="(item, index) in songlist"
-      :key="item.id"
-    >
+    <div class="music-list" v-for="(item, index) in songlist" :key="item.id">
       <div style="width: 20px">{{ index + 1 }}.</div>
-      <div
-        @dblclick="goSongDetails(item.id)"
-        class="music-list-info"
-      >
+      <div @dblclick="goSongDetails(item)" class="music-list-info">
         <div class="music-list-span">{{ item.name }}</div>
         <div class="music-list-span">{{ item.ar[0].name }}</div>
         <div class="music-list-span music-list-dt">{{ item.dt }}</div>
@@ -17,29 +10,29 @@
 
       <div class="option">
         <!-- 试听 -->
-        <span @click="listenMusic(item)"><i class="el-icon-headset iconhover"></i></span>
+        <span @click="listenMusic(item)"
+          ><i class="el-icon-headset iconhover"></i
+        ></span>
         <!-- 添加到播放列表 -->
         <span
           v-if="item.fee == 0 || item.fee == 8"
           @click.stop="playMusic(item)"
-        ><i class="el-icon-folder-add iconhover"></i>
+          ><i class="el-icon-folder-add iconhover"></i>
         </span>
         <!-- 播放MV -->
-        <span
-          v-if="Boolean(item.mv)"
-          @click.stop="playMV(item.mv)"
-        ><i class="el-icon-video-camera iconhover"></i>
+        <span v-if="Boolean(item.mv)" @click.stop="playMV(item.mv)"
+          ><i class="el-icon-video-camera iconhover"></i>
         </span>
         <!-- 下载 -->
         <span
           v-if="item.fee == 0 || item.fee == 8"
           @click="getDownloadUrl(item.id, item.name)"
         >
-          <i class="el-icon-download iconhover"></i></span>
+          <i class="el-icon-download iconhover"></i
+        ></span>
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -55,11 +48,12 @@ export default {
   },
   methods: {
     //获取歌曲详情,进入详情页面
-    goSongDetails(ids) {
+    goSongDetails(songDetails) {
+      // console.log('歌曲信息',songDetails)
       this.$router.push({
         name: "songDetails",
         params: {
-          songId: ids,
+          songDetails: songDetails,
         },
       });
     },

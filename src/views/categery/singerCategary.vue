@@ -3,66 +3,90 @@
     <div class="list-wrap">
       <div>
         <div>
-          <div class="inline-block"
-               style="padding:5px 0;">
-            <span style=" font-size: 16px;">类型：</span>
-            <span class="type-area singer-type"
-                  v-for="(item,index) in singerType"
-                  :key="item.type"
-                  @click="checkedStyle(typeElement,index) ;getSingerlist(item.type,area)">
-              {{item.typeName}}
+          <div class="inline-block" style="padding: 5px 0">
+            <span style="font-size: 16px">类型：</span>
+            <span
+              class="type-area singer-type"
+              v-for="(item, index) in singerType"
+              :key="item.type"
+              @click="
+                checkedStyle(typeElement, index);
+                getSingerlist(item.type, area);
+              "
+            >
+              {{ item.typeName }}
             </span>
           </div>
-
         </div>
         <div>
-          <div class="inline-block"
-               style="padding:5px 0;">
-            <span style=" font-size: 16px;">地区：</span>
-            <span class="type-area singer-area"
-                  v-for="(item,index) in singerArea"
-                  :key="item.area"
-                  @click="checkedStyle(areaElement,index) ;getSingerlist(type,item.area)">
-              {{item.areaName}}
+          <div class="inline-block" style="padding: 5px 0">
+            <span style="font-size: 16px">地区：</span>
+            <span
+              class="type-area singer-area"
+              v-for="(item, index) in singerArea"
+              :key="item.area"
+              @click="
+                checkedStyle(areaElement, index);
+                getSingerlist(type, item.area);
+              "
+            >
+              {{ item.areaName }}
             </span>
           </div>
-          <div class="inline-block clearfix "
-               style="float: right;padding:5px 0;">
+          <div
+            class="inline-block clearfix"
+            style="float: right; padding: 5px 0"
+          >
             <!-- <span style="color:#eee">当前：</span>
           <span class='categary-select'>{{currentTag}}</span> -
 					<span class='categary-select'>{{currentTag}}</span> - -->
-            <span style="color:#eee">&nbsp;排列：</span>
-            <span class='categary-select'
-                  @click="categaryShow = !categaryShow">{{align}}</span>
+            <span style="color: #eee">&nbsp;排列：</span>
+            <span
+              class="categary-select"
+              @click="categaryShow = !categaryShow"
+              >{{ align }}</span
+            >
             <!-- 全部分类窗口 -->
-            <div class="categary-allTag-wrap"
-                 v-if="categaryShow">
-
-              <div class="categary-allTag-wrap-list"
-                   v-for="(item,index) in initialtitle"
-                   :key="index">
-                <div><span>{{item}}:</span></div>
-                <div class="categary-allTag-wrap-list-item"><span v-for="(item2,index2) in initialData[index]"
-                        @click="initial = item2.orderValue;align = item2.order;categaryShow = false"
-                        :key="index2">{{item2.order}}</span></div>
+            <div class="categary-allTag-wrap" v-if="categaryShow">
+              <div
+                class="categary-allTag-wrap-list"
+                v-for="(item, index) in initialtitle"
+                :key="index"
+              >
+                <div>
+                  <span>{{ item }}:</span>
+                </div>
+                <div class="categary-allTag-wrap-list-item">
+                  <span
+                    v-for="(item2, index2) in initialData[index]"
+                    @click="
+                      initial = item2.orderValue;
+                      align = item2.order;
+                      categaryShow = false;
+                    "
+                    :key="index2"
+                    >{{ item2.order }}</span
+                  >
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
 
       <!-- 歌手列表 -->
       <div class="singerListClass">
-        <h3 v-show="singerList.length === 0"
-            style="text-align:center"><i class="el-icon-loading"></i></h3>
-        <li class="liWrap"
-            v-for="(item, index) in singerList"
-            :key="index"
-            @click.stop="goSingerDetail(item.id)">
+        <div class="loading" v-show="singerList.length === 0">
+          <i class="el-icon-loading"></i>
+        </div>
+        <li
+          class="liWrap"
+          v-for="(item, index) in singerList"
+          :key="index"
+          @click.stop="goSingerDetail(item.id)"
+        >
           <div class="liWrap-block1">
-            <img :src="item.img1v1Url"
-                 alt="" />
+            <img :src="item.img1v1Url" alt="" />
           </div>
           <div class="liWrap-block2">
             <div class="div1">
@@ -80,193 +104,193 @@
           </div>
         </li>
       </div>
-
     </div>
     <div class="pagination">
-      <el-pagination v-show="count !== 0"
-                     @current-change="handleCurrentChange"
-                     :current-page.sync="currentPage"
-                     :page-size="9"
-                     layout="prev, pager, next, jumper"
-                     :total="count"
-                     :background="true">
+      <el-pagination
+        v-show="count !== 0"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="9"
+        layout="prev, pager, next, jumper"
+        :total="count"
+        :background="true"
+      >
       </el-pagination>
     </div>
   </div>
-
 </template>
 
 <script>
-import { getSingerlist } from '@/api/api'
+import { getSingerlist } from "@/api/api";
 export default {
   data() {
     return {
-      type: '-1',
-      area: '-1',
-      align: '热门',
+      type: "-1",
+      area: "-1",
+      align: "热门",
       categaryShow: false,
-      initialtitle: ['热门', '序号'],
+      initialtitle: ["热门", "序号"],
       initialData: {
         0: [
           {
-            order: '热门',
-            orderValue: 'a',
+            order: "热门",
+            orderValue: "a",
           },
         ],
         1: [
           {
-            order: 'A',
-            orderValue: 'a',
+            order: "A",
+            orderValue: "a",
           },
           {
-            order: 'B',
-            orderValue: 'b',
+            order: "B",
+            orderValue: "b",
           },
           {
-            order: 'C',
-            orderValue: 'c',
+            order: "C",
+            orderValue: "c",
           },
           {
-            order: 'D',
-            orderValue: 'd',
+            order: "D",
+            orderValue: "d",
           },
           {
-            order: 'E',
-            orderValue: 'e',
+            order: "E",
+            orderValue: "e",
           },
           {
-            order: 'F',
-            orderValue: 'f',
+            order: "F",
+            orderValue: "f",
           },
           {
-            order: 'G',
-            orderValue: 'g',
+            order: "G",
+            orderValue: "g",
           },
           {
-            order: 'F',
-            orderValue: 'f',
+            order: "F",
+            orderValue: "f",
           },
           {
-            order: 'H',
-            orderValue: 'h',
+            order: "H",
+            orderValue: "h",
           },
           {
-            order: 'I',
-            orderValue: 'i',
+            order: "I",
+            orderValue: "i",
           },
           {
-            order: 'J',
-            orderValue: 'j',
+            order: "J",
+            orderValue: "j",
           },
           {
-            order: 'K',
-            orderValue: 'k',
+            order: "K",
+            orderValue: "k",
           },
           {
-            order: 'L',
-            orderValue: 'l',
+            order: "L",
+            orderValue: "l",
           },
           {
-            order: 'M',
-            orderValue: 'm',
+            order: "M",
+            orderValue: "m",
           },
           {
-            order: 'N',
-            orderValue: 'n',
+            order: "N",
+            orderValue: "n",
           },
           {
-            order: 'O',
-            orderValue: 'o',
+            order: "O",
+            orderValue: "o",
           },
           {
-            order: 'P',
-            orderValue: 'p',
+            order: "P",
+            orderValue: "p",
           },
           {
-            order: 'Q',
-            orderValue: 'q',
+            order: "Q",
+            orderValue: "q",
           },
           {
-            order: 'R',
-            orderValue: 'r',
+            order: "R",
+            orderValue: "r",
           },
           {
-            order: 'S',
-            orderValue: 's',
+            order: "S",
+            orderValue: "s",
           },
           {
-            order: 'T',
-            orderValue: 't',
+            order: "T",
+            orderValue: "t",
           },
           {
-            order: 'U',
-            orderValue: 'u',
+            order: "U",
+            orderValue: "u",
           },
           {
-            order: 'V',
-            orderValue: 'v',
+            order: "V",
+            orderValue: "v",
           },
           {
-            order: 'W',
-            orderValue: 'w',
+            order: "W",
+            orderValue: "w",
           },
           {
-            order: 'X',
-            orderValue: 'x',
+            order: "X",
+            orderValue: "x",
           },
           {
-            order: 'Y',
-            orderValue: 'y',
+            order: "Y",
+            orderValue: "y",
           },
           {
-            order: 'Z',
-            orderValue: 'z',
+            order: "Z",
+            orderValue: "z",
           },
         ],
       },
-      initial: '-1',
+      initial: "-1",
       singerType: [
         {
-          type: '-1',
-          typeName: '全部',
+          type: "-1",
+          typeName: "全部",
         },
         {
-          type: '1',
-          typeName: '男歌手',
+          type: "1",
+          typeName: "男歌手",
         },
         {
-          type: '2',
-          typeName: '女歌手',
+          type: "2",
+          typeName: "女歌手",
         },
         {
-          type: '3',
-          typeName: '乐队',
+          type: "3",
+          typeName: "乐队",
         },
       ],
       singerArea: [
         {
-          area: '-1',
-          areaName: '全部',
+          area: "-1",
+          areaName: "全部",
         },
         {
-          area: '7',
-          areaName: '华语',
+          area: "7",
+          areaName: "华语",
         },
         {
-          area: '96',
-          areaName: '欧美',
+          area: "96",
+          areaName: "欧美",
         },
         {
-          area: '8',
-          areaName: '日本',
+          area: "8",
+          areaName: "日本",
         },
         {
-          area: '16',
-          areaName: '韩国',
+          area: "16",
+          areaName: "韩国",
         },
         {
-          area: '0',
-          areaName: '其他',
+          area: "0",
+          areaName: "其他",
         },
       ],
       typeareaElement: [],
@@ -274,18 +298,18 @@ export default {
       count: 999,
       //初始页
       currentPage: 1,
-    }
+    };
   },
   watch: {
     //排列顺序发生变化时，自动获取
     initial() {
-      this.getSingerlist(this.type, this.area)
+      this.getSingerlist(this.type, this.area);
     },
   },
   mounted() {
-    this.typeElement = document.querySelectorAll('.singer-type')
-    this.areaElement = document.querySelectorAll('.singer-area')
-    this.getSingerlist(this.currentTag)
+    this.typeElement = document.querySelectorAll(".singer-type");
+    this.areaElement = document.querySelectorAll(".singer-area");
+    this.getSingerlist(this.currentTag);
   },
   methods: {
     //更改点击样式，方便查看选择的歌手类型和地区
@@ -293,55 +317,55 @@ export default {
       // console.log(element)
       element.forEach((item, index) => {
         if (idx === index) {
-          item.classList.add('type-area-checked')
+          item.classList.add("type-area-checked");
         } else {
-          if (item.classList.contains('type-area-checked')) {
-            item.classList.remove('type-area-checked')
+          if (item.classList.contains("type-area-checked")) {
+            item.classList.remove("type-area-checked");
           }
         }
-      })
+      });
     },
     areaStyle() {},
     //获取歌手列表----
     async getSingerlist(type, area) {
-      let that = this
-      that.type = type
-      that.area = area
+      let that = this;
+      that.type = type;
+      that.area = area;
       let params = {
         type: that.type,
         area: that.area,
         initial: this.initial,
         limit: 9,
         offset: (that.currentPage - 1) * 9,
-      }
+      };
       // that.categaryShow = false
       // if (that.currentTag === cat && notChangePage) return
-      that.singerList = [] //清空，重新获取，防止页面图片加载慢
+      that.singerList = []; //清空，重新获取，防止页面图片加载慢
       await getSingerlist(params).then((res) => {
         // console.log(res)
-        that.singerList = res.data.artists
-      })
+        that.singerList = res.data.artists;
+      });
     },
     //获取歌手详情
     goSingerDetail(id) {
       if (id) {
         this.$router.push({
-          name: 'singerDetail',
+          name: "singerDetail",
           params: {
             singerId: id,
           },
-        })
+        });
       }
     },
     //分页
     handleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
-      var that = this
-      that.currentPage = currentPage
-      that.getSingerlist(that.type, that.area)
+      var that = this;
+      that.currentPage = currentPage;
+      that.getSingerlist(that.type, that.area);
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -412,7 +436,7 @@ export default {
     width: 600px;
     height: 300px;
     padding: 10px;
-    background: url(@/static/img/background8.jpeg) ;//需要与主题一同更改
+    background: url(@/static/img/background8.jpeg); //需要与主题一同更改
     border-radius: 20px;
     overflow-x: hidden;
     box-sizing: border-box;

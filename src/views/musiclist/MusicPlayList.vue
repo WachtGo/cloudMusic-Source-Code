@@ -1,62 +1,78 @@
 <template>
   <div class="list-wrap">
-    <h3>
-      <div class="tagWrap">
-        <span @click="tagSelect('songSwitch')"
-              v-if="!tagSwitch.songSwitch">单曲</span><span style="color: rgb(80, 180, 220)"
-              v-if="tagSwitch.songSwitch">单曲</span>
-        <span @click="tagSelect('albumSwitch')"
-              v-if="!tagSwitch.albumSwitch">专辑</span><span style="color: rgb(80, 180, 220)"
-              v-if="tagSwitch.albumSwitch">专辑</span>
-        <span @click="tagSelect('singerSwitch')"
-              v-if="!tagSwitch.singerSwitch">歌手</span><span style="color: rgb(80, 180, 220)"
-              v-if="tagSwitch.singerSwitch">歌手</span>
-        <span @click="tagSelect('playListSwitch')"
-              v-if="!tagSwitch.playListSwitch">歌单</span><span style="color: rgb(80, 180, 220)"
-              v-if="tagSwitch.playListSwitch">歌单</span><span @click="tagSelect('videoSwitch')"
-              v-if="!tagSwitch.videoSwitch">视频</span><span style="color: rgb(80, 180, 220)"
-              v-if="tagSwitch.videoSwitch">视频</span><span @click="tagSelect('mvSwitch')"
-              v-if="!tagSwitch.mvSwitch">MV</span><span style="color: rgb(80, 180, 220)"
-              v-if="tagSwitch.mvSwitch">MV</span>
-      </div>
-    </h3>
+    <div class="tagWrap">
+      <span @click="tagSelect('songSwitch')" v-if="!tagSwitch.songSwitch"
+        >单曲</span
+      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.songSwitch"
+        >单曲</span
+      >
+      <span @click="tagSelect('albumSwitch')" v-if="!tagSwitch.albumSwitch"
+        >专辑</span
+      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.albumSwitch"
+        >专辑</span
+      >
+      <span @click="tagSelect('singerSwitch')" v-if="!tagSwitch.singerSwitch"
+        >歌手</span
+      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.singerSwitch"
+        >歌手</span
+      >
+      <span
+        @click="tagSelect('playListSwitch')"
+        v-if="!tagSwitch.playListSwitch"
+        >歌单</span
+      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.playListSwitch"
+        >歌单</span
+      ><span @click="tagSelect('videoSwitch')" v-if="!tagSwitch.videoSwitch"
+        >视频</span
+      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.videoSwitch"
+        >视频</span
+      ><span @click="tagSelect('mvSwitch')" v-if="!tagSwitch.mvSwitch">MV</span
+      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.mvSwitch"
+        >MV</span
+      >
+    </div>
     <div class="descript"></div>
     <div>
       <ul>
         <!-- 单曲列表 -->
         <div v-show="tagSwitch.songSwitch">
-          <h3 style="text-align:center"
-              v-show="musicList.length === 0"><i class="el-icon-loading"></i></h3>
+          <div class="loading" v-show="musicList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <songlist :songlist="musicList"></songlist>
         </div>
         <!-- 专辑列表 -->
-        <div class="albumListClass"
-             v-show="tagSwitch.albumSwitch">
-          <h3 v-show="albumList.length === 0"><i class="el-icon-loading"></i></h3>
-          <li class="liWrap"
-              v-for="(item, index) in albumList"
-              :key="index"
-              @click.stop="goAlbumDetail(item.id)">
+        <div class="albumListClass" v-show="tagSwitch.albumSwitch">
+          <div class="loading" v-show="albumList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
+          <li
+            class="liWrap"
+            v-for="(item, index) in albumList"
+            :key="index"
+            @click.stop="goAlbumDetail(item.id)"
+          >
             <div class="liWrap-block1">
-              <img :src="item.blurPicUrl"
-                   alt="" />
+              <img :src="item.blurPicUrl" alt="" />
             </div>
             <div class="liWrap-block2">
               <div class="div1">
-                <span class="albumName">{{ item.name }}
-                  <span v-if="item.alias[0]"
-                        class="albumName2">{{
+                <span class="albumName"
+                  >{{ item.name }}
+                  <span v-if="item.alias[0]" class="albumName2">{{
                     item.alias[0]
-                  }}</span></span>
+                  }}</span></span
+                >
               </div>
               <div>
                 <div class="divOther">
                   作者：<span>{{ item.artist.name }}</span>
                 </div>
-                <span class="inline-block"
-                      style="display: inline-block; width: 50px"></span>
-                <div class="divOther"
-                     style="width: 100px">
+                <span
+                  class="inline-block"
+                  style="display: inline-block; width: 50px"
+                ></span>
+                <div class="divOther" style="width: 100px">
                   歌曲：<span>{{ item.size }}</span>
                 </div>
               </div>
@@ -64,16 +80,18 @@
           </li>
         </div>
         <!-- 歌手列表 -->
-        <div class="singerListClass"
-             v-show="tagSwitch.singerSwitch">
-          <h3 v-show="singerList.length === 0"><i class="el-icon-loading"></i></h3>
-          <li class="liWrap"
-              v-for="(item, index) in singerList"
-              :key="index"
-              @click.stop="goSingerDetail(item.id)">
+        <div class="singerListClass" v-show="tagSwitch.singerSwitch">
+          <div class="loading" v-show="singerList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
+          <li
+            class="liWrap"
+            v-for="(item, index) in singerList"
+            :key="index"
+            @click.stop="goSingerDetail(item.id)"
+          >
             <div class="liWrap-block1">
-              <img :src="item.img1v1Url"
-                   alt="" />
+              <img :src="item.img1v1Url" alt="" />
             </div>
             <div class="liWrap-block2">
               <div class="div1">
@@ -93,24 +111,30 @@
         </div>
         <div v-show="tagSwitch.albumSwitch"></div>
         <!-- 歌单列表 -->
-        <div class="playListClass"
-             v-show="tagSwitch.playListSwitch">
-          <h3 v-show="playListTable.length === 0"><i class="el-icon-loading"></i></h3>
+        <div class="playListClass" v-show="tagSwitch.playListSwitch">
+          <div class="loading" v-show="playListTable.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <div class="recPlay">
             <ul class="playListWrap">
-              <li class="playListTable"
-                  v-for="(item, index) in playListTable"
-                  :key="index">
+              <li
+                class="playListTable"
+                v-for="(item, index) in playListTable"
+                :key="index"
+              >
                 <div class="image">
-                  <img :src="item.coverImgUrl"
-                       alt=""
-                       title=""
-                       @click="goSongList(item.id)" />
-                  <span class="playCount"><i class="el-icon-video-play"
-                       style="margin-right: 1px"></i>{{ item.playCount }}</span>
+                  <img
+                    :src="item.coverImgUrl"
+                    alt=""
+                    title=""
+                    @click="goSongList(item)"
+                  />
+                  <span class="playCount"
+                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
+                    >{{ item.playCount }}</span
+                  >
                 </div>
-                <p class="List-title"
-                   @click="goSongList(item.id)">
+                <p class="List-title" @click="goSongList(item)">
                   <span>{{ item.name }} </span>
                 </p>
               </li>
@@ -118,94 +142,120 @@
           </div>
         </div>
         <!-- 视频列表 -->
-        <div class="videoListClass"
-             v-show="tagSwitch.videoSwitch">
-          <h3 v-show="videoList.length === 0"><i class="el-icon-loading"></i></h3>
+        <div class="videoListClass" v-show="tagSwitch.videoSwitch">
+          <div class="loading" v-show="videoList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <div class="videoPlay">
             <ul class="videoPlaywrap">
-              <li class="videoPlayList"
-                  v-for="(item, index) in videoList"
-                  :key="index">
+              <li
+                class="videoPlayList"
+                v-for="(item, index) in videoList"
+                :key="index"
+              >
                 <div class="videoImage">
-                  <img class="videoImg"
-                       style="
+                  <img
+                    class="videoImg"
+                    style="
                       position: absolute;
                       width: 240px;
                       height: 155px;
                       border-radius: 10px;
                     "
-                       :src="item.coverUrl"
-                       alt="" 
-                       title=""
-                       @click="goVideo(item.vid, item.type)" />
-                  <span class="videoPlayTime"><i class="el-icon-video-play"
-                       style="margin-right: 1px"></i>{{ item.playTime }}</span>
+                    :src="item.coverUrl"
+                    alt=""
+                    title=""
+                    @click="goVideo(item.vid, item.type)"
+                  />
                   <span class="videoPlayTime"
-                        style="bottom: 0">{{
+                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
+                    >{{ item.playTime }}</span
+                  >
+                  <span class="videoPlayTime" style="bottom: 0">{{
                     item.durationms
                   }}</span>
                 </div>
 
-                <p class="List-title"
-                   style="font-size: 10px"
-                   @click="goVideo(item.vid, item.type)">
-                  <span style="
+                <p
+                  class="List-title"
+                  style="font-size: 10px"
+                  @click="goVideo(item.vid, item.type)"
+                >
+                  <span
+                    style="
                       display: inline-block;
                       width: 100%;
                       overflow: hidden;
                       white-space: nowrap;
                       text-overflow: ellipsis;
-                    "><span v-if="!item.type"
-                          style="color: red">MV&nbsp;</span>{{ item.title }}</span><br />
-                  <span style="color: rgb(199, 199, 199)"><span v-if="item.markTypes">by&nbsp;</span>
-                    <span>{{ item.creator[0].userName }}</span></span>
+                    "
+                    ><span v-if="!item.type" style="color: red">MV&nbsp;</span
+                    >{{ item.title }}</span
+                  ><br />
+                  <span style="color: rgb(199, 199, 199)"
+                    ><span v-if="item.markTypes">by&nbsp;</span>
+                    <span>{{ item.creator[0].userName }}</span></span
+                  >
                 </p>
               </li>
             </ul>
           </div>
         </div>
         <!-- MV列表 -->
-        <div class="videoListClass"
-             v-show="tagSwitch.mvSwitch">
-          <h3 v-show="mvList.length === 0"><i class="el-icon-loading"></i></h3>
+        <div class="videoListClass" v-show="tagSwitch.mvSwitch">
+          <div class="loading" v-show="mvList.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <div class="videoPlay">
             <ul class="videoPlaywrap">
-              <li class="videoPlayList"
-                  v-for="(item, index) in mvList"
-                  :key="index">
+              <li
+                class="videoPlayList"
+                v-for="(item, index) in mvList"
+                :key="index"
+              >
                 <div class="videoImage">
-                  <img class="videoImg"
-                       style="
+                  <img
+                    class="videoImg"
+                    style="
                       position: absolute;
                       width: 240px;
                       height: 155px;
                       border-radius: 10px;
                     "
-                       :src="item.cover"
-                       alt=""
-                       title=""
-                       @click="goVideo(item.id, item.mark)" />
-                  <span class="videoPlayTime"><i class="el-icon-video-play"
-                       style="margin-right: 1px"></i>{{ item.playCount }}</span>
+                    :src="item.cover"
+                    alt=""
+                    title=""
+                    @click="goVideo(item.id, item.mark)"
+                  />
                   <span class="videoPlayTime"
-                        style="bottom: 0">{{
+                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
+                    >{{ item.playCount }}</span
+                  >
+                  <span class="videoPlayTime" style="bottom: 0">{{
                     item.duration
                   }}</span>
                 </div>
 
-                <p class="List-title"
-                   style="font-size: 10px"
-                   @click="goVideo(item.id, item.mark)">
-                  <span style="
+                <p
+                  class="List-title"
+                  style="font-size: 10px"
+                  @click="goVideo(item.id, item.mark)"
+                >
+                  <span
+                    style="
                       display: inline-block;
                       width: 100%;
                       overflow: hidden;
                       white-space: nowrap;
                       text-overflow: ellipsis;
-                    "><span v-if="!item.type"
-                          style="color: red">MV&nbsp;</span>{{ item.name }}</span><br />
-                  <span style="color: rgb(199, 199, 199)"><span>by&nbsp;</span>
-                    <span>{{ item.artistName }}</span></span>
+                    "
+                    ><span v-if="!item.type" style="color: red">MV&nbsp;</span
+                    >{{ item.name }}</span
+                  ><br />
+                  <span style="color: rgb(199, 199, 199)"
+                    ><span>by&nbsp;</span>
+                    <span>{{ item.artistName }}</span></span
+                  >
                 </p>
               </li>
             </ul>
@@ -215,25 +265,27 @@
     </div>
 
     <div class="pagination">
-      <el-pagination v-show="count != 0"
-                     @current-change="handleCurrentChange"
-                     :current-page.sync="currentPage"
-                     :page-size="15"
-                     layout="prev, pager, next, jumper"
-                     :total="count"
-                     :background="true">
+      <el-pagination
+        v-show="count != 0"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="15"
+        layout="prev, pager, next, jumper"
+        :total="count"
+        :background="true"
+      >
       </el-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import { getMusicInfo, getDownloadUrl } from '@/api/api'
-import { transMusicTime, transPlayCount, download } from '@/utils/commonApi'
-import songlist from '@/components/songlist.vue'
+import { getMusicInfo } from "@/api/api";
+import { transMusicTime, transPlayCount } from "@/utils/commonApi";
+import songlist from "@/components/songlist.vue";
 export default {
-  components:{
-    songlist
+  components: {
+    songlist,
   },
   data() {
     return {
@@ -254,103 +306,100 @@ export default {
       //MV列表
       mvList: [],
       //音乐下载地址
-      downLoadUrl: '',
+      downLoadUrl: "",
       //标签切换
-      activeName: 'first',
+      activeName: "first",
       //搜索内容总数（歌曲，歌单，mv,等）
       count: 0,
       //初始页
       currentPage: 1,
-    }
+    };
   },
   created() {
     // console.log(this);
-    var that = this
-    that.tagSwitch = that.$store.state.musicPlayList.tagSwitch
-    that.search()
+    var that = this;
+    that.tagSwitch = that.$store.state.musicPlayList.tagSwitch;
+    that.search();
   },
   methods: {
     //标签切换
     tagSelect(tag) {
-      var that = this
-      that.$store.commit('musicPlayList/tagSelect', tag)
+      var that = this;
+      that.$store.commit("musicPlayList/tagSelect", tag);
       that.$nextTick(() => {
-        that.search()
-      })
+        that.search();
+      });
     },
     //分页
     handleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
-      this.currentPage = currentPage
-      var that = this
+      this.currentPage = currentPage;
+      var that = this;
       if (that.tagSwitch.songSwitch) {
-        that.getSingleMuscic()
+        that.getSingleMuscic();
       } else if (that.tagSwitch.playListSwitch) {
-        that.getMusicList()
+        that.getMusicList();
       } else if (that.tagSwitch.videoSwitch) {
-        that.getVideoList()
+        that.getVideoList();
       } else if (that.tagSwitch.mvSwitch) {
-        that.getMVList()
+        that.getMVList();
       } else if (that.tagSwitch.singerSwitch) {
-        that.getSingerList()
+        that.getSingerList();
       } else if (that.tagSwitch.albumSwitch) {
-        that.getSingerList()
+        that.getSingerList();
       }
     },
     search() {
-      var that = this
+      var that = this;
       if (that.tagSwitch.songSwitch) {
-        that.getSingleMuscic()
+        that.getSingleMuscic();
       } else if (that.tagSwitch.playListSwitch) {
-        that.getMusicList()
+        that.getMusicList();
       } else if (that.tagSwitch.videoSwitch) {
-        that.getVideoList()
+        that.getVideoList();
       } else if (that.tagSwitch.mvSwitch) {
-        that.getMVList()
+        that.getMVList();
       } else if (that.tagSwitch.singerSwitch) {
-        that.getSingerList()
+        that.getSingerList();
       } else if (that.tagSwitch.albumSwitch) {
-        that.getAlbumList()
+        that.getAlbumList();
       }
     },
 
-    
     //获取专辑详情
     goAlbumDetail(id) {
       this.$router.push({
-        name: 'albumDetail',
+        name: "albumDetail",
         params: {
           albumId: id,
         },
-      })
+      });
     },
     //获取歌手详情
     goSingerDetail(id) {
       if (id) {
         this.$router.push({
-          name: 'singerDetail',
+          name: "singerDetail",
           params: {
             singerId: id,
           },
-        })
+        });
       }
     },
     //传入歌单id进入歌单详情
-    goSongList(songListId) {
+    goSongList(songListDetail) {
+      // console.log(songListDetail)
       //传入歌单id进入歌单详情
-      var that = this
+      var that = this;
       that.$router.push({
-        name: 'playListDetails',
-        params: { songListId: songListId },
-      })
+        name: "playListDetails",
+        params: { songListDetail: songListDetail },
+      });
     },
-    
-
-    
 
     //通过搜索关键词获取单曲（歌曲）
     getSingleMuscic() {
-      var that = this
+      var that = this;
       if (that.$route.query.reload) {
         // console.log("this.$route:---", that.$route);
       }
@@ -360,136 +409,135 @@ export default {
         limit: 30,
         offset: (that.currentPage - 1) * 30,
         type: 1, //代表获取单曲
-      }
-      that.musicList = []
+      };
+      that.musicList = [];
       getMusicInfo(params).then((res) => {
-        that.musicList = res.data.result.songs
+        that.musicList = res.data.result.songs;
         // console.log(that.musicList)
-        that.count = res.data.result.songCount
-        transMusicTime(that.musicList, 'dt')
+        that.count = res.data.result.songCount;
+        transMusicTime(that.musicList, "dt");
         // console.log("音乐列表：", res.data.result);
         //给每个列表添加一个防抖
         for (let item of that.musicList) {
-          that.$set(item, 'timer', true)
+          that.$set(item, "timer", true);
         }
-      })
+      });
     },
     // 通过搜索关键词获取专辑
     getAlbumList() {
-      var that = this
+      var that = this;
       //获取歌曲列表
       let params = {
         keywords: that.$route.query.keywords,
         limit: 30,
         offset: (that.currentPage - 1) * 30,
         type: 10, //代表获取专辑
-      }
-      that.albumList = []
+      };
+      that.albumList = [];
       getMusicInfo(params).then((res) => {
-        that.albumList = res.data.result.albums
-        that.count = res.data.result.albumCount
+        that.albumList = res.data.result.albums;
+        that.count = res.data.result.albumCount;
         // console.log("专辑列表：", res.data.result);
-      })
+      });
     },
     //通过搜索关键词获取歌手列表
     getSingerList() {
-      var that = this
+      var that = this;
       let params = {
         keywords: that.$route.query.keywords,
         limit: 15,
         offset: (that.currentPage - 1) * 15,
         type: 100, //代表获取歌手
-      }
-      that.singerList = []
+      };
+      that.singerList = [];
       getMusicInfo(params).then((res) => {
         // console.log("获取歌手列表----", res.data.result);
-        that.singerList = res.data.result.artists
-        that.count = res.data.result.artistCount
-      })
+        that.singerList = res.data.result.artists;
+        that.count = res.data.result.artistCount;
+      });
     },
     //通过搜索关键词获取歌单
     getMusicList() {
-      var that = this
+      var that = this;
       let params = {
         keywords: that.$route.query.keywords,
         limit: 15,
         offset: (that.currentPage - 1) * 15,
         type: 1000, //代表获取歌单
-      }
-      that.playListTable = []
+      };
+      that.playListTable = [];
       getMusicInfo(params).then((res) => {
         // console.log('获取歌单列表----', res.data.result)
-        that.playListTable = res.data.result.playlists
-        that.count = res.data.result.playlistCount
-        transPlayCount(that.playListTable, 'playCount')
-      })
+        that.playListTable = res.data.result.playlists;
+        that.count = res.data.result.playlistCount;
+        transPlayCount(that.playListTable, "playCount");
+      });
     },
     //通过搜索关键词获取对应视频列表
     getVideoList() {
-      var that = this
+      var that = this;
       let params = {
         keywords: that.$route.query.keywords,
         limit: 12,
         offset: (that.currentPage - 1) * 12,
         type: 1014, //代表获取视频
-      }
-      that.videoList = []
+      };
+      that.videoList = [];
       getMusicInfo(params).then((res) => {
         // console.log("获取视频列表----", res.data.result);
-        that.videoList = res.data.result.videos
+        that.videoList = res.data.result.videos;
         // console.log("视频列表：", that.videoList);
-        that.count = res.data.result.videoCount
+        that.count = res.data.result.videoCount;
         //转换歌曲时长单位为分秒
-        transMusicTime(that.videoList, 'durationms')
+        transMusicTime(that.videoList, "durationms");
         //将播放量转换成亿万单位
-        transPlayCount(that.videoList, 'playTime')
-      })
+        transPlayCount(that.videoList, "playTime");
+      });
     },
     //通过搜索关键词获取对应MV列表
     getMVList() {
-      var that = this
+      var that = this;
       let params = {
         keywords: that.$route.query.keywords,
         limit: 12,
         offset: (that.currentPage - 1) * 12,
         type: 1004, //代表获取MV
-      }
-      that.mvList = []
+      };
+      that.mvList = [];
       getMusicInfo(params).then((res) => {
         // console.log("获取MV列表----", res.data.result);
-        that.mvList = res.data.result.mvs
+        that.mvList = res.data.result.mvs;
         // console.log("MV列表：", that.mvList);
-        that.count = res.data.result.mvCount
+        that.count = res.data.result.mvCount;
         //转换歌曲时间为分秒单位
-        transMusicTime(that.mvList, 'duration')
+        transMusicTime(that.mvList, "duration");
         // 转换播放量单位为万
-        transPlayCount(that.mvList, 'playCount')
-      })
+        transPlayCount(that.mvList, "playCount");
+      });
     },
 
-    
     goVideo(vid, type) {
       if (type === 0) {
         this.$router.push({
-          name: 'mvPlay',
+          name: "mvPlay",
           params: {
             mvId: vid,
           },
-        })
+        });
       } else {
         this.$router.push({
-          name: 'videoPlay',
+          name: "videoPlay",
           params: {
             videoId: vid,
           },
-        })
+        });
       }
     },
     randomColor() {
-      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
+      return `#${((Math.random() * 0xffffff) << 0).toString(16)}`;
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -842,11 +890,7 @@ export default {
     }
   }
 }
-h3 {
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-}
+
 .descript {
   display: flex;
   justify-content: space-between;
@@ -869,13 +913,13 @@ h3 {
   .tagWrap {
     display: flex;
     justify-content: space-around;
+    align-content: center;
     margin: 0 auto;
-    width: 320px;
+    width: 50%;
 
     span {
-      display: inline-block;
       font-size: 18px;
-      width: 50px;
+      padding: 0 10px;
       transition: 0.2s;
 
       &:hover {

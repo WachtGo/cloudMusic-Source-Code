@@ -1,12 +1,11 @@
 <template>
-
   <div class="bgmusicWrap">
     <div>推荐音乐</div>
     <ul class="bgmusic-ul">
       <li
-        v-for="(item,index) in bgmusicSrc"
+        v-for="(item, index) in bgmusicSrc"
         :key="item.src"
-        :class="['bgmusic-li',item.fontColor]"
+        :class="['bgmusic-li', item.fontColor]"
         @dblclick="reloadbgMusic(index)"
         @click="playbgMusic(index)"
       >
@@ -16,12 +15,10 @@
           @play="bgmusicPlayed"
           type="video/mp3"
         ></audio>
-        <span>{{item.name}}</span>
+        <span>{{ item.name }}</span>
       </li>
-
     </ul>
   </div>
-
 </template>
 
 <script>

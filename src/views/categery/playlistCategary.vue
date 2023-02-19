@@ -2,45 +2,61 @@
   <div>
     <div class="list-wrap">
       <div>
-        <div class="inline-block"
-             style="padding:5px 0;">
-          <span style=" font-size: 16px;">热门歌单分类：</span>
-          <span class="hotCategary"
-                v-for="item in hotPlaylistTag"
-                :key="item.id"
-                @click="getPlaylist(item.name)">
-            {{item.name}}
+        <div class="inline-block" style="padding: 5px 0">
+          <span style="font-size: 16px">热门歌单分类：</span>
+          <span
+            class="hotCategary"
+            v-for="item in hotPlaylistTag"
+            :key="item.id"
+            @click="getPlaylist(item.name)"
+          >
+            {{ item.name }}
           </span>
         </div>
-        <div class="inline-block clearfix "
-             style="float: right;padding:5px 0;">
-          <span style="color:#eee">当前：</span>
-          <span class='categary-select'>{{currentTag}}</span> -
-          <span style="color:#eee">&nbsp;排列：</span>
-          <span class='categary-select'
-                v-if="order === '最热'"
-                @click="order = '最新'">最热</span>
-          <span class="categary-select"
-                v-if="order === '最新'"
-                @click="order = '最热'">最新</span> -
-          <span class="categary-allTag"
-                @click="
-            categaryShow=!categaryShow">&nbsp;全部分类</span>
+        <div class="inline-block clearfix" style="float: right; padding: 5px 0">
+          <span style="color: #eee">当前：</span>
+          <span class="categary-select">{{ currentTag }}</span> -
+          <span style="color: #eee">&nbsp;排列：</span>
+          <span
+            class="categary-select"
+            v-if="order === '最热'"
+            @click="order = '最新'"
+            >最热</span
+          >
+          <span
+            class="categary-select"
+            v-if="order === '最新'"
+            @click="order = '最热'"
+            >最新</span
+          >
+          -
+          <span class="categary-allTag" @click="categaryShow = !categaryShow"
+            >&nbsp;全部分类</span
+          >
           <!-- 全部分类窗口 -->
-          <div class="categary-allTag-wrap"
-               v-if="categaryShow">
-
-            <div class="categary-allTag-wrap-list"
-                 v-for="(item,index) in categories"
-                 :key="index">
-              <div><span>{{item}}:</span></div>
-              <div class="categary-allTag-wrap-list-item"><span v-for="(item,index2) in categoryTag[index]"
-                      @click="getPlaylist(item.name)"
-                      :key="index2">{{item.name}}</span></div>
+          <div class="categary-allTag-wrap" v-if="categaryShow">
+            <div
+              class="categary-allTag-wrap-list"
+              v-for="(item, index) in categories"
+              :key="index"
+            >
+              <div>
+                <span>{{ item }}:</span>
+              </div>
+              <div class="categary-allTag-wrap-list-item">
+                <span
+                  v-for="(item, index2) in categoryTag[index]"
+                  @click="getPlaylist(item.name)"
+                  :key="index2"
+                  >{{ item.name }}</span
+                >
+              </div>
             </div>
             <div class="categary-allTag-wrap-list">
               <div><span>全部:</span></div>
-              <div class="categary-allTag-wrap-list-item"><span @click=" getPlaylist('全部')">全部</span></div>
+              <div class="categary-allTag-wrap-list-item">
+                <span @click="getPlaylist('全部')">全部</span>
+              </div>
             </div>
           </div>
         </div>
@@ -51,54 +67,60 @@
       <!-- 歌单列表 -->
       <div class="playListClass">
         <div class="recPlay">
-          <h3 v-show="playListTable.length === 0"
-              style="text-align: center;"><i class="el-icon-loading"></i></h3>
+          <div class="loading" v-show="playListTable.length === 0">
+            <i class="el-icon-loading"></i>
+          </div>
           <ul class="playListWrap">
-            <li class="playListTable"
-                v-for="(item, index) in playListTable"
-                :key="index">
+            <li
+              class="playListTable"
+              v-for="(item, index) in playListTable"
+              :key="index"
+            >
               <div class="image">
-                <img :src="item.coverImgUrl"
-                     alt=""
-                     title=""
-                     @click="goSongList(item.id)" />
-                <span class="playCount"><i class="el-icon-video-play"
-                     style="margin-right: 1px"></i>{{ item.playCount }}</span>
+                <img
+                  :src="item.coverImgUrl"
+                  alt=""
+                  title=""
+                  @click="goSongList(item.id)"
+                />
+                <span class="playCount"
+                  ><i class="el-icon-video-play" style="margin-right: 1px"></i
+                  >{{ item.playCount }}</span
+                >
               </div>
-              <p class="List-title"
-                 @click="goSongList(item.id)">
+              <p class="List-title" @click="goSongList(item.id)">
                 <span>{{ item.name }} </span>
               </p>
             </li>
           </ul>
         </div>
       </div>
-
     </div>
     <div class="pagination">
-      <el-pagination v-show="count !== 0"
-                     @current-change="handleCurrentChange"
-                     :current-page.sync="currentPage"
-                     :page-size="15"
-                     layout="prev, pager, next, jumper"
-                     :total="count"
-                     :background="true">
+      <el-pagination
+        v-show="count !== 0"
+        @current-change="handleCurrentChange"
+        :current-page.sync="currentPage"
+        :page-size="15"
+        layout="prev, pager, next, jumper"
+        :total="count"
+        :background="true"
+      >
       </el-pagination>
     </div>
   </div>
-
 </template>
 
 <script>
-import { getHotPlayList, getAllPlayList, getPlaylist } from '@/api/api'
-import { transPlayCount } from '@/utils/commonApi'
+import { getHotPlayList, getAllPlayList, getPlaylist } from "@/api/api";
+import { transPlayCount } from "@/utils/commonApi";
 export default {
   data() {
     return {
       hotPlaylistTag: [],
       categaryShow: false,
-      order: '最新',
-      currentTag: '全部',
+      order: "最新",
+      currentTag: "全部",
       categories: {},
       categoryTag: {
         0: [],
@@ -111,83 +133,83 @@ export default {
       count: 0,
       //初始页
       currentPage: 1,
-    }
+    };
   },
   watch: {
     //排列顺序发生变化时，自动获取
     order() {
-      this.getPlaylist(this.currentTag)
+      this.getPlaylist(this.currentTag);
     },
   },
   mounted() {
-    this.getHotPlayList()
-    this.getAllPlayList()
-    this.getPlaylist(this.currentTag)
+    this.getHotPlayList();
+    this.getAllPlayList();
+    this.getPlaylist(this.currentTag);
   },
   methods: {
     //获取热门分类歌单
     getHotPlayList() {
-      let that = this
+      let that = this;
       getHotPlayList().then((res) => {
-        that.hotPlaylistTag = res.data.tags
-      })
+        that.hotPlaylistTag = res.data.tags;
+      });
     },
     //获取全部歌单分类
     getAllPlayList() {
-      let that = this
+      let that = this;
       getAllPlayList().then((res) => {
         // console.log(res)
-        that.categories = res.data.categories
+        that.categories = res.data.categories;
         for (let key in that.categoryTag) {
           res.data.sub.forEach((item) => {
             if (item.category == key) {
-              that.categoryTag[key].push(item)
+              that.categoryTag[key].push(item);
               // console.log(that.categoryTag)
             }
-          })
+          });
         }
-      })
+      });
     },
     //获取歌单列表----
     async getPlaylist(cat, notChangePage) {
-      let that = this
+      let that = this;
       let params = {
         cat: cat,
         order: that.order,
         limit: 15,
         offset: (that.currentPage - 1) * 15,
-      }
-      that.categaryShow = false
-      if (that.currentTag === cat && notChangePage) return
-      that.playListTable = [] //清空，重新获取，防止页面图片加载慢
-      that.currentTag = cat
+      };
+      that.categaryShow = false;
+      if (that.currentTag === cat && notChangePage) return;
+      that.playListTable = []; //清空，重新获取，防止页面图片加载慢
+      that.currentTag = cat;
       await getPlaylist(params).then((res) => {
         // console.log(res)
-        that.playListTable = res.data.playlists
+        that.playListTable = res.data.playlists;
         // console.log(that.playListTable)
-        that.count = res.data.total
+        that.count = res.data.total;
         // transPlayCount(that.playListTable)
-        transPlayCount(that.playListTable, 'playCount')
-      })
+        transPlayCount(that.playListTable, "playCount");
+      });
     },
     //传入歌单id进入歌单详情
     goSongList(songListId) {
       //传入歌单id进入歌单详情
-      var that = this
+      var that = this;
       that.$router.push({
-        name: 'playListDetails',
+        name: "playListDetails",
         params: { songListId: songListId },
-      })
+      });
     },
     //分页
     handleCurrentChange: function (currentPage) {
       // console.log(`当前页: ${currentPage}`);
-      var that = this
-      that.currentPage = currentPage
-      that.getPlaylist(that.currentTag, false)
+      var that = this;
+      that.currentPage = currentPage;
+      that.getPlaylist(that.currentTag, false);
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -250,7 +272,7 @@ export default {
     width: 600px;
     height: 300px;
     padding: 10px;
-    background: url(@/static/img/background8.jpeg);//---------------需要与主题一同更改
+    background: url(@/static/img/background8.jpeg); //---------------需要与主题一同更改
     // background-size: cover;
     border-radius: 20px;
     overflow-x: hidden;

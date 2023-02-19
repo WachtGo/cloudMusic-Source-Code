@@ -6,7 +6,7 @@
 
       <div id="app">
         <HeaderNav></HeaderNav>
-        <keep-alive :include="['mvPlay','videoPlay']">
+        <keep-alive :include="['mvPlay', 'videoPlay']">
           <router-view></router-view>
         </keep-alive>
       </div>
@@ -17,14 +17,14 @@
   </div>
 </template>
 <script>
-import HeaderNav from './components/HeaderNav.vue'
-import aplayer from '@/components/aplayer.vue'
-import bgmusic from '@/components/bgmusic.vue'
+import HeaderNav from "./components/HeaderNav.vue";
+import aplayer from "@/components/aplayer.vue";
+import bgmusic from "@/components/bgmusic.vue";
 // import Login from "@/components/login/index"
 // import AlbumDetail from './views/albumDetail/albumDetail.vue'
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     HeaderNav,
     aplayer,
@@ -33,7 +33,7 @@ export default {
     bgmusic,
   },
   data() {
-    return {}
+    return {};
   },
   mounted() {},
   methods: {},
@@ -52,10 +52,10 @@ export default {
   //     }
   //   },
   // },
-}
+};
 </script>
 <style lang="less">
-@import '@/style/common.less';
+@import "@/style/common.less";
 .wrap {
   position: fixed;
   top: 0;
@@ -65,9 +65,11 @@ export default {
   margin: auto;
   width: 1200px;
   height: 820px;
-  #app{
-     background: url(@/static/img/background8.jpeg);
+
+  #app {
+    height: 820px;
+    overflow: hidden;
+    background: url(@/static/img/background8.jpeg);
   }
- 
 }
 </style>

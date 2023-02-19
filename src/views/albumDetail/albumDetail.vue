@@ -1,112 +1,103 @@
 <template>
   <div class="list-wrap">
-    <h3>专辑详情</h3>
+    <div class="pageName">专辑详情</div>
     <div class="descript"></div>
     <div>
       <div class="ul">
         <div class="details">
           <div class="details-img">
-            <img :src="albumDesc.blurPicUrl"
-                 alt="" />
+            <img :src="albumDesc.blurPicUrl" alt="" />
           </div>
           <div class="detailsRight">
-            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
+            <div style="margin-left: 0px; text-align: left; font-size: 20px">
               {{ albumDesc.name }}
-            </h3>
+            </div>
             <div style="font-size: 14px">
               <div class="aliasClass">
-                <img class="artistPic"
-                     :src="albumDesc.artist.img1v1Url"
-                     alt="" />-
+                <img
+                  class="artistPic"
+                  :src="albumDesc.artist.img1v1Url"
+                  alt=""
+                />-
                 <span class="playListNickName">{{
                   albumDesc.artist.name
                 }}</span>
               </div>
-
             </div>
           </div>
         </div>
         <div id="singleSongs">
-          <h3>专辑歌曲：{{ albumSongs.length }}首</h3>
+          <div class="countLine">专辑歌曲：{{ albumSongs.length }} 首</div>
           <songlist :songlist="albumSongs"></songlist>
         </div>
       </div>
     </div>
     <div v-show="false">
-      <aplayer :autoplay="true"
-               :fixed="true"
-               :audio="listen"
-               :liric-type="1">
+      <aplayer :autoplay="true" :fixed="true" :audio="listen" :liric-type="1">
       </aplayer>
     </div>
   </div>
 </template>
 
 <script>
-import { getAlbumContent, getDownloadUrl } from '@/api/api'
-import { transMusicTime, download } from '@/utils/commonApi'
-import songlist from '@/components/songlist.vue'
+import { getAlbumContent, getDownloadUrl } from "@/api/api";
+import { transMusicTime, download } from "@/utils/commonApi";
+import songlist from "@/components/songlist.vue";
 
 export default {
-  components:{
-    songlist
+  components: {
+    songlist,
   },
   data() {
     return {
       listen: [],
-      albumId: '',
+      albumId: "",
       albumSongs: [],
       albumDesc: {
-        artist:{img1v1Url:'',}
+        artist: { img1v1Url: "" },
       },
-    }
+    };
   },
   mounted() {
     //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
     if (this.$route.params.albumId) {
-      localStorage.setItem('albumId', this.$route.params.albumId)
+      localStorage.setItem("albumId", this.$route.params.albumId);
     }
     // 判断是否使用缓存
     this.$route.params.albumId
       ? (this.albumId = this.$route.params.albumId)
-      : (this.albumId = localStorage.getItem('albumId'))
-    this.getAlbumContent()
+      : (this.albumId = localStorage.getItem("albumId"));
+    this.getAlbumContent();
   },
   methods: {
     getAlbumContent() {
-      var that = this
+      var that = this;
       let params = {
         id: that.albumId,
-      }
+      };
       getAlbumContent(params).then((res) => {
         // console.log("专辑信息---：", res.data.album);
         // console.log("专辑歌曲---：", res.data.songs);
-        that.albumDesc = res.data.album
-        that.albumSongs = res.data.songs
+        that.albumDesc = res.data.album;
+        that.albumSongs = res.data.songs;
         //给每个列表添加一个防抖
         for (let item of that.albumSongs) {
-          that.$set(item, 'timer', true)
+          that.$set(item, "timer", true);
         }
-        let dt = 'dt'
-        transMusicTime(that.albumSongs, dt)
-      })
+        let dt = "dt";
+        transMusicTime(that.albumSongs, dt);
+      });
     },
 
-   
     //根据主题更换播放器颜色
     // randomColor() {
     //   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`
     // },
   },
-}
+};
 </script>
 
 <style lang="less" >
-h3 {
-  height: 30px;
-  line-height: 30px;
-  text-align: center;
-}
 .descript {
   display: flex;
   justify-content: space-between;
@@ -179,7 +170,6 @@ h3 {
               display: inline-block;
               margin-right: 40px;
               transition: 0.2s;
-             
 
               &:hover {
                 cursor: pointer;
@@ -226,10 +216,7 @@ h3 {
       &::-webkit-scrollbar {
         display: none;
       }
-
-      
     }
-
   }
 }
 .pagination {

@@ -1,8 +1,8 @@
 /**
  * 存储localStorage
  */
- export const setStorage = (name, content) => {
-	if (!name) return;  
+export const setStorage = (name, content) => {
+	if (!name) return;
 	if (typeof content !== 'string') {
 		content = JSON.stringify(content);
 	}
@@ -15,14 +15,14 @@
 export const getStorage = name => {
 	if (!name) return;
 	var value = window.localStorage.getItem(name);
-    if (value !== null) {
-        try {
-            value = JSON.parse(value);
-        } catch (e) {
-            value = value;
-        }
-    }
-    return value;
+	if (value !== null) {
+		try {
+			value = JSON.parse(value);
+		} catch (e) {
+			value = value;
+		}
+	}
+	return value;
 }
 
 /**

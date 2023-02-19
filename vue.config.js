@@ -6,13 +6,13 @@ module.exports = defineConfig({
         iconPaths: {//图标设置
             favicon32: 'favicon.ico',
             favicon16: 'favicon.ico',
-            appleTouchIcon: 'favicon.ico',
-            maskIcon: 'favicon.ico',
-            msTileImage: 'favicon.ico',
+            // appleTouchIcon: 'favicon.ico',
+            // maskIcon: 'favicon.ico',
+            // msTileImage: 'favicon.ico',
         }
     },
-    devServer:{
-        port:8080,
+    devServer: {
+        port: 8080,
     }
-  
+
 })

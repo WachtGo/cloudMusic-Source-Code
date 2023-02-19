@@ -10,23 +10,23 @@
 export default {
   data() {
     return {
-      keywords: '',
-      reload: '',
-    }
+      keywords: "",
+      reload: "",
+    };
   },
   created() {
-    let that = this
+    let that = this;
     setTimeout(() => {
       that.$router.push({
-        name: 'MusicPlayList',
+        name: "MusicPlayList",
         query: {
           keywords: that.$route.query.keywords,
           reload: that.$route.query.reload,
         },
-      })
-    }, 500)
+      });
+    }, 500);
   },
-}
+};
 </script>
 
 <style lang='less'>

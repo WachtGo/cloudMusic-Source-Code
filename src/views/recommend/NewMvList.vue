@@ -4,25 +4,25 @@
     <h3 class="h2title">最新MV :</h3>
     <div class="recPlay Ocenter">
       <ul class="recPlaywrap">
-        <li class="recPlayList"
-            v-for="(item, index) in recMvList"
-            :key="index">
+        <li class="recPlayList" v-for="(item, index) in recMvList" :key="index">
           <div class="image">
-            <img :src="item.cover"
-                 alt=""
-                 title=""
-                 @click="goPlayMv(item.id)" />
-            <span class="playCount"><i class="el-icon-video-play"
-                 style="margin-right: 1px"></i>{{ item.playCount }}</span>
+            <img :src="item.cover" alt="" title="" @click="goPlayMv(item.id)" />
+            <span class="playCount"
+              ><i class="el-icon-video-play" style="margin-right: 1px"></i
+              >{{ item.playCount }}</span
+            >
           </div>
           <p class="List-title">
-            <span style="
+            <span
+              style="
                 display: inline-block;
                 width: 100%;
                 overflow: hidden;
                 white-space: nowrap;
                 text-overflow: ellipsis;
-              ">{{ item.name }}</span>
+              "
+              >{{ item.name }}</span
+            >
             <span style="font-size: 10px; color: rgb(220, 220, 220)">{{
               item.artists[0].name
             }}</span>
@@ -34,41 +34,41 @@
 </template>
 
 <script>
-import { getNewMvList } from '@/api/api'
-import { transPlayCount } from '@/utils/commonApi'
+import { getNewMvList } from "@/api/api";
+import { transPlayCount } from "@/utils/commonApi";
 export default {
   data() {
     return {
       limit: 4,
       recMvList: [],
-    }
+    };
   },
   mounted() {
-    this.getNewMvList()
+    this.getNewMvList();
   },
   methods: {
     getNewMvList() {
       //获取最新MV
-      var that = this
+      var that = this;
       let params = {
         limit: that.limit,
-      }
+      };
       getNewMvList(params).then((res) => {
-        that.recMvList = res.data.data
+        that.recMvList = res.data.data;
         // console.log("最新mv---:", res.data.data);
         //将播放量转换成亿万单位
-        transPlayCount(that.recMvList, 'playCount')
-      })
+        transPlayCount(that.recMvList, "playCount");
+      });
     },
     goPlayMv(mvId) {
-      var that = this
+      var that = this;
       that.$router.push({
-        name: 'mvPlay',
+        name: "mvPlay",
         params: { mvId: mvId },
-      })
+      });
     },
   },
-}
+};
 </script>
 
 <style lang="less" scoped>

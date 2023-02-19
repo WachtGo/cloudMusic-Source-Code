@@ -1,25 +1,26 @@
 <template>
   <!-- 主页 -->
   <div class="Home">
-
     <div class="tags">
-      <span class="tags-select"
-            v-for="(item,index) in homeTags.tags"
-            :key="index"
-            @click="tagsChange(item.page,true)">{{item.pageName}}</span>
+      <span
+        class="tags-select"
+        v-for="(item, index) in homeTags.tags"
+        :key="index"
+        @click="tagsChange(item.page, true)"
+        >{{ item.pageName }}</span
+      >
     </div>
     <router-view></router-view>
-
   </div>
 </template>
 
 <script>
-import recommend from '../recommend/index'
-import playlistCategary from '../categery/playlistCategary.vue'
-import singerCategaryVue from '../categery/singerCategary.vue'
-import { mapState, mapMutations } from 'vuex'
+import recommend from "../recommend/index";
+import playlistCategary from "../categery/playlistCategary.vue";
+import singerCategaryVue from "../categery/singerCategary.vue";
+import { mapState, mapMutations } from "vuex";
 export default {
-  name: 'HomePage',
+  name: "HomePage",
   components: {
     recommend,
     playlistCategary,
@@ -28,14 +29,14 @@ export default {
   data() {
     return {
       tags: [], //标签节点
-    }
+    };
   },
   computed: {
-    ...mapState('homePage', ['homeTags']),
+    ...mapState("homePage", ["homeTags"]),
   },
   mounted() {
-    this.tags = document.querySelectorAll('.tags-select')
-    this.tagsChange(this.homeTags.routerPage) //首页重定向时，显示标签下划线
+    this.tags = document.querySelectorAll(".tags-select");
+    this.tagsChange(this.homeTags.routerPage); //首页重定向时，显示标签下划线
   },
   methods: {
     ...mapMutations("homePage", ["changehomeTAG"]),
@@ -45,33 +46,33 @@ export default {
       // let tags = document.querySelectorAll('.tags-select')
       this.tags.forEach((item, index) => {
         if (page === index) {
-          item.classList.add('tags-select-click')
+          item.classList.add("tags-select-click");
         } else {
-          if (item.classList.contains('tags-select-click')) {
-            item.classList.remove('tags-select-click')
+          if (item.classList.contains("tags-select-click")) {
+            item.classList.remove("tags-select-click");
           }
         }
-      })
+      });
       if (goRouter) {
         //判断是否是通过点击进入对应页面，未进入到该处表示只是更换下划线
         if (page === 0) {
           this.$router.push({
-            name: 'recommend',
-          })
+            name: "recommend",
+          });
         } else if (page === 1) {
           this.$router.push({
-            name: 'playlistCategary',
-          })
+            name: "playlistCategary",
+          });
         } else if (page === 2) {
           this.$router.push({
-            name: 'singerCategary',
-          })
+            name: "singerCategary",
+          });
         }
-        this.changehomeTAG(page)
+        this.changehomeTAG(page);
       }
     },
   },
-}
+};
 </script>
 
 <style lang="less">

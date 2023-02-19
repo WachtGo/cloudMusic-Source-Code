@@ -3,20 +3,19 @@
   <div>
     <hotSearch></hotSearch>
     <RecPlaylist></RecPlaylist>
-    <RecMvList></RecMvList>
     <NewMvList></NewMvList>
+    <RecMvList></RecMvList>
   </div>
-
 </template>
 
 <script>
-import hotSearch from './hotSearch.vue'
-import RecPlaylist from './RecPlaylist.vue'
-import NewMvList from './NewMvList.vue'
-import RecMvList from './RecMvList.vue'
-import { mapMutations } from 'vuex'
+import hotSearch from "./hotSearch.vue";
+import RecPlaylist from "./RecPlaylist.vue";
+import NewMvList from "./NewMvList.vue";
+import RecMvList from "./RecMvList.vue";
+import { mapMutations } from "vuex";
 export default {
-  name: 'recommend',
+  name: "recommend",
   components: {
     hotSearch,
     RecPlaylist,
@@ -24,12 +23,12 @@ export default {
     RecMvList,
   },
   mounted() {
-    this.changehomeTAG(0)
+    this.changehomeTAG(0);
   },
   methods: {
-    ...mapMutations('homePage', ['changehomeTAG']),
+    ...mapMutations("homePage", ["changehomeTAG"]),
   },
-}
+};
 </script>
 
 <style lang="less">

@@ -19,21 +19,21 @@ const router = new VueRouter({
       name: "HomePage",
       redirect: { name: "recommend" },
       component: () => import("@/views/home/HomePage.vue"),
-      children:[
+      children: [
         {//个性推荐
-          path:"/HomePage/recommend",
-          name:"recommend",
-          component:()=>import("@/views/recommend/index.vue")
+          path: "/HomePage/recommend",
+          name: "recommend",
+          component: () => import("@/views/recommend/index.vue")
         },
         {//歌单分类
-          path:"/HomePage/playlistCategary",
-          name:"playlistCategary",
-          component:()=>import("@/views/categery/playlistCategary.vue")
+          path: "/HomePage/playlistCategary",
+          name: "playlistCategary",
+          component: () => import("@/views/categery/playlistCategary.vue")
         },
         {//歌手分类
-          path:"/HomePage/singerCategary",
-          name:"singerCategary",
-          component:()=>import("@/views/categery/singerCategary.vue")
+          path: "/HomePage/singerCategary",
+          name: "singerCategary",
+          component: () => import("@/views/categery/singerCategary.vue")
         },
       ],
     },
@@ -53,41 +53,41 @@ const router = new VueRouter({
       path: "/songDetails",
       name: "songDetails",
       component: () => import("@/views/songDetails/songDetails.vue"),
-      props:true,
+      props: true,
     },
     //专辑详情
     {
       path: "/albumDetail",
       name: "albumDetail",
       component: () => import("@/views/albumDetail/albumDetail.vue"),
-      props:true,
+      props: true,
     },
     //歌手详情
     {
       path: "/singerDetail",
       name: "singerDetail",
       component: () => import("@/views/singerDetail/singerDetail.vue"),
-      props:true,
+      props: true,
     },
     //歌单详情
     {
       path: '/playListDetails',
       name: 'playListDetails',
       component: () => import("@/views/playListDetails/playListDetails.vue"),
-      props:true,
+      props: true,
     },
     //MV页面
     {
       path: "/mvPlay",
       name: "mvPlay",
       component: () => import("@/views/mvPlay/mvPlay.vue"),
-      props:true,
-      meta:{
-        login:true,
-        met:false
+      props: true,
+      meta: {
+        login: true,
+        met: false
       },
-      
-      
+
+
       // meta: { keepAlive: true }
     },
     //视频页面
@@ -95,7 +95,7 @@ const router = new VueRouter({
       path: "/videoPlay",
       name: "videoPlay",
       component: () => import("@/views/videoPlay/videoPlay.vue"),
-      props:true,
+      props: true,
       // meta: { keepAlive: true }
       // 独享路由
       // beforeEnter(to,from,next){
@@ -122,7 +122,7 @@ const router = new VueRouter({
 
 //后置路由
 // router.afterEach((to,from,next)=>{
-  
+
 // })
 // //还有组件内路由如下,组件内使用
 // beforRouteEnter(to,from,next){
@@ -138,7 +138,7 @@ const router = new VueRouter({
 //去除首页导航重复导航相同页面报错 ：Avoided redundant navigation to current location:
 
 const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push (location){
-  return originalPush.call(this,location).catch(err=>err)
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
 }
 export default router
