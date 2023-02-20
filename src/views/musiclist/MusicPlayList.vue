@@ -81,14 +81,14 @@
         </div>
         <!-- 歌手列表 -->
         <div class="singerListClass" v-show="tagSwitch.singerSwitch">
-          <div class="loading" v-show="singerList.length === 0">
+          <div class="loading" v-show="artists.length === 0">
             <i class="el-icon-loading"></i>
           </div>
           <li
             class="liWrap"
-            v-for="(item, index) in singerList"
+            v-for="(item, index) in artists"
             :key="index"
-            @click.stop="goSingerDetail(item.id)"
+            @click.stop="goSingerDetail(item)"
           >
             <div class="liWrap-block1">
               <img :src="item.img1v1Url" alt="" />
@@ -302,7 +302,7 @@ export default {
       // 专辑列表
       albumList: [],
       //歌手列表
-      singerList: [],
+      artists: [],
       //MV列表
       mvList: [],
       //音乐下载地址
@@ -376,15 +376,14 @@ export default {
       });
     },
     //获取歌手详情
-    goSingerDetail(id) {
-      if (id) {
+    goSingerDetail(item) {
+      // console.log(item)
         this.$router.push({
           name: "singerDetail",
           params: {
-            singerId: id,
+            artist: item,
           },
         });
-      }
     },
     //传入歌单id进入歌单详情
     goSongList(songListDetail) {
@@ -449,10 +448,10 @@ export default {
         offset: (that.currentPage - 1) * 15,
         type: 100, //代表获取歌手
       };
-      that.singerList = [];
+      that.artists = [];
       getMusicInfo(params).then((res) => {
         // console.log("获取歌手列表----", res.data.result);
-        that.singerList = res.data.result.artists;
+        that.artists = res.data.result.artists;
         that.count = res.data.result.artistCount;
       });
     },

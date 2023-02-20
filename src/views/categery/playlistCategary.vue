@@ -81,14 +81,14 @@
                   :src="item.coverImgUrl"
                   alt=""
                   title=""
-                  @click="goSongList(item.id)"
+                  @click="goSongList(item)"
                 />
                 <span class="playCount"
                   ><i class="el-icon-video-play" style="margin-right: 1px"></i
                   >{{ item.playCount }}</span
                 >
               </div>
-              <p class="List-title" @click="goSongList(item.id)">
+              <p class="List-title" @click="goSongList(item)">
                 <span>{{ item.name }} </span>
               </p>
             </li>
@@ -193,12 +193,12 @@ export default {
       });
     },
     //传入歌单id进入歌单详情
-    goSongList(songListId) {
+    goSongList(songListDetail) {
       //传入歌单id进入歌单详情
       var that = this;
       that.$router.push({
         name: "playListDetails",
-        params: { songListId: songListId },
+        params: { songListDetail: songListDetail },
       });
     },
     //分页

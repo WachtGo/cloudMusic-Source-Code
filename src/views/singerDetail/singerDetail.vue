@@ -7,20 +7,20 @@
       <div class="ul">
         <div class="details">
           <div class="details-img">
-            <img :src="singerDesc.img1v1Url" alt="" />
+            <img :src="artist.img1v1Url" alt="" />
           </div>
           <div class="detailsRight">
             <div style="margin-left: 0px; text-align: left; font-size: 20px">
-              {{ singerDesc.name }}
+              {{ artist.name }}
             </div>
             <div style="font-size: 14px">
               <div class="aliasClass">
-                <span class="playListNickName" v-if="singerDesc.alias[0]">{{
-                  singerDesc.alias[0]
+                <span class="playListNickName" v-if="artist.alias[0]">{{
+                  artist.alias[0]
                 }}</span>
-                <span class="playListNickName" v-if="singerDesc.alias[1]"
+                <span class="playListNickName" v-if="artist.alias[1]"
                   >-</span
-                ><span class="playListNickName2">{{ singerDesc.alias[1] }}</span
+                ><span class="playListNickName2">{{ artist.alias[1] }}</span
                 ><span
                   ><br />
                   <span style="color: antiquewhite"></span
@@ -33,20 +33,20 @@
                     class="inline-block"
                     @click="getSingerSongList('songSwitch')"
                     >歌曲：<span class="musicSize">{{
-                      singerDesc.musicSize
+                      artist.musicSize
                     }}</span></span
                   >
                   <span
                     class="inline-block"
                     @click="getSingerAlbum('albumSwitch')"
                     >专辑：<span class="musicSize">{{
-                      singerDesc.albumSize
+                      artist.albumSize
                     }}</span>
                   </span>
                   <span
                     class="inline-block"
                     @click="getSingerMvList('mvSwitch')"
-                    >MV：<span class="musicSize">{{ singerDesc.mvSize }}</span>
+                    >MV：<span class="musicSize">{{ artist.mvSize }}</span>
                   </span>
                 </div>
               </div>
@@ -56,7 +56,7 @@
         <div class="singerDetail" v-if="tagSwitch.detailSwitch">
           <div style="font-size: 15px">简介：</div>
           <p>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ singerDesc.briefDesc }}
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ artist.briefDesc }}
           </p>
         </div>
         <div id="singleSongs" v-if="tagSwitch.songSwitch">
@@ -74,12 +74,12 @@
             </ul>
             <div class="pagination">
               <el-pagination
-                v-show="singerDesc.musicSize > 30"
+                v-show="artist.musicSize > 30"
                 @current-change="songHandleCurrentChange"
                 :current-page.sync="songcurrentPage"
                 :page-size="30"
                 layout="prev, pager, next, jumper"
-                :total="singerDesc.musicSize"
+                :total="artist.musicSize"
                 :background="true"
               >
               </el-pagination>
@@ -128,12 +128,12 @@
             </ul>
             <div class="pagination">
               <el-pagination
-                v-show="singerDesc.albumSize > 6"
+                v-show="artist.albumSize > 6"
                 @current-change="albumHandleCurrentChange"
                 :current-page.sync="albumcurrentPage"
                 :page-size="6"
                 layout="prev, pager, next, jumper"
-                :total="singerDesc.albumSize"
+                :total="artist.albumSize"
                 :background="true"
               >
               </el-pagination>
@@ -199,12 +199,12 @@
             </ul>
             <div class="pagination">
               <el-pagination
-                v-show="singerDesc.mvSize > 8"
+                v-show="artist.mvSize > 8"
                 @current-change="mvHandleCurrentChange"
                 :current-page.sync="mvcurrentPage"
                 :page-size="8"
                 layout="prev, pager, next, jumper"
-                :total="singerDesc.mvSize"
+                :total="artist.mvSize"
                 :background="true"
               >
               </el-pagination>
@@ -230,12 +230,11 @@ export default {
   components: {
     songlist,
   },
-  // props: ['singerId'],
+  // props: ['artist.id'],
   data() {
     return {
       //歌手信息
-      singerId: "",
-      singerDesc: {
+      artist: {
         alias: [],
         musicSize: "",
       },
@@ -256,13 +255,13 @@ export default {
   },
   mounted() {
     ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
-    if (this.$route.params.singerId) {
-      localStorage.setItem("singerId", this.$route.params.singerId);
+    if (this.$route.params.artist) {
+      localStorage.setItem("artist", JSON.stringify(this.$route.params.artist));
     }
     //判断是否使用缓存
-    this.$route.params.singerId
-      ? (this.singerId = this.$route.params.singerId)
-      : (this.singerId = localStorage.getItem("singerId"));
+    this.$route.params.artist
+      ? (this.artist = this.$route.params.artist)
+      : (this.artist = JSON.parse(localStorage.getItem("artist")));
     this.getSingerDesc();
   },
   methods: {
@@ -281,7 +280,7 @@ export default {
     getSingerSongList(tag) {
       var that = this;
       let params = {
-        id: that.singerId,
+        id: that.artist.id,
         limit: 30,
         offset: (that.songcurrentPage - 1) * 30,
       };
@@ -306,7 +305,7 @@ export default {
       var that = this;
 
       let params = {
-        id: that.singerId,
+        id: that.artist.id,
         limit: 6,
         offset: (that.albumcurrentPage - 1) * 6,
       };
@@ -323,7 +322,7 @@ export default {
     getSingerMvList(tag) {
       var that = this;
       let params = {
-        id: that.singerId,
+        id: that.artist.id,
         limit: 8,
         offset: (that.mvcurrentPage - 1) * 8,
       };
@@ -340,14 +339,14 @@ export default {
     },
     //获取歌手描述
     getSingerDesc() {
-      // console.log(Boolean(this.singerDesc))
+      // console.log(Boolean(this.artist))
       var that = this;
       let params = {
-        id: that.singerId,
+        id: that.artist.id,
       };
       getSingerDesc(params).then((res) => {
         // console.log("歌手描述", res.data);
-        that.singerDesc = res.data.artist;
+        that.artist = res.data.artist;
       });
     },
 

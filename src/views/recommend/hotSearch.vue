@@ -32,7 +32,7 @@ export default {
       //获取热搜歌曲列表
       getHotSearch().then((res) => {
         this.hotSearch = res.data.data;
-        console.log(this.hotSearch);
+        // console.log(this.hotSearch);
       });
     },
     getMusicList(keywords) {
