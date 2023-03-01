@@ -110,6 +110,22 @@ const cookieParser = (cookie) => {
   //6bf80db2682091e66db7c358940e6034f555d03d999284f42033476c98e45796993166e004087dd3e30340b48322c4fd7a82616b73ff591e0195ea446a99c0ab92386fc4f57b0915a0d2166338885bd7
 }
 
+//深冻结
+const deepFreeze = (obj) => {
+  // 获取所有属性
+  var propNames = Object.getOwnPropertyNames(obj)
+
+  // 遍历
+  propNames.forEach(item => {
+    var prop = obj[item]
+    // 如果某个属性的属性值是对象，则递归调用
+    if (prop instanceof Object && prop !== null) {
+      deepFreeze(prop)
+    }
+  })
+  // 冻结自身
+  return Object.freeze(obj)
+}
 
 module.exports = {
   transtime,
@@ -118,5 +134,6 @@ module.exports = {
   download,
   getTimestamp,
   randomRange,
-  cookieParser
+  cookieParser,
+  deepFreeze
 }

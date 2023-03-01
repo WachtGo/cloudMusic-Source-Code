@@ -49,14 +49,14 @@ export default {
 <style lang="less" scoped>
 .hotSearch {
   margin: 5px auto;
-  padding: 10px;
+  padding: 0 10px;
   width: 1120px;
   border-radius: 10px;
   // background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   .hotSearchWrap {
-    padding: 10px 0;
+    height: 120px;
 
     .hotSearchWord {
       // position: relative;
@@ -78,7 +78,7 @@ export default {
         //  position: absolute;
         //  right: 0;
         margin-bottom: 10px;
-        width: 28px;
+        // width: 28px;
         height: 15px;
       }
     }

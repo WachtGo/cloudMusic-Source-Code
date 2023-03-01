@@ -11,6 +11,7 @@
         <li class="logined-li" @click="loginOut">退出登录</li>
       </ul>
     </div>
+    <!-- <li class="logined-li" @click="loginOut">退出登录</li> -->
     <!-- <el-button style="color: black" @click="getloginStatus"
       >登录状态获取</el-button
     >
@@ -70,21 +71,23 @@ export default {
     // ...mapState("login", ["loginWrapShow", "loginStatus"]),
   },
   watch: {
-    // loginWrapShow: async function () {
-    //   var that = this;
-    //   if (that.loginWrapShow) {
-    //     // console.log(document);
-    //     let adom = await document.getElementById("qrStatus");
-    //     // console.log("adom", adom);
-    //     that.qrtimer = setInterval(() => {
-    //      adom.click();
-    //       // console.log("刷新");
-    //     }, 1500);
-    //   } else {
-    //     clearInterval(that.qrtimer);
-    //     console.log("扫码登录成功");
-    //   }
-    // },
+    loginWrapShow: {
+      handler(newValue) {
+        if (newValue) {
+          // console.log(document);
+          let adom = document.getElementById("qrStatus");
+          console.log("adom", adom);
+          this.qrtimer = setInterval(() => {
+            adom.click();
+            // console.log("刷新");
+          }, 1500);
+        } else {
+          clearInterval(this.qrtimer);
+          console.log("扫码登录成功");
+        }
+      },
+      // immediate: true,
+    },
   },
   mounted() {
     localStorage.getItem("loginStatus")
@@ -156,9 +159,9 @@ export default {
         timestamp: getTimestamp(),
       };
       getqrStatus(params).then(async (res) => {
-        this.qrStatus = await res.data.message;
         if (res.data.code === 803) {
-          this.qrStatus += ",1s后自动关闭";
+          this.qrStatus = await res.data.message;
+          this.qrStatus += ",1s后自动进入";
           // console.log("登录成功：--", res);
           let cookies = cookieParser(res.data.cookie);
           setCookie("__csrf", cookies[1]);
@@ -172,6 +175,7 @@ export default {
           }, 1000);
           this.getloginStatus();
         } else if (res.data.code === 800) {
+          this.qrStatus = await res.data.message;
           this.qrStatus += ",请刷新获取";
         }
       });
@@ -233,7 +237,7 @@ export default {
 .user {
   position: absolute;
   // width: 150px;
-  height: 32px;
+  height: 30px;
   top: 0;
   right: 10px;
   color: rgba(238, 238, 238, 0.61);
@@ -247,13 +251,15 @@ export default {
   }
 
   .userAvatar {
+    vertical-align: top;
     margin-right: 10px;
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
   }
   .nickName {
     display: inline-block;
+    font-size: 13px;
     height: 30px;
     line-height: 30px;
   }

@@ -11,6 +11,13 @@
           <div class="detailsRight">
             <div style="margin-left: 0px; text-align: left; font-size: 20px">
               {{ songDetails.name }}
+              <div style="display: inline-block">
+                <button class="my-button" @click="collectPlaylist('1')">
+                  喜欢<i class="iFont el-icon-star-on iconhover"></i></button
+                ><button class="my-button" @click="collectPlaylist('2')">
+                  不喜欢了<i class="iFont el-icon-star-off iconhover"></i>
+                </button>
+              </div>
             </div>
             <div style="margin: 10px 0 10px 0; height: 30px; font-size: 14px">
               <span class="playListNickName">{{ songDetails.ar[0].name }}</span

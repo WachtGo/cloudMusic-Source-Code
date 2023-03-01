@@ -2,7 +2,7 @@
   <!-- 最新MV -->
   <div>
     <h3 class="h2title">推荐MV :</h3>
-    <div class="recPlay Ocenter">
+    <div class="recPlay">
       <ul class="recPlaywrap">
         <li class="recPlayList" v-for="(item, index) in recMvList" :key="index">
           <div class="image">
@@ -59,6 +59,7 @@ export default {
         limit: that.limit,
       };
       getSuggestMvList(params).then((res) => {
+        console.log(res);
         // console.log(res, 'tuijianmv')
         that.recMvList = res.data.result;
         // console.log("推荐mv---:", res.data.result);
@@ -92,6 +93,7 @@ export default {
     flex-wrap: wrap; //根据宽度限制一行的盒子个数
     margin: 10px 0;
     width: 100%;
+    height: 200px;
     // overflow-x: hidden;
 
     .recPlayList {

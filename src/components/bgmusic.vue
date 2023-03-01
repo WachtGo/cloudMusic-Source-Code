@@ -32,10 +32,15 @@ export default {
           fontColor: "fontColorgray",
         },
         {
-          name: "带走我的心啊 把他藏在行囊",
-          src: "https://music.163.com/song/media/outer/url?id=1883088998.mp3",
+          name: "Sundial Dreams",
+          src: "https://music.163.com/song/media/outer/url?id=5226753.mp3",
           fontColor: "fontColorgray",
         },
+        // {
+        //   name: "带走我的心啊 把他藏在行囊",
+        //   src: "https://music.163.com/song/media/outer/url?id=1883088998.mp3",
+        //   fontColor: "fontColorgray",
+        // },
         // {
         //   name: "Childhood Memory",
         //   src: "https://music.163.com/song/media/outer/url?id=401767.mp3",
@@ -46,21 +51,17 @@ export default {
         //   src: "https://music.163.com/song/media/outer/url?id=28411989.mp3",
         //   fontColor: "fontColorgray",
         // },
-        {
-          name: "Sundial Dreams",
-          src: "https://music.163.com/song/media/outer/url?id=5226753.mp3",
-          fontColor: "fontColorgray",
-        },
+
         // {
         //   name: "Tears",
         //   src: "https://music.163.com/song/media/outer/url?id=5331915.mp3",
         //   fontColor: "fontColorgray",
         // },
-        {
-          name: "乌梅子酱 - 钢琴",
-          src: "https://music.163.com/song/media/outer/url?id=2023009742.mp3",
-          fontColor: "fontColorgray",
-        },
+        // {
+        //   name: "乌梅子酱 - 钢琴",
+        //   src: "https://music.163.com/song/media/outer/url?id=2023009742.mp3",
+        //   fontColor: "fontColorgray",
+        // },
       ],
       bgmusic: [],
     };

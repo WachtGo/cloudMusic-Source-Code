@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="music-list" v-for="(item, index) in songlist" :key="item.id">
-      <div style="width: 20px">{{ index + 1 }}.</div>
+      <div style="width: 35px">{{ index + 1 }}.</div>
       <div @dblclick="goSongDetails(item)" class="music-list-info">
         <div class="music-list-span">{{ item.name }}</div>
         <div class="music-list-span">{{ item.ar[0].name }}</div>
@@ -10,8 +10,12 @@
 
       <div class="option">
         <!-- 加入我的喜欢 -->
-        <span @click="likeMusic(item.id)"
-          ><i class="iFont el-icon-star-off"></i
+        <span @click="likeMusic(item.id, true)"
+          ><i class="iFont el-icon-star-on iconhover"></i
+        ></span>
+        <!-- 从我的喜欢删除 -->
+        <span @click="likeMusic(item.id, false)"
+          ><i class="iFont el-icon-star-off iconhover"></i
         ></span>
         <!-- <i class="iFont el-icon-star-off" @click="collectPlaylist"></i> -->
         <!-- 试听 -->
@@ -64,19 +68,21 @@ export default {
       });
     },
     //加入/删除喜欢音乐
-    likeMusic(id) {
-      likeMusic({ id: id })
+    likeMusic(id, bool) {
+      likeMusic({ id: id, like: bool })
         .then((res) => {
-          console.log("添加", res);
+          // console.log("添加", res);
           if (res.data.code === 200) {
+            if (bool) {
+              this.$message({
+                type: "success",
+                message: "已添加入我的喜欢-可进入网易云音乐查看",
+              });
+              return;
+            }
             this.$message({
               type: "success",
-              message: "已添加入我的喜欢-可进入网易云音乐查看",
-            });
-          } else {
-            this.$message({
-              type: "error",
-              message: `添加失败：状态码${res.data.code}`,
+              message: "已从我的喜欢列表删除",
             });
           }
         })
@@ -152,7 +158,7 @@ export default {
   .music-list-index {
     position: absolute;
     left: 0;
-    width: 3%;
+    width: 5%;
   }
   .music-list-info {
     display: flex;
@@ -182,13 +188,13 @@ export default {
 
   .option {
     display: inline-block;
-    margin-left: 5%;
-    width: 10%;
+    margin-left: 2%;
+    width: 15%;
     box-sizing: border-box;
 
     span {
       display: inline-block;
-      width: 20%;
+      width: 15%;
       &:hover {
         cursor: pointer;
       }

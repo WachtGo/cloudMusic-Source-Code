@@ -6,6 +6,20 @@ export const getSearchDefault = () => cloudMusic.get('/search/default')
 //获取热搜列表
 export const getHotSearch = () => cloudMusic.get('/search/hot/detail')
 
+
+/* //搜索建议
+说明 : 调用此接口 , 传入搜索关键词可获得搜索建议 , 搜索结果同时包含单曲 , 歌手 , 歌单信息
+必选参数  `keywords` : 关键词
+可选参数  `type` : 如果传 'mobile' 则返回移动端数据
+*/
+export function getSearchSuggest(params) {
+    return cloudMusic({
+        url: '/search/suggest',
+        method: 'get',
+        params: params,
+    })
+}
+
 // 获取搜索内容信息
 // export const getMusicInfo = (params) => cloudMusic.get(`cloudsearch?keywords=${params.keywords}&limit=${params.limit}&offset=${params.offset}&type=${params.type}`);
 export function getMusicInfo(params) {

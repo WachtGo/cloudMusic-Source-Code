@@ -99,6 +99,7 @@ export default {
     flex-wrap: wrap; //根据宽度限制一行的盒子个数
     margin: 10px 0;
     width: 100%;
+    height: 520px;
     // overflow-x: hidden;
 
     .recPlayList {

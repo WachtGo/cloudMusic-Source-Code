@@ -41,47 +41,91 @@
     </header>
 
     <!-- 搜索显示的搜索项列表 -->
-    <ul id="search-box" v-show="searchSwitch" @scroll="searchScroll">
+    <!-- @scroll="searchScroll" 搜索懒加载-->
+    <div id="search-box" v-show="searchSwitch">
       <!-- searchSwitch -->
-      <li
-        class="suggest-list"
-        v-for="(item, index) in musicList"
-        :key="index"
-        @mousedown="selectMusic(item.name, item.ar[0].name)"
-      >
-        <span class="suggest-list-music" style="width: 310px">{{
-          item.name
-        }}</span>
-        <span class="suggest-list-music" style="width: 180px">{{
-          item.ar[0].name
-        }}</span>
-        <span class="suggest-list-music" style="width: 50px">{{
-          item.dt
-        }}</span>
-      </li>
+      <div class="search-box-wrap">
+        <div class="suggest-title">单曲</div>
+        <ul class="suggest-ul">
+          <li
+            class="suggest-list"
+            v-for="(item, index) in musicList.songs"
+            :key="index"
+            @mousedown="selectMusic(item.name, item.artists[0].name)"
+          >
+            <span class="suggest-list-music" style="width: 310px">{{
+              item.name
+            }}</span>
+            <span class="suggest-list-music" style="width: 180px">{{
+              item.artists[0].name
+            }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="search-box-wrap">
+        <div class="suggest-title">歌手</div>
+        <ul class="suggest-ul">
+          <li
+            class="suggest-list"
+            v-for="(item, index) in musicList.artists"
+            :key="index"
+            @mousedown="selectArtist(item)"
+          >
+            <span class="suggest-list-music" style="width: 310px"
+              ><img
+                :src="item.img1v1Url"
+                alt=""
+                style="width: 28px; height: 28px; border-radius: 50%"
+            /></span>
+            <span class="suggest-list-music" style="width: 180px">{{
+              item.name
+            }}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="search-box-wrap">
+        <div class="suggest-title">专辑</div>
+        <ul class="suggest-ul">
+          <li
+            class="suggest-list"
+            v-for="(item, index) in musicList.albums"
+            :key="index"
+            @mousedown="selectAlbum(item.id)"
+          >
+            <span class="suggest-list-music" style="width: 310px">{{
+              item.name
+            }}</span>
+            <span class="suggest-list-music" style="width: 180px">{{
+              item.artist.name
+            }}</span>
+          </li>
+        </ul>
+      </div>
+
       <div class="loading" v-if="reloadShow">
         <i class="el-icon-loading"></i>
       </div>
-    </ul>
+    </div>
 
     <!-- <router-view></router-view> -->
   </div>
 </template>
 
 <script>
-import { getSearchDefault, getMusicInfo } from "@/api/api";
+import { getSearchDefault, getSearchSuggest } from "@/api/api";
+import { deepFreeze } from "@/utils/commonApi";
 export default {
   data() {
     return {
       searchSwitch: false, //搜索窗口开关
       searchTerms: "", //输入框内容
       placeholder: "",
-      musicList: [], //搜索列表
+      musicList: {}, //搜索列表
       inputTimer: null, //搜索节流
       reloadShow: null, //是否在请求数据
-      page: 1, //搜索列表页数
-      limit: 30, //搜索每次请求的数
-      count: 15, //最后一次搜索请求的数量，用于判断是否全部加载完毕
+      // page: 1, //搜索列表页数
+      // limit: 30, //搜索每次请求的数
+      // count: 15, //最后一次搜索请求的数量，用于判断是否全部加载完毕
     };
   },
   directives: {
@@ -171,7 +215,7 @@ export default {
       //显示搜索列表
       this.searchSwitch = true;
       if (!this.searchTerms.trim()) {
-        this.getMusicInfo(this.placeholder);
+        this.getSearchSuggest(this.placeholder);
       }
     },
 
@@ -182,9 +226,35 @@ export default {
       //选择歌曲进入列表
       this.$router.push({
         name: "emptyPage",
-        query: { keywords: this.keywords, reload: true },
+        query: { keywords: keywords, reload: true },
       });
       this.searchSwitch = false;
+    },
+    selectArtist(singerDetail) {
+      let params = {
+        id: singerDetail.id,
+        img1v1Url: singerDetail.img1v1Url,
+        name: singerDetail.name,
+        alias: singerDetail.alias,
+        musicSize: null,
+        albumSize: singerDetail.albumSize,
+        mvSize: null,
+        briefDesc: "",
+      };
+      this.$router.push({
+        name: "singerDetail",
+        params: {
+          artist: params,
+        },
+      });
+    },
+    selectAlbum(id) {
+      this.$router.push({
+        name: "albumDetail",
+        params: {
+          albumId: id,
+        },
+      });
     },
     enterSearch() {
       if (!this.searchTerms.trim()) {
@@ -208,69 +278,49 @@ export default {
           clearTimeout(this.inputTimer);
         }
         this.inputTimer = setTimeout(() => {
-          this.musicList = [];
-          this.page = 1;
-          this.getMusicInfo(this.searchTerms);
+          this.musicList = {};
+          // this.page = 1;
+          this.getSearchSuggest(this.searchTerms);
           clearTimeout(this.inputTimer);
         }, 500);
       }
     },
 
     //搜索懒加载
-    searchScroll() {
-      //获取现在滚动高度
-      let scrollTop = document.getElementById("search-box").scrollTop;
-      // console.log('滚动高度----:',scrollTop)
-      // 获取可视区域高度
-      let clientHeight = document.getElementById("search-box").clientHeight;
-      // 获取文档总高度
-      let scrollHeight = document.getElementById("search-box").scrollHeight;
-      // 滚动到底部
-      if (scrollTop + clientHeight === scrollHeight) {
-        // console.log('到底部了');
-        // console.log(this.reloadShow,this.count)
-        if (this.reloadShow || this.limit > this.count) return;
-        this.page += 1;
-        this.getMusicInfo(this.searchTerms);
-      }
-    },
+    // searchScroll() {
+    //   //获取现在滚动高度
+    //   let scrollTop = document.getElementById("search-box").scrollTop;
+    //   // console.log('滚动高度----:',scrollTop)
+    //   // 获取可视区域高度
+    //   let clientHeight = document.getElementById("search-box").clientHeight;
+    //   // 获取文档总高度
+    //   let scrollHeight = document.getElementById("search-box").scrollHeight;
+    //   // 滚动到底部
+    //   if (scrollTop + clientHeight === scrollHeight) {
+    //     // console.log('到底部了');
+    //     // console.log(this.reloadShow,this.count)
+    //     if (this.reloadShow || this.limit > this.count) return;
+    //     this.page += 1;
+    //     this.getSearchSuggest(this.searchTerms);
+    //   }
+    // },
     //搜索
-    async getMusicInfo(searchTerms) {
+    getSearchSuggest(searchTerms) {
       this.reloadShow = true;
       //获取歌曲列表
       let params = {
         keywords: searchTerms,
-        limit: this.limit,
-        offset: this.limit * this.page,
-        type: "",
+        // type: "",
       };
-      await getMusicInfo(params).then((res) => {
-        // console.log(res)
-        let listBox = res.data.result.songs;
-        this.count = res.data.result.songCount;
-        // this.count = res.data.result.songs.length;
-
-        //将歌曲时长转换成分秒格式
-        for (let i = 0; i < listBox.length; i++) {
-          let min = parseInt(listBox[i].dt / 1000 / 60);
-          let sec = parseInt((listBox[i].dt / 1000) % 60);
-          if (min < 10) {
-            min = "0" + min;
-          }
-          if (sec < 10) {
-            sec = "0" + sec;
-          }
-          listBox[i].dt = min + ":" + sec;
-          // console.log(this.musicList[i].song.duration)
-        }
-        this.musicList = this.musicList.concat(listBox);
-        this.reloadShow = false;
-        // console.log("音乐列表：", res.data.result.songs);
+      getSearchSuggest(params).then(async (res) => {
+        console.log("搜索建议", res.data.result);
+        this.musicList = res.data.result;
+        this.reloadShow = false; //加载的开关
       });
     },
     getSearchDefault() {
       //默认搜索关键字
-      getSearchDefault().then((res) => {
+      getSearchDefault().then(async (res) => {
         this.placeholder = res.data.data.realkeyword;
         // console.log("搜索关键字：", res.data.data);
       });
@@ -409,34 +459,44 @@ export default {
   &::-webkit-scrollbar {
     display: none;
   }
-
-  .suggest-list {
-    margin: 5px 10px;
-    padding: 0 10px;
-    height: 30px;
-    line-height: 30px;
-    font-size: 15px;
-    border-radius: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: bolder;
-    transition: 0.2s;
-    // border-bottom: 2px solid rgba(255, 255, 255, 0.445);
-
-    &:hover {
-      cursor: pointer;
-      transform: scale(1.02);
-      // color: rgb(94, 211, 211);
-      background: rgba(250, 250, 250, 0.062);
+  .search-box-wrap {
+    display: flex;
+    .suggest-title {
+      padding: 8px 0;
+      text-indent: 1.5em;
+      flex: 1;
     }
+    .suggest-ul {
+      flex: 4;
+      .suggest-list {
+        margin: 5px 10px;
+        padding: 0 10px;
+        height: 30px;
+        line-height: 30px;
+        font-size: 15px;
+        border-radius: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-weight: bolder;
+        transition: 0.2s;
+        // border-bottom: 2px solid rgba(255, 255, 255, 0.445);
 
-    .suggest-list-music {
-      display: inline-block;
-      margin-left: 5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+        &:hover {
+          cursor: pointer;
+          transform: scale(1.02);
+          // color: rgb(94, 211, 211);
+          background: rgba(250, 250, 250, 0.062);
+        }
+
+        .suggest-list-music {
+          display: inline-block;
+          margin-left: 5px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
     }
   }
 }
