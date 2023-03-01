@@ -31,7 +31,7 @@
       </p>
       <p id="qrStatus" @click="getqrStatus">{{ qrStatus }}</p>
       <p class="enter" @click="getqrStatus">
-        请使用网易云音乐app进行扫码-扫码确认登录后，若未自动跳转则手动点击此处进入
+        请使用网易云音乐app进行扫码-确认登录后，若未自动跳转则手动点击此处进入
       </p>
     </div>
   </div>
@@ -310,7 +310,7 @@ export default {
   }
   .imgWrap {
     // display: inline-block;
-    margin: 50px auto 0;
+    margin: 45px auto 0;
     width: 180px;
     height: 180px;
     #QRCode_header {
@@ -323,8 +323,9 @@ export default {
     // background-color: #eee;
   }
   .refreshQr {
+    padding: 5px;
     color: rgba(255, 255, 255, 0.808);
-    margin-bottom: 20px;
+
     text-align: center;
     transition: 0.2s;
     span {
@@ -338,7 +339,7 @@ export default {
   }
   .enter {
     position: absolute;
-    bottom: 0;
+    bottom: 5px;
     right: 5px;
     font-size: 14px;
     color: rgba(221, 191, 152, 0.788);

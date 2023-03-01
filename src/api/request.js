@@ -9,8 +9,8 @@ import { getCookie } from '@/utils/cookie';
 
 //可以创建多个axois实例，需要用哪个就引入使用哪个
 const cloudMusic = axios.create({
-    // baseURL: 'https://biejuanle.icu/',
-    baseURL: 'http://localhost:3000/',
+    baseURL: 'https://biejuanle.icu/',
+    // baseURL: 'http://localhost:3000/',
     // changeOrigin: true,  //解决跨域
     withCredentials: true,
 });

@@ -12,6 +12,13 @@
           <div class="detailsRight">
             <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
               {{ playListDetail.name }}
+              <div style="display: inline-block">
+                <button class="my-button" @click="collectPlaylist('1')">
+                  收藏</button
+                ><button class="my-button" @click="collectPlaylist('2')">
+                  取消收藏
+                </button>
+              </div>
             </h3>
             <div class="playListCreator">
               <img :src="playListDetail.creator.avatarUrl" alt="" />
@@ -31,13 +38,10 @@
                 >{{ tag }}&nbsp;</span
               >
             </div>
-            <div class="playListIntro">
-              <span style="display: inline-block; text-indent: 1.5em">
-                {{ playListDetail.description }}
-              </span>
-            </div>
-            <button @click="collectPlaylist('1')">收藏</button
-            ><button @click="collectPlaylist('2')">取消收藏</button>
+            <p class="playListIntro">
+              {{ playListDetail.description }}
+            </p>
+
             <!-- <i class="iFont el-icon-star-off" @click="collectPlaylist"></i> -->
           </div>
         </div>
@@ -236,12 +240,21 @@ export default {
       };
       collectPlaylist(params)
         .then((res) => {
-          console.log(res, "收藏返回");
+          // console.log(res, "收藏返回");
           if (res.data.code === 200) {
-            this.$message({
-              type: "success",
-              message: "收藏成功",
-            });
+            // console.log(t);
+            if (t === "1") {
+              this.$message({
+                type: "success",
+                message: "收藏成功-可在网易云音乐中查看",
+              });
+              return;
+            } else if (t === "2") {
+              this.$message({
+                type: "success",
+                message: "已取消收藏",
+              });
+            }
           }
         })
         .catch((err) => {
@@ -340,10 +353,10 @@ export default {
         .playListIntro {
           padding: 5px 0;
           width: 100%;
-          max-height: 75px;
+          max-height: 65px;
           font-size: 14px;
           overflow-x: hidden;
-
+          text-indent: 1.5em;
           &::-webkit-scrollbar {
             display: none;
           }
