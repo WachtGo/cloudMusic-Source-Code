@@ -83,6 +83,33 @@ const getTimestamp = () => {
 const randomRange = (min, max) => {
   return Math.floor(Math.random() * (max - min)) + min;
 }
+// Cookie Parser    将cookie解析
+const cookieParser = (cookie) => {
+  let parserData = {};
+  (cookie || '').split(/;\s+|(?<!\s)\s+$/g).forEach((pair) => {
+    let crack = pair.indexOf('=')
+    if (crack < 1 || crack == pair.length - 1) return
+    parserData[decodeURIComponent(pair.slice(0, crack)).trim()] = decodeURIComponent(
+      pair.slice(crack + 1),
+    ).trim()
+  })
+  return [parserData['HTTPOnly;MUSIC_U'], parserData['HTTPOnly;__csrf']]
+  /* 
+  // console.log(parserData)
+  {
+    Expires: "Sat, 17 Mar 2091 18:24:35 GMT"
+    HTTPOnly;MUSIC_A_T: "1481119727062"
+    HTTPOnly;MUSIC_R_T: "1481119757789"
+    HTTPOnly;MUSIC_U: "6bf80db2682091e66db7c358940e6034f555d03d999284f42033476c98e45796993166e004087dd3e30340b48322c4fd7a82616b73ff591e0195ea446a99c0ab92386fc4f57b0915a0d2166338885bd7"
+    HTTPOnly;__csrf: "a7ae33e29d089a9e30774e67bfd99367"
+    MUSIC_A_T: "1481119727062"
+    Max-Age: "2147483647"
+    Path: "/api/clientlog"
+  }
+   */
+  //6bf80db2682091e66db7c358940e6034f555d03d999284f42033476c98e45796993166e004087dd3e30340b48322c4fd7a82616b73ff591e0195ea446a99c0ab92386fc4f57b0915a0d2166338885bd7
+}
+
 
 module.exports = {
   transtime,
@@ -90,5 +117,6 @@ module.exports = {
   transPlayCount,
   download,
   getTimestamp,
-  randomRange
+  randomRange,
+  cookieParser
 }

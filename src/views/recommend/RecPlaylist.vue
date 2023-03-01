@@ -35,41 +35,49 @@ export default {
       recPlayList: [],
     };
   },
-  async mounted() {
-    await this.getSuggestPlayList();
+  mounted() {
+    this.getSuggestPlayList();
     // await this.$nextTick(()=>{
     //   // console.log(6)
     // })
   },
   methods: {
-    async getSuggestPlayList() {
+    getSuggestPlayList() {
       //获取推荐歌单
       var that = this;
       let params = {
         limit: that.limit,
       };
-      await getSuggestPlayList(params).then((res) => {
+      getSuggestPlayList(params).then(async (res) => {
         // console.log("推荐歌单：---",res.data);
-        that.recPlayList = res.data.result;
+        that.recPlayList = await res.data.result;
         // console.log("推荐歌单：--", res.data.result);
         //将播放量转成亿,万单位
         transPlayCount(that.recPlayList, "playCount");
       });
     },
-    goSongList(songListId) {
+    // goSongList(songListId) {
+    //   //传入歌单id进入歌曲列表
+    //   var that = this;
+    //   that.$router.push({
+    //     name: "playListDetails",
+    //     params: { songListId: songListId },
+    //   });
+    // },
+    goSongList(playListDetail) {
       //传入歌单id进入歌曲列表
-      var that = this;
-      that.$router.push({
+      let params = {
+        id: playListDetail.id,
+        name: playListDetail.name,
+        coverImgUrl: playListDetail.picUrl,
+        trackCount: playListDetail.trackCount,
+        creator: { avatarUrl: "", nickname: "", signature: "" },
+        tags: [],
+        description: "",
+      };
+      this.$router.push({
         name: "playListDetails",
-        params: { songListId: songListId },
-      });
-    },
-    goSongList(songListDetail) {
-      //传入歌单id进入歌曲列表
-      var that = this;
-      that.$router.push({
-        name: "playListDetails",
-        params: { songListDetail: songListDetail },
+        params: { playListDetail: params },
       });
     },
   },

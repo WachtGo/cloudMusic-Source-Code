@@ -1,0 +1,1 @@
+export default ['/playlist/subscribe', '/like']

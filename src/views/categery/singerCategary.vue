@@ -83,7 +83,7 @@
           class="liWrap"
           v-for="(item, index) in singerList"
           :key="index"
-          @click.stop="goSingerDetail(item.id)"
+          @click.stop="goSingerDetail(item)"
         >
           <div class="liWrap-block1">
             <img :src="item.img1v1Url" alt="" />
@@ -341,21 +341,31 @@ export default {
       // that.categaryShow = false
       // if (that.currentTag === cat && notChangePage) return
       that.singerList = []; //清空，重新获取，防止页面图片加载慢
-      await getSingerlist(params).then((res) => {
-        // console.log(res)
-        that.singerList = res.data.artists;
+      await getSingerlist(params).then(async (res) => {
+        // console.log(res.data.artists);
+        that.singerList = await res.data.artists;
       });
     },
     //获取歌手详情
-    goSingerDetail(id) {
-      if (id) {
-        this.$router.push({
-          name: "singerDetail",
-          params: {
-            singerId: id,
-          },
-        });
-      }
+    goSingerDetail(singerDetail) {
+      // console.log(singerDetail);
+      let params = {
+        id: singerDetail.id,
+        img1v1Url: singerDetail.img1v1Url,
+        name: singerDetail.name,
+        alias: singerDetail.alias,
+        musicSize: singerDetail.musicSize,
+        albumSize: singerDetail.albumSize,
+        mvSize: singerDetail.mvSize,
+        briefDesc: "",
+      };
+
+      this.$router.push({
+        name: "singerDetail",
+        params: {
+          artist: params,
+        },
+      });
     },
     //分页
     handleCurrentChange: function (currentPage) {

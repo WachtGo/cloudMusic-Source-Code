@@ -9,8 +9,8 @@ import APlayer from "@moefe/vue-aplayer";
 Vue.use(APlayer, {
   productionTip: true,
 });
-//全局设置请求带上cookieo
-// axios.defaults.withCredentials = true
+
+
 
 Vue.use(ElementUI);
 Vue.config.productionTip = false;

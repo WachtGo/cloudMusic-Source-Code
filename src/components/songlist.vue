@@ -9,6 +9,11 @@
       </div>
 
       <div class="option">
+        <!-- 加入我的喜欢 -->
+        <span @click="likeMusic(item.id)"
+          ><i class="iFont el-icon-star-off"></i
+        ></span>
+        <!-- <i class="iFont el-icon-star-off" @click="collectPlaylist"></i> -->
         <!-- 试听 -->
         <span @click="listenMusic(item)"
           ><i class="el-icon-headset iconhover"></i
@@ -38,6 +43,7 @@
 <script>
 import { getDownloadUrl } from "@/api/api";
 import { playMusic, listenMusic } from "@/utils/musicPlay";
+import { likeMusic } from "@/api/needLogin/musicOperate";
 import { download } from "@/utils/commonApi";
 export default {
   props: {
@@ -56,6 +62,25 @@ export default {
           songDetails: songDetails,
         },
       });
+    },
+    //加入/删除喜欢音乐
+    likeMusic(id) {
+      likeMusic({ id: id })
+        .then((res) => {
+          console.log("添加", res);
+          if (res.data.code === 200) {
+            this.$message({
+              type: "success",
+              message: "已添加入我的喜欢-可进入网易云音乐查看",
+            });
+          } else {
+            this.$message({
+              type: "error",
+              message: `添加失败：状态码${res.data.code}`,
+            });
+          }
+        })
+        .catch((res) => {});
     },
     //试听音乐
     listenMusic(songDetals) {
@@ -133,7 +158,7 @@ export default {
     display: flex;
     align-content: center;
     justify-content: space-between;
-    width: 75%;
+    width: 70%;
 
     .music-list-span,
     .music-list-dt {
@@ -146,7 +171,7 @@ export default {
       width: 40%;
     }
     .music-list-dt {
-      width: 20%;
+      width: 25%;
       // font-size:13px;
       text-align: center;
       overflow: hidden;
@@ -163,7 +188,7 @@ export default {
 
     span {
       display: inline-block;
-      width: 25%;
+      width: 20%;
       &:hover {
         cursor: pointer;
       }

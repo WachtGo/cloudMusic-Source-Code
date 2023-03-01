@@ -1,7 +1,7 @@
 import { playMusicUrl, getSongLyric } from "@/api/api";
 
 //添加歌曲到播放列表
-export async function playMusic(songDetals, that) {
+export function playMusic(songDetals, that) {
   //获取播放音乐链接
   // console.log(songDetals, "歌曲信息----");
   let songlrc = ""; //歌词
@@ -46,7 +46,7 @@ export async function playMusic(songDetals, that) {
 }
 
 //播放试听音乐
-export async function listenMusic(songDetals, that) {
+export function listenMusic(songDetals, that) {
   // console.log(songDetals, "歌曲信息----");
   let songUrlAdd = null;
   let songlrc = "";
@@ -67,12 +67,12 @@ export async function listenMusic(songDetals, that) {
         message: "VIP歌曲 - 只能试听30s",
         type: "warning",
       });
-      await playMusicUrl({
+      playMusicUrl({
         id: songDetals.id,
-      }).then((res) => {
+      }).then(async (res) => {
         // console.log("播放音乐链接", res.data.data[0].url);
         if (res.data.data[0].url) {
-          songUrlAdd = res.data.data[0].url;
+          songUrlAdd = await res.data.data[0].url;
           if (songUrlAdd != null) {
             that.$store.commit("aplayer/addAUDITION", {
               name: songDetals.name, //歌曲名

@@ -375,24 +375,46 @@ export default {
         },
       });
     },
-    //获取歌手详情
-    goSingerDetail(item) {
+    //进入歌手详情页面
+    goSingerDetail(singerDetail) {
       // console.log(item)
-        this.$router.push({
-          name: "singerDetail",
-          params: {
-            artist: item,
-          },
-        });
+      let params = {
+        id: singerDetail.id,
+        img1v1Url: singerDetail.img1v1Url,
+        name: singerDetail.name,
+        alias: singerDetail.alias,
+        musicSize: singerDetail.musicSize,
+        albumSize: singerDetail.albumSize,
+        mvSize: singerDetail.mvSize,
+        briefDesc: "",
+      };
+      this.$router.push({
+        name: "singerDetail",
+        params: {
+          artist: params,
+        },
+      });
     },
-    //传入歌单id进入歌单详情
-    goSongList(songListDetail) {
-      // console.log(songListDetail)
+    //进入歌单详情
+    goSongList(playListDetail) {
+      // console.log(playListDetail);
+      let params = {
+        id: playListDetail.id,
+        name: playListDetail.name,
+        coverImgUrl: playListDetail.picUrl,
+        trackCount: playListDetail.trackCount,
+        creator: {
+          avatarUrl: "",
+          nickname: playListDetail.creator.nickname,
+          signature: "",
+        },
+        tags: [],
+        description: "",
+      };
       //传入歌单id进入歌单详情
-      var that = this;
-      that.$router.push({
+      this.$router.push({
         name: "playListDetails",
-        params: { songListDetail: songListDetail },
+        params: { playListDetail: params },
       });
     },
 
@@ -410,10 +432,10 @@ export default {
         type: 1, //代表获取单曲
       };
       that.musicList = [];
-      getMusicInfo(params).then((res) => {
-        that.musicList = res.data.result.songs;
+      getMusicInfo(params).then(async (res) => {
+        that.musicList = await res.data.result.songs;
         // console.log(that.musicList)
-        that.count = res.data.result.songCount;
+        that.count = await res.data.result.songCount;
         transMusicTime(that.musicList, "dt");
         // console.log("音乐列表：", res.data.result);
         //给每个列表添加一个防抖
@@ -465,10 +487,10 @@ export default {
         type: 1000, //代表获取歌单
       };
       that.playListTable = [];
-      getMusicInfo(params).then((res) => {
+      getMusicInfo(params).then(async (res) => {
         // console.log('获取歌单列表----', res.data.result)
-        that.playListTable = res.data.result.playlists;
-        that.count = res.data.result.playlistCount;
+        that.playListTable = await res.data.result.playlists;
+        that.count = await res.data.result.playlistCount;
         transPlayCount(that.playListTable, "playCount");
       });
     },
@@ -482,11 +504,11 @@ export default {
         type: 1014, //代表获取视频
       };
       that.videoList = [];
-      getMusicInfo(params).then((res) => {
+      getMusicInfo(params).then(async (res) => {
         // console.log("获取视频列表----", res.data.result);
-        that.videoList = res.data.result.videos;
+        that.videoList = await res.data.result.videos;
         // console.log("视频列表：", that.videoList);
-        that.count = res.data.result.videoCount;
+        that.count = await res.data.result.videoCount;
         //转换歌曲时长单位为分秒
         transMusicTime(that.videoList, "durationms");
         //将播放量转换成亿万单位
@@ -503,11 +525,11 @@ export default {
         type: 1004, //代表获取MV
       };
       that.mvList = [];
-      getMusicInfo(params).then((res) => {
+      getMusicInfo(params).then(async (res) => {
         // console.log("获取MV列表----", res.data.result);
-        that.mvList = res.data.result.mvs;
+        that.mvList = await res.data.result.mvs;
         // console.log("MV列表：", that.mvList);
-        that.count = res.data.result.mvCount;
+        that.count = await res.data.result.mvCount;
         //转换歌曲时间为分秒单位
         transMusicTime(that.mvList, "duration");
         // 转换播放量单位为万

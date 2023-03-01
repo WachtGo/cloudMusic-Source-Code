@@ -13,14 +13,14 @@
     </div>
     <aplayer></aplayer>
     <bgmusic></bgmusic>
-    <!-- <Login></Login> -->
+    <Login></Login>
   </div>
 </template>
 <script>
 import HeaderNav from "./components/HeaderNav.vue";
 import aplayer from "@/components/aplayer.vue";
 import bgmusic from "@/components/bgmusic.vue";
-// import Login from "@/components/login/index"
+import Login from "@/components/login/index";
 // import AlbumDetail from './views/albumDetail/albumDetail.vue'
 
 export default {
@@ -28,7 +28,7 @@ export default {
   components: {
     HeaderNav,
     aplayer,
-    // Login,
+    Login,
     // AlbumDetail,
     bgmusic,
   },

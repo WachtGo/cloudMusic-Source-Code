@@ -24,11 +24,14 @@
           </div>
         </div>
       </div>
-      <!-- 返回 -->
+      <!-- 返回 -刷新-->
       <div class="right cl">
-        <div class="gobackWrap">
+        <div class="rightWrap">
           <div class="goBack" @click="goBack(-1)">
             <i class="el-icon-back"></i>
+          </div>
+          <div class="goBack" @click="refreshPage()">
+            <i class="el-icon-refresh"></i>
           </div>
           <div class="goBack" @click="goBack(1)">
             <i class="el-icon-right"></i>
@@ -157,6 +160,9 @@ export default {
   methods: {
     goBack(val) {
       this.$router.go(val);
+    },
+    refreshPage() {
+      location.reload();
     },
     goHome() {
       this.$router.push({ name: "HomePage" });
@@ -290,7 +296,7 @@ export default {
     position: absolute;
     // height: 100%;
 
-    .gobackWrap {
+    .rightWrap {
       display: flex;
       align-content: center;
       justify-content: center;
@@ -322,13 +328,16 @@ export default {
     margin: 10px 0;
   }
   .left {
+    flex: 1;
     left: 0;
     margin-left: 50px;
   }
   .right {
+    flex: 1;
     right: 0;
     margin-right: 50px;
   }
+
   .center {
     width: 300px;
     height: 30px;
@@ -367,6 +376,10 @@ export default {
       color: rgb(255, 255, 255);
       background: rgba(216, 216, 216, 0.11);
 
+      // ::selection {
+      //   background-color: lightblue !important;
+      //   // text-shadow: none;
+      // }
       &:focus {
         outline: none;
       }

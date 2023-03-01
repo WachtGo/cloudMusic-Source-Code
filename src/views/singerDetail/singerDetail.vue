@@ -18,8 +18,7 @@
                 <span class="playListNickName" v-if="artist.alias[0]">{{
                   artist.alias[0]
                 }}</span>
-                <span class="playListNickName" v-if="artist.alias[1]"
-                  >-</span
+                <span class="playListNickName" v-if="artist.alias[1]">-</span
                 ><span class="playListNickName2">{{ artist.alias[1] }}</span
                 ><span
                   ><br />
@@ -39,9 +38,7 @@
                   <span
                     class="inline-block"
                     @click="getSingerAlbum('albumSwitch')"
-                    >专辑：<span class="musicSize">{{
-                      artist.albumSize
-                    }}</span>
+                    >专辑：<span class="musicSize">{{ artist.albumSize }}</span>
                   </span>
                   <span
                     class="inline-block"
@@ -55,8 +52,11 @@
         </div>
         <div class="singerDetail" v-if="tagSwitch.detailSwitch">
           <div style="font-size: 15px">简介：</div>
-          <p>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ artist.briefDesc }}
+          <div v-if="artist.briefDesc === ''" class="loading">
+            <i class="el-icon-loading"></i>
+          </div>
+          <p class="briefDesc">
+            {{ artist.briefDesc }}
           </p>
         </div>
         <div id="singleSongs" v-if="tagSwitch.songSwitch">
@@ -286,9 +286,9 @@ export default {
       };
       that.detailShow = false;
       that.songList = [];
-      getSingerSongList(params).then((res) => {
+      getSingerSongList(params).then(async (res) => {
         // console.log('歌手单曲列表：', res.data)
-        that.songList = res.data.songs;
+        that.songList = await res.data.songs;
         // that.songCount = res.data.total
         //给每首曲子添加防抖
         for (let item of that.songList) {
@@ -327,9 +327,9 @@ export default {
         offset: (that.mvcurrentPage - 1) * 8,
       };
       that.mvList = [];
-      getSingerMvList(params).then((res) => {
+      getSingerMvList(params).then(async (res) => {
         // console.log("获取到的歌手MV：", res.data.mvs);
-        that.mvList = res.data.mvs;
+        that.mvList = await res.data.mvs;
         // 转换时间单位
         transMusicTime(that.mvList, "duration");
         //转换播放量单位
@@ -345,7 +345,7 @@ export default {
         id: that.artist.id,
       };
       getSingerDesc(params).then((res) => {
-        // console.log("歌手描述", res.data);
+        console.log("歌手描述", res.data);
         that.artist = res.data.artist;
       });
     },
@@ -695,6 +695,10 @@ export default {
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
+
+    .briefDesc {
+      text-indent: 2em;
+    }
   }
 
   #singleSongs {
@@ -816,7 +820,7 @@ export default {
           }
         }
 
-        p {
+        .briefDesc {
           font-size: 15px;
           padding: 0 10px;
           // width: 100%;

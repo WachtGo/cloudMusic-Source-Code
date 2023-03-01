@@ -157,9 +157,9 @@ export default {
     //获取全部歌单分类
     getAllPlayList() {
       let that = this;
-      getAllPlayList().then((res) => {
+      getAllPlayList().then(async (res) => {
         // console.log(res)
-        that.categories = res.data.categories;
+        that.categories = await res.data.categories;
         for (let key in that.categoryTag) {
           res.data.sub.forEach((item) => {
             if (item.category == key) {
@@ -171,7 +171,7 @@ export default {
       });
     },
     //获取歌单列表----
-    async getPlaylist(cat, notChangePage) {
+    getPlaylist(cat, notChangePage) {
       let that = this;
       let params = {
         cat: cat,
@@ -183,11 +183,11 @@ export default {
       if (that.currentTag === cat && notChangePage) return;
       that.playListTable = []; //清空，重新获取，防止页面图片加载慢
       that.currentTag = cat;
-      await getPlaylist(params).then((res) => {
+      getPlaylist(params).then(async (res) => {
         // console.log(res)
-        that.playListTable = res.data.playlists;
+        that.playListTable = await res.data.playlists;
         // console.log(that.playListTable)
-        that.count = res.data.total;
+        that.count = await res.data.total;
         // transPlayCount(that.playListTable)
         transPlayCount(that.playListTable, "playCount");
       });
@@ -198,7 +198,7 @@ export default {
       var that = this;
       that.$router.push({
         name: "playListDetails",
-        params: { songListDetail: songListDetail },
+        params: { playListDetail: songListDetail },
       });
     },
     //分页

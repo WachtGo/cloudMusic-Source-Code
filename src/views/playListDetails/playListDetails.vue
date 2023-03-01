@@ -36,24 +36,29 @@
                 {{ playListDetail.description }}
               </span>
             </div>
-            <!-- <i class="iFont el-icon-star-off"
-               @click="collectPlaylist"></i> -->
+            <button @click="collectPlaylist('1')">收藏</button
+            ><button @click="collectPlaylist('2')">取消收藏</button>
+            <!-- <i class="iFont el-icon-star-off" @click="collectPlaylist"></i> -->
           </div>
         </div>
         <!-- 歌单歌曲列表 -->
         <div class="countLine">
           歌曲：
-          <span v-if="musicList.length === 0"
+          <!-- <span v-if="musicList.length === 0"
             ><i class="el-icon-loading"></i
-          ></span>
-          <span v-else>{{ musicList.length }}</span>
+          ></span> -->
+          <!-- <span v-else>{{ musicList.length }}</span> -->
+          <span>{{ playListDetail.trackCount }}</span>
         </div>
         <!-- 歌单歌曲列表 -->
         <ul class="wrap-center">
+          <div v-if="musicList.length === 0" class="loading">
+            <i class="el-icon-loading"></i>
+          </div>
           <songlist :songlist="musicList"></songlist>
         </ul>
         <!-- 歌单评论 -->
-        <div style="padding: 0px 50px">
+        <!-- <div style="padding: 0px 50px">
           <div class="countLine">评论({{ commentCount }}条)</div>
           <div
             class="hoverBackColor"
@@ -92,7 +97,7 @@
             >
             </el-pagination>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -100,6 +105,7 @@
 
 <script>
 import { getPlaylistDetail, getSongList, getPlayListComment } from "@/api/api";
+import { collectPlaylist } from "@/api/needLogin/musicOperate";
 import { transMusicTime } from "@/utils/commonApi";
 import songlist from "@/components/songlist.vue";
 export default {
@@ -127,39 +133,46 @@ export default {
           },
         },
       ],
-      commentCount: "",
+      // commentCount: "",
       //MV
       songMV: [],
       //歌单详情
-      playListDetail: { creator: { avatarUrl: "" } },
+      playListDetail: {
+        name: "",
+        coverImgUrl: "",
+        trackCount: "",
+        creator: { avatarUrl: "", nickname: "", signature: "" },
+        tags: [],
+        description: "",
+      },
     };
   },
-  async mounted() {
+  mounted() {
     //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
-    if (this.$route.params.songListDetail) {
+    if (this.$route.params.playListDetail) {
       localStorage.setItem(
-        "songListDetail",
-        JSON.stringify(this.$route.params.songListDetail)
+        "playListDetail",
+        JSON.stringify(this.$route.params.playListDetail)
       ); //存储对象类型需要转换成字符串
     }
     // 判断是否使用缓存
-    this.$route.params.songListDetail
-      ? (this.playListDetail = this.$route.params.songListDetail)
+    this.$route.params.playListDetail
+      ? (this.playListDetail = this.$route.params.playListDetail)
       : (this.playListDetail = JSON.parse(
-          localStorage.getItem("songListDetail")
+          localStorage.getItem("playListDetail")
         )); //将字符串转成对象
-    await this.getPlaylistDetail();
-    await this.getSongList();
-    this.getPlayListComment();
+    this.getPlaylistDetail();
+    this.getSongList();
+    // this.getPlayListComment();
   },
   methods: {
-    //切换歌单评论
+    /* //切换歌单评论
     playListHandleCurrentChange(currentPage) {
       var that = this;
       that.currentPage = currentPage;
       that.getPlayListComment();
-    },
-    //获取歌单评论
+    }, */
+    /* //获取歌单评论
     getPlayListComment() {
       var that = this;
       let params = {
@@ -167,13 +180,13 @@ export default {
         limit: 7,
         offset: (that.currentPage - 1) * 7,
       };
-      getPlayListComment(params).then((res) => {
+      getPlayListComment(params).then(async (res) => {
         // console.log("歌单评论：", res.data);
-        this.playListComment = res.data.comments;
-        that.commentCount = res.data.total;
+        this.playListComment = await res.data.comments;
+        that.commentCount = await res.data.total;
         // console.log("歌曲评论：", res.data);
       });
-    },
+    }, */
 
     //分页
     handleCurrentChange: function (currentPage) {
@@ -189,10 +202,10 @@ export default {
       let params = {
         id: that.playListDetail.id,
       };
-      getPlaylistDetail(params).then((res) => {
+      getPlaylistDetail(params).then(async (res) => {
         // console.log("----------------:", res.data.privileges); //歌单歌曲
         // console.log("--歌单详情-------:", res.data.playlist); //歌单歌曲
-        that.playListDetail = res.data.playlist;
+        that.playListDetail = await res.data.playlist;
         // that.musicList = that.playListDetail.tracks;
       });
     },
@@ -202,8 +215,8 @@ export default {
       let params = {
         id: that.playListDetail.id,
       };
-      getSongList(params).then((res) => {
-        that.musicList = res.data.songs;
+      getSongList(params).then(async (res) => {
+        that.musicList = await res.data.songs;
         //给每个列表添加一个防抖
         for (let item of that.musicList) {
           that.$set(item, "timer", true);
@@ -211,27 +224,30 @@ export default {
         transMusicTime(that.musicList, "dt");
       });
     },
-    // collectPlaylist () {
-    //   // let a = encodeURIComponent("NMTID=00OzCh7YMHCWQm1ZU9Vogn9qK4feTAAAAGCc3SE0Q; Max-Age=315360000; Expires=Tue, 03 Aug 2032 13:59:52 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_U=9611c371e6419e2c184a366a7ca936bf0fc69a8d2f6be4455ded1d5066ff6a4b993166e004087dd367fe124475fa63054c4bb8a8a030b49b26de8349c63f526ad40a31ebc291eb4ad4dbf082a8813684; Max-Age=15552000; Expires=Thu, 02 Feb 2023 13:59:52 GMT; Path=/; HTTPOnly;__csrf=e0281d26dcbef96212ed4b7db9e68461; Max-Age=1296010; Expires=Sun, 21 Aug 2022 14:00:02 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_SNS=; Max-Age=0; Expires=Sat, 06 Aug 2022 13:59:52 GMT; Path=/;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/clientlog; HTTPOnly")
-    //   // let cookie = "MUSIC_SNS=; Max-Age=0; Expires=Sun, 07 Aug 2022 07:29:20 GMT; Path=/;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/feedback; HTTPOnly;NMTID=00O7WKRxVwcZw0Uw0D6ubODlxpdLj4AAAGCdzVVLw; Max-Age=315360000; Expires=Wed, 04 Aug 2032 07:29:20 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_U=9611c371e6419e2c184a366a7ca936bfe793a0a6f0d4dbbbb88db8dba5edf83d993166e004087dd37a99ad5471c3636273479095928a9cef26de8349c63f526ad40a31ebc291eb4ad4dbf082a8813684; Max-Age=15552000; Expires=Fri, 03 Feb 2023 07:29:20 GMT; Path=/; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/feedback; HTTPOnly;__csrf=d1f2fa83b3815f03a3448349af4ecc04; Max-Age=1296010; Expires=Mon, 22 Aug 2022 07:29:30 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/clientlog; HTTPOnly"
-    //   // this.$store.commit('setTOKEN', cookie)
-    //   let params = {
-    //     t: '1',
-    //     id: this.songListId,
-    //     // timestamp: getTimestamp()
-    //     cookie: getToken(),
-    //   }
-    //   collectPlaylist(params).then((res) => {
-    //     console.log(res, '收藏返回')
-    //     if (res.data.code === 200) {
-    //       this.$message({
-    //         type: 'success',
-    //         message: '收藏成功'
-    //       })
-    //     }
-
-    //   })
-    // }
+    collectPlaylist(t) {
+      // let a = encodeURIComponent("NMTID=00OzCh7YMHCWQm1ZU9Vogn9qK4feTAAAAGCc3SE0Q; Max-Age=315360000; Expires=Tue, 03 Aug 2032 13:59:52 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_U=9611c371e6419e2c184a366a7ca936bf0fc69a8d2f6be4455ded1d5066ff6a4b993166e004087dd367fe124475fa63054c4bb8a8a030b49b26de8349c63f526ad40a31ebc291eb4ad4dbf082a8813684; Max-Age=15552000; Expires=Thu, 02 Feb 2023 13:59:52 GMT; Path=/; HTTPOnly;__csrf=e0281d26dcbef96212ed4b7db9e68461; Max-Age=1296010; Expires=Sun, 21 Aug 2022 14:00:02 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_SNS=; Max-Age=0; Expires=Sat, 06 Aug 2022 13:59:52 GMT; Path=/;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Thu, 24 Aug 2090 17:13:59 GMT; Path=/weapi/clientlog; HTTPOnly")
+      // let cookie = "MUSIC_SNS=; Max-Age=0; Expires=Sun, 07 Aug 2022 07:29:20 GMT; Path=/;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/feedback; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/feedback; HTTPOnly;NMTID=00O7WKRxVwcZw0Uw0D6ubODlxpdLj4AAAGCdzVVLw; Max-Age=315360000; Expires=Wed, 04 Aug 2032 07:29:20 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_U=9611c371e6419e2c184a366a7ca936bfe793a0a6f0d4dbbbb88db8dba5edf83d993166e004087dd37a99ad5471c3636273479095928a9cef26de8349c63f526ad40a31ebc291eb4ad4dbf082a8813684; Max-Age=15552000; Expires=Fri, 03 Feb 2023 07:29:20 GMT; Path=/; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/eapi/feedback; HTTPOnly;__csrf=d1f2fa83b3815f03a3448349af4ecc04; Max-Age=1296010; Expires=Mon, 22 Aug 2022 07:29:30 GMT; Path=/;;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1659792787979; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1659792788186; Max-Age=2147483647; Expires=Fri, 25 Aug 2090 10:43:27 GMT; Path=/neapi/clientlog; HTTPOnly"
+      // this.$store.commit('setTOKEN', cookie)
+      let params = {
+        t: t,
+        id: this.playListDetail.id,
+        // timestamp: getTimestamp()
+        // cookie: getToken(),
+      };
+      collectPlaylist(params)
+        .then((res) => {
+          console.log(res, "收藏返回");
+          if (res.data.code === 200) {
+            this.$message({
+              type: "success",
+              message: "收藏成功",
+            });
+          }
+        })
+        .catch((err) => {
+          //如果不写catch,请求拦截器拦截后这里会报错
+        });
+    },
   },
 };
 </script>

@@ -56,6 +56,11 @@ export default {
         //   src: "https://music.163.com/song/media/outer/url?id=5331915.mp3",
         //   fontColor: "fontColorgray",
         // },
+        {
+          name: "乌梅子酱 - 钢琴",
+          src: "https://music.163.com/song/media/outer/url?id=2023009742.mp3",
+          fontColor: "fontColorgray",
+        },
       ],
       bgmusic: [],
     };
@@ -107,7 +112,7 @@ export default {
 .bgmusicWrap {
   position: absolute;
   top: 0;
-  right: 5px;
+  right: 150px;
   width: 250px;
   color: #ccc;
   text-align: center;

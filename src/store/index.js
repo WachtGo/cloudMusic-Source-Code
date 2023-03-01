@@ -3,7 +3,8 @@ import Vuex from "vuex";
 import aplayer from "./aplayer";
 import homePage from "./homePage";
 import musicPlayList from "./musicPlayList";
-import createPersistedState from "vuex-persistedstate";
+import login from "./login"
+import createPersistedState from "vuex-persistedstate";//状态持久化，将vuex资源保存在localStorage中
 // import {getToken,setToken,removeToken} from "@/utils/auth"
 // import {getStorage, setStorage,removeStorage} from "@/utils/storage"
 Vue.use(Vuex);
@@ -11,14 +12,24 @@ export default new Vuex.Store({
   // 歌曲生成周期
   plugins: [
     createPersistedState({
-      storage: window.sessionStorage,
+      // 默认值vuex
+      // key: 'userState',
+      // 缓存的介质localStorage、sessionStorage
+      storage: window.localStorage,
+      // storage: window.sessionStorage,
+      // 白名单 要缓存的数据，刷新不会丢失，重新打开也不会丢失
+      // whiteList: ['loginState'],
+      // 黑名单 不缓存的数据，刷新丢失
+      // blackList: [],
     }),
   ],
   modules: {
     aplayer,
     homePage,
     musicPlayList,
+    login
   },
+
 });
 
 // export default new Vuex.Store({
