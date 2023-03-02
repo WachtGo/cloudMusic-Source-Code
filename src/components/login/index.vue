@@ -30,9 +30,19 @@
       <p class="refreshQr">
         <span @click="refreshQr">刷新二维码</span>
       </p>
-      <p id="qrStatus" @click="getqrStatus">{{ qrStatus }}</p>
-      <p class="enter" @click="getqrStatus">
-        请使用网易云音乐app进行扫码-确认登录后，若未自动跳转则手动点击此处进入
+      <p id="qrStatus">
+        {{ qrStatus }}<i v-if="qrloading" class="el-icon-loading"></i>
+      </p>
+      <p
+        class="enter"
+        @click="
+          getqrStatus();
+          qrloading = true;
+        "
+      >
+        <span
+          >使用网易云音乐app进行扫码,可能会有所延迟,不用多次扫码,手动点击此处进入</span
+        >
       </p>
     </div>
   </div>
@@ -48,7 +58,7 @@ import {
   loginOut,
 } from "@/api/login";
 // import { mapMutations, mapState } from "vuex";
-import { getuserDetail, getAccount } from "@/api/user";
+// import { getuserDetail, getAccount } from "@/api/user";
 import { cookieParser, getTimestamp } from "@/utils/commonApi";
 import { getCookie, removeCookie, setCookie } from "@/utils/cookie";
 
@@ -64,35 +74,29 @@ export default {
         avatarUrl: "",
         nickname: "",
       },
-      loginStatus: false,
+      loginStatus: false, //登录状态
+      qrloading: false, //点击判断是否已经授权时的加载图标状态
     };
   },
   computed: {
     // ...mapState("login", ["loginWrapShow", "loginStatus"]),
   },
   watch: {
-    loginWrapShow: {
-      handler(newValue) {
-        if (newValue) {
-          // console.log(document);
-          let adom = document.getElementById("qrStatus");
-          console.log("adom", adom);
-          this.qrtimer = setInterval(() => {
-            adom.click();
-            // console.log("刷新");
-          }, 1500);
-        } else {
-          clearInterval(this.qrtimer);
-          console.log("扫码登录成功");
-        }
-      },
-      // immediate: true,
-    },
+    // loginWrapShow: {
+    //   handler(newValue) {
+    //     if (newValue) {
+    //       // console.log(document);
+    //       let adom = document.getElementById("qrStatus");
+    //       console.log("adom", adom);
+    //       this.qrtimer = setInterval(() => {
+    //         adom.click();
+    //       }, 1500);
+    //     }
+    //   },
+    //   // immediate: true,
+    // },
   },
   mounted() {
-    localStorage.getItem("loginStatus")
-      ? (this.loginStatus = localStorage.getItem("loginStatus"))
-      : (this.loginStatus = false);
     this.getloginStatus();
   },
   methods: {
@@ -144,40 +148,39 @@ export default {
         this.key = await res.data.data.unikey;
         let params = {
           key: res.data.data.unikey,
-          // timestamp: getTimestamp()
         };
         getqrImg(params).then((res) => {
-          // console.log(res.data.data.qrurl);
           this.getQRCode(res.data.data.qrurl);
         });
       });
     },
     // 二维码状态
     getqrStatus() {
+      this.qrloading = true;
       let params = {
         key: this.key,
-        timestamp: getTimestamp(),
       };
       getqrStatus(params).then(async (res) => {
+        this.qrStatus = await res.data.message;
         if (res.data.code === 803) {
-          this.qrStatus = await res.data.message;
-          this.qrStatus += ",1s后自动进入";
-          // console.log("登录成功：--", res);
+          // clearInterval(this.qrtimer);
+          // console.log("扫码登录成功");
           let cookies = cookieParser(res.data.cookie);
           setCookie("__csrf", cookies[1]);
           setTimeout(() => {
             this.loginWrapShow = false; //关闭登录窗口
-            //  this.loginWrapOnOff(false);
             this.$message({
               type: "success",
               message: "已登录",
             });
-          }, 1000);
+          }, 500);
           this.getloginStatus();
         } else if (res.data.code === 800) {
-          this.qrStatus = await res.data.message;
           this.qrStatus += ",请刷新获取";
+        } else if (res.data.code === 400) {
+          this.qrStatus = "请求错误";
         }
+        this.qrloading = false;
       });
     },
 
@@ -187,21 +190,16 @@ export default {
       // console.log("----------", getCookie("MUSIC_U"), getCookie("__csrf"));
       if (getCookie("__csrf")) {
         this.loginStatus = true;
-        localStorage.setItem("loginStatus", true);
-        // console.log("登录成功", this.loginWrapShow);
+        this.user = JSON.parse(localStorage.getItem("user"));
       } else {
-        // this.$message({
-        //   type: "error",
-        //   message: "当前未登录",
-        // });
         this.loginStatus = false;
-        localStorage.setItem("loginStatus", false);
+        localStorage.removeItem("user");
         this.user = {};
       }
       getloginStatus().then(async (res) => {
-        // console.log("getloginStatus", res.data.data.profile);
         if (res.data.data.profile) {
           this.user = await res.data.data.profile;
+          localStorage.setItem("user", JSON.stringify(this.user));
         }
       });
     },

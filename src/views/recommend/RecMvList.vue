@@ -59,7 +59,7 @@ export default {
         limit: that.limit,
       };
       getSuggestMvList(params).then((res) => {
-        console.log(res);
+        // console.log(res);
         // console.log(res, 'tuijianmv')
         that.recMvList = res.data.result;
         // console.log("推荐mv---:", res.data.result);

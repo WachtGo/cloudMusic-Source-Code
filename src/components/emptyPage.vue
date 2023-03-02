@@ -9,22 +9,18 @@
 <script>
 export default {
   data() {
-    return {
-      keywords: "",
-      reload: "",
-    };
+    return {};
   },
   created() {
-    let that = this;
     setTimeout(() => {
-      that.$router.push({
-        name: "MusicPlayList",
-        query: {
-          keywords: that.$route.query.keywords,
-          reload: that.$route.query.reload,
-        },
-      });
+      this.gotoPage(this.$route.params);
     }, 500);
+  },
+  methods: {
+    gotoPage(routerInfo) {
+      //接收传来的路由配置，进行跳转
+      this.$router.push(routerInfo);
+    },
   },
 };
 </script>

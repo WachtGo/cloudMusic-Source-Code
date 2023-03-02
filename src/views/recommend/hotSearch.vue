@@ -3,6 +3,11 @@
     <h3 class="h2title">热搜:</h3>
     <div class="hotSearch">
       <div class="hotSearchWrap">
+        <!-- <el-skeleton-item
+          variant="text"
+          animated
+          style="width: 10%; background: #000"
+        /> -->
         <div
           class="hotSearchWord"
           v-for="(item, index) in hotSearch"

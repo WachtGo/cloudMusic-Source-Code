@@ -15,8 +15,8 @@
             <input
               id="searchInput"
               @focus="switchChange"
-              @blur="searchSwitch = false"
-              @keyup.enter="enterSearch"
+              @blur="stopSearch"
+              @keyup.enter="enterSearch('searchTerms')"
               type="text"
               :placeholder="placeholder"
               v-model="searchTerms"
@@ -41,67 +41,103 @@
     </header>
 
     <!-- 搜索显示的搜索项列表 -->
-    <!-- @scroll="searchScroll" 搜索懒加载-->
     <div id="search-box" v-show="searchSwitch">
+      <!-- 搜索不到相关单曲，歌手，专辑，歌单 -->
+      <div class="correla" v-if="!reloadShow && searchCorrela.trim() !== ''">
+        <div class="search-correla" @mousedown="enterSearch('searchCorrela')">
+          搜索 “<span class="search-correla-keyword"
+            >&nbsp;{{ searchCorrela }}&nbsp;</span
+          >” 相关内容
+        </div>
+      </div>
+      <!-- 没有搜索结果并且搜索框内容为空 -->
+      <div
+        v-if="
+          !reloadShow &&
+          searchTerms.trim() === '' &&
+          Object.keys(musicList).length === 0
+        "
+        style="text-align: center"
+      >
+        没有您想要的搜索结果
+      </div>
       <!-- searchSwitch -->
-      <div class="search-box-wrap">
-        <div class="suggest-title">单曲</div>
-        <ul class="suggest-ul">
-          <li
-            class="suggest-list"
-            v-for="(item, index) in musicList.songs"
-            :key="index"
-            @mousedown="selectMusic(item.name, item.artists[0].name)"
-          >
-            <span class="suggest-list-music" style="width: 310px">{{
-              item.name
-            }}</span>
-            <span class="suggest-list-music" style="width: 180px">{{
-              item.artists[0].name
-            }}</span>
-          </li>
-        </ul>
+      <div v-if="!reloadShow && Object.keys(musicList).length !== 0">
+        <div class="search-box-wrap">
+          <div class="suggest-title">单曲</div>
+          <ul class="suggest-ul">
+            <li
+              class="suggest-list"
+              v-for="(item, index) in musicList.songs"
+              :key="index"
+              @mousedown="goSongDetails(item.id)"
+            >
+              <span class="suggest-list-music" style="width: 310px">
+                {{ item.name }}
+              </span>
+              <span class="suggest-list-music" style="width: 180px">{{
+                item.artists[0].name
+              }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-box-wrap">
+          <div class="suggest-title">歌手</div>
+          <ul class="suggest-ul">
+            <li
+              class="suggest-list"
+              v-for="(item, index) in musicList.artists"
+              :key="index"
+              @mousedown="selectArtist(item)"
+            >
+              <span class="suggest-list-music" style="width: 310px"
+                ><img
+                  :src="item.img1v1Url"
+                  alt=""
+                  style="width: 28px; height: 28px; border-radius: 50%"
+              /></span>
+              <span class="suggest-list-music" style="width: 180px">{{
+                item.name
+              }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-box-wrap">
+          <div class="suggest-title">专辑</div>
+          <ul class="suggest-ul">
+            <li
+              class="suggest-list"
+              v-for="(item, index) in musicList.albums"
+              :key="index"
+              @mousedown="selectAlbum(item.id)"
+            >
+              <div class="suggest-list-music" style="width: 310px">
+                <span>{{ item.name }}</span>
+                <span style="color: #c4fffa">[{{ item.size }}首]</span>
+              </div>
+              <span class="suggest-list-music" style="width: 180px">{{
+                item.artist.name
+              }}</span>
+            </li>
+          </ul>
+        </div>
+        <div class="search-box-wrap">
+          <div class="suggest-title">歌单</div>
+          <ul class="suggest-ul">
+            <li
+              class="suggest-list"
+              v-for="(item, index) in musicList.playlists"
+              :key="index"
+              @mousedown="goSongList(item)"
+            >
+              <div class="suggest-list-music" style="width: 490px">
+                <span>{{ item.name }}</span>
+                <span style="color: #c4fffa">[{{ item.trackCount }}首]</span>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="search-box-wrap">
-        <div class="suggest-title">歌手</div>
-        <ul class="suggest-ul">
-          <li
-            class="suggest-list"
-            v-for="(item, index) in musicList.artists"
-            :key="index"
-            @mousedown="selectArtist(item)"
-          >
-            <span class="suggest-list-music" style="width: 310px"
-              ><img
-                :src="item.img1v1Url"
-                alt=""
-                style="width: 28px; height: 28px; border-radius: 50%"
-            /></span>
-            <span class="suggest-list-music" style="width: 180px">{{
-              item.name
-            }}</span>
-          </li>
-        </ul>
-      </div>
-      <div class="search-box-wrap">
-        <div class="suggest-title">专辑</div>
-        <ul class="suggest-ul">
-          <li
-            class="suggest-list"
-            v-for="(item, index) in musicList.albums"
-            :key="index"
-            @mousedown="selectAlbum(item.id)"
-          >
-            <span class="suggest-list-music" style="width: 310px">{{
-              item.name
-            }}</span>
-            <span class="suggest-list-music" style="width: 180px">{{
-              item.artist.name
-            }}</span>
-          </li>
-        </ul>
-      </div>
-
       <div class="loading" v-if="reloadShow">
         <i class="el-icon-loading"></i>
       </div>
@@ -119,10 +155,11 @@ export default {
     return {
       searchSwitch: false, //搜索窗口开关
       searchTerms: "", //输入框内容
+      searchCorrela: "",
       placeholder: "",
       musicList: {}, //搜索列表
       inputTimer: null, //搜索节流
-      reloadShow: null, //是否在请求数据
+      reloadShow: true, //是否在请求数据
       // page: 1, //搜索列表页数
       // limit: 30, //搜索每次请求的数
       // count: 15, //最后一次搜索请求的数量，用于判断是否全部加载完毕
@@ -214,11 +251,16 @@ export default {
     switchChange() {
       //显示搜索列表
       this.searchSwitch = true;
-      if (!this.searchTerms.trim()) {
+      if (this.searchTerms.trim()) {
+        this.getSearchSuggest(this.searchTerms);
+      } else {
         this.getSearchSuggest(this.placeholder);
       }
     },
-
+    stopSearch() {
+      this.searchSwitch = false;
+      clearTimeout(this.inputTimer);
+    },
     selectMusic(keywords, artist) {
       this.placeholder = `${keywords}      ${artist}`;
       // console.log(this.placeholder, "---placeholde");
@@ -230,6 +272,22 @@ export default {
       });
       this.searchSwitch = false;
     },
+
+    //进入歌曲详情
+    goSongDetails(id) {
+      //路由配置
+      let routerInfo = {
+        name: "songDetails",
+        params: {
+          id: id,
+        },
+      };
+      this.$router.push({
+        name: "emptyPage",
+        params: routerInfo,
+      });
+    },
+    //进入歌手详情
     selectArtist(singerDetail) {
       let params = {
         id: singerDetail.id,
@@ -241,35 +299,83 @@ export default {
         mvSize: null,
         briefDesc: "",
       };
-      this.$router.push({
+      //路由配置
+      let routerInfo = {
         name: "singerDetail",
         params: {
           artist: params,
         },
+      };
+      this.$router.push({
+        name: "emptyPage",
+        params: routerInfo,
       });
     },
+    // 进入专辑详情
     selectAlbum(id) {
-      this.$router.push({
+      //路由配置发送给空页面
+      let routerInfo = {
         name: "albumDetail",
         params: {
           albumId: id,
         },
+      };
+      this.$router.push({
+        name: "emptyPage",
+        params: routerInfo,
       });
     },
-    enterSearch() {
-      if (!this.searchTerms.trim()) {
-        this.$router.push({
-          name: "emptyPage",
-          query: { keywords: this.placeholder, reload: true },
-        });
-        this.searchTerms = this.placeholder;
-      } else {
-        this.$router.push({
-          name: "emptyPage",
-          query: { keywords: this.searchTerms, reload: true },
-        });
-      }
+    //进入歌单详情
+    goSongList(playListDetail) {
+      // console.log(playListDetail);
+      let params = {
+        id: playListDetail.id,
+        name: playListDetail.name,
+        coverImgUrl: playListDetail.coverImgUrl,
+        trackCount: playListDetail.trackCount,
+        creator: {
+          avatarUrl: "",
+          nickname: "",
+          signature: "",
+        },
+        tags: [],
+        description: playListDetail.description,
+      };
+      //传入歌单id进入歌单详情
+      let routerInfo = {
+        name: "playListDetails",
+        params: { playListDetail: params },
+      };
+      this.$router.push({
+        name: "emptyPage",
+        params: routerInfo,
+      });
+    },
+    //搜索进入搜索结果页面
+    enterSearch(searchwords) {
       this.searchSwitch = false;
+      let keywords = "";
+      //按照搜索框内容进行搜索
+      if (searchwords == "searchTerms") {
+        if (!this.searchTerms.trim()) {
+          //搜索框为空时，搜索内容值为placeholder
+          this.searchTerms = this.placeholder;
+        }
+        keywords = this.searchTerms;
+      } else if (searchwords == "searchCorrela") {
+        //按照 搜索相关词 进行搜索
+        keywords = this.searchCorrela;
+      }
+
+      let routerInfo = {
+        //路由配置发送给空页面
+        name: "MusicPlayList",
+        query: { keywords: keywords, reload: true },
+      };
+      this.$router.push({
+        name: "emptyPage",
+        params: routerInfo,
+      });
     },
     search() {
       //搜索列表
@@ -284,6 +390,32 @@ export default {
           clearTimeout(this.inputTimer);
         }, 500);
       }
+    },
+    //搜索
+    getSearchSuggest(keywords) {
+      this.reloadShow = true;
+      this.searchCorrela = keywords;
+      //获取歌曲列表
+      let params = {
+        keywords: keywords,
+        // type: "",
+      };
+      getSearchSuggest(params).then(async (res) => {
+        if (res.data.code == 200) {
+          // console.log("搜索建议", res.data.result);
+          this.musicList = res.data.result;
+        } else {
+          this.musicList = {};
+        }
+        this.reloadShow = false; //加载的开关
+      });
+    },
+    getSearchDefault() {
+      //默认搜索关键字
+      getSearchDefault().then(async (res) => {
+        this.placeholder = res.data.data.realkeyword;
+        // console.log("搜索关键字：", res.data.data);
+      });
     },
 
     //搜索懒加载
@@ -304,27 +436,6 @@ export default {
     //     this.getSearchSuggest(this.searchTerms);
     //   }
     // },
-    //搜索
-    getSearchSuggest(searchTerms) {
-      this.reloadShow = true;
-      //获取歌曲列表
-      let params = {
-        keywords: searchTerms,
-        // type: "",
-      };
-      getSearchSuggest(params).then(async (res) => {
-        console.log("搜索建议", res.data.result);
-        this.musicList = res.data.result;
-        this.reloadShow = false; //加载的开关
-      });
-    },
-    getSearchDefault() {
-      //默认搜索关键字
-      getSearchDefault().then(async (res) => {
-        this.placeholder = res.data.data.realkeyword;
-        // console.log("搜索关键字：", res.data.data);
-      });
-    },
   },
 };
 </script>
@@ -417,7 +528,7 @@ export default {
       font-size: 16px;
       width: 100%;
       height: 30px;
-      font-family: 三极行楷;
+      // font-family: 三极行楷;
       // font-weight: bolder;
       border-style: none;
       border-radius: 10px;
@@ -453,11 +564,29 @@ export default {
   border-radius: 0 0 20px 20px;
   background: url(@/static/img/background8.jpeg); //-------------需要与主题更改
   overflow-x: hidden;
-
   cursor: default;
-
   &::-webkit-scrollbar {
     display: none;
+  }
+  .correla {
+    display: flex;
+    justify-content: center;
+    .search-correla {
+      color: #d1cece;
+      text-align: center;
+      transition: 0.2s;
+      .search-correla-keyword {
+        color: rgb(173, 248, 223);
+        transition: 0.2s;
+        &:hover {
+          color: rgb(134, 207, 184);
+        }
+      }
+      &:hover {
+        color: #afafaf;
+        cursor: pointer;
+      }
+    }
   }
   .search-box-wrap {
     display: flex;

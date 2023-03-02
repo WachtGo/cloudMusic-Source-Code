@@ -20,7 +20,10 @@
               </div>
             </div>
             <div style="margin: 10px 0 10px 0; height: 30px; font-size: 14px">
-              <span class="playListNickName">{{ songDetails.ar[0].name }}</span
+              <span
+                class="playListNickName"
+                @click="goSingerDetail(songDetails.ar[0].id)"
+                >{{ songDetails.ar[0].name }}</span
               ><span
                 ><br />
                 时长&nbsp;&nbsp;-&nbsp;&nbsp;<span
@@ -135,18 +138,20 @@ export default {
       count: 0,
     };
   },
-  mounted() {
-    ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
+  created() {
+    //路由中含有歌曲详细信息时，直接使用
     if (this.$route.params.songDetails) {
+      this.songDetails = this.$route.params.songDetails;
       localStorage.setItem(
         "songDetails",
         JSON.stringify(this.$route.params.songDetails)
       );
+    } else {
+      //路由只设置了歌曲id时，便发起请求获取歌曲信息。反之若都没有，代表只是刷新了页面，直接使用缓存获取路由信息
+      this.$route.params.id
+        ? this.getSongDetails()
+        : (this.songDetails = JSON.parse(localStorage.getItem("songDetails")));
     }
-    //判断是否使用缓存
-    this.$route.params.songDetails
-      ? (this.songDetails = this.$route.params.songDetails)
-      : (this.songDetails = JSON.parse(localStorage.getItem("songDetails")));
     // this.getSongDetails()
     this.getSongComment();
   },
@@ -157,27 +162,28 @@ export default {
       that.currentPage = currentPage;
       that.getSongComment();
     },
-    //获取歌曲详情
-    // async getSongDetails() {
-    //   var that = this
-    //   let params = {
-    //     ids: that.songId,
-    //   }
-    //   await getSongDetails(params).then((res) => {
-    //     that.songDetails = res.data.songs[0]
-    //     that.$set(that.songDetails, 'timer', true)
-    //     let min = parseInt(that.songDetails.dt / 1000 / 60)
-    //     let sec = parseInt((that.songDetails.dt / 1000) % 60)
-    //     if (min < 10) {
-    //       min = '0' + min
-    //     }
-    //     if (sec < 10) {
-    //       sec = '0' + sec
-    //     }
-    //     that.songDetails.dt = min + ':' + sec
-    //     // console.log("歌曲详情", res.data.songs[0]);
-    //   })
-    // },
+    // 获取歌曲详情
+    getSongDetails() {
+      var that = this;
+      let params = {
+        ids: this.$route.params.id,
+      };
+      getSongDetails(params).then(async (res) => {
+        that.songDetails = await res.data.songs[0];
+        that.$set(that.songDetails, "timer", true);
+        let min = parseInt(that.songDetails.dt / 1000 / 60);
+        let sec = parseInt((that.songDetails.dt / 1000) % 60);
+        if (min < 10) {
+          min = "0" + min;
+        }
+        if (sec < 10) {
+          sec = "0" + sec;
+        }
+        that.songDetails.dt = min + ":" + sec;
+        localStorage.setItem("songDetails", JSON.stringify(that.songDetails));
+        // console.log("歌曲详情", res.data.songs[0]);
+      });
+    },
     //获取歌曲评论
     getSongComment() {
       var that = this;
@@ -305,6 +311,24 @@ export default {
         });
       });
     },
+    //进入歌手页面
+    goSingerDetail(id) {
+      // let routerInfo = {
+      //   name: "singerDetail",
+      //   params: {
+      //     id: id,
+      //   },
+      // };
+      // this.$router.push({
+      //   name: "emptyPage",
+      //   params: routerInfo,
+      // });
+      this.$router.push({
+        name: "singerDetail",
+        params: { id: id },
+      });
+    },
+    // 进入mv详情页面
     playMV(mvId) {
       //获取mv播放链接
       this.$router.push({
@@ -420,6 +444,12 @@ export default {
           display: inline-block;
           margin-bottom: 10px;
           color: antiquewhite;
+          transition: 0.2s;
+
+          &:hover {
+            cursor: pointer;
+            color: #d6a897;
+          }
         }
       }
     }

@@ -219,7 +219,8 @@
 <script>
 import {
   getDownloadUrl,
-  getSingerDesc,
+  getSingerDetail,
+  // getSingerDesc,
   getSingerSongList,
   getSingerMvList,
   getSingerAlbum,
@@ -237,6 +238,14 @@ export default {
       artist: {
         alias: [],
         musicSize: "",
+        id: "",
+        img1v1Url: "",
+        name: "",
+        alias: ["", ""],
+        musicSize: "",
+        albumSize: "",
+        mvSize: "",
+        briefDesc: "",
       },
       songList: [],
       albumList: [],
@@ -253,16 +262,19 @@ export default {
       mvcurrentPage: 1,
     };
   },
-  mounted() {
-    ////缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌手id
+  created() {
+    // 判断路由传入了歌手信息还是歌手id
     if (this.$route.params.artist) {
-      localStorage.setItem("artist", JSON.stringify(this.$route.params.artist));
+      //路由传入的是歌手详情
+      this.artist = this.$route.params.artist;
+      this.getSingerDetail(this.$route.params.artist.id);
+    } else {
+      //当路由传入的是id时
+      this.$route.params.id
+        ? //传入id，把之前的缓存清掉
+          this.getSingerDetail(this.$route.params.id)
+        : (this.artist = JSON.parse(localStorage.getItem("artist"))); //刷新页面会走向这，可以直接从缓存获取
     }
-    //判断是否使用缓存
-    this.$route.params.artist
-      ? (this.artist = this.$route.params.artist)
-      : (this.artist = JSON.parse(localStorage.getItem("artist")));
-    this.getSingerDesc();
   },
   methods: {
     //显示歌手单曲、专辑、mv列表开关
@@ -275,7 +287,19 @@ export default {
       }
       that.tagSwitch[tag] = true;
     },
-
+    //获取歌手详情
+    getSingerDetail(id) {
+      // id:4292 李荣浩
+      getSingerDetail({ id: id })
+        .then(async (res) => {
+          if (res.data.code === 200) {
+            this.artist = await res.data.artist;
+            // console.log("歌手详情--", res.data.artist);
+            localStorage.setItem("artist", JSON.stringify(res.data.artist));
+          }
+        })
+        .catch((res) => {});
+    },
     //获取歌手单曲列表
     getSingerSongList(tag) {
       var that = this;
@@ -337,18 +361,18 @@ export default {
       });
       that.switchChange(tag);
     },
-    //获取歌手描述
-    getSingerDesc() {
-      // console.log(Boolean(this.artist))
-      var that = this;
-      let params = {
-        id: that.artist.id,
-      };
-      getSingerDesc(params).then((res) => {
-        console.log("歌手描述", res.data);
-        that.artist = res.data.artist;
-      });
-    },
+    ////获取歌手描述
+    // getSingerDesc() {
+    //   // console.log(Boolean(this.artist))
+    //   var that = this;
+    //   let params = {
+    //     id: that.artist.id,
+    //   };
+    //   getSingerDesc(params).then((res) => {
+    //     console.log("歌手描述", res.data);
+    //     that.artist = res.data.artist;
+    //   });
+    // },
 
     //跳转到专辑详情
     goAlbumDetail(albumId) {
