@@ -2,14 +2,7 @@
   <!--music：当前播放的音乐。 list：播放列表 ：showlrc：是否显示歌词-->
   <div id="aplayerWrap">
     <ul class="musicWrap">
-      <div
-        v-if="audio.length !== 0"
-        class="listTitle"
-        v-drag
-        style="text-align: center"
-      >
-        播放列表
-      </div>
+      <div v-if="audio.length !== 0" class="listTitle">播放列表</div>
       <div class="wrapShow">
         <li
           class="musicLi"
@@ -166,10 +159,10 @@ export default {
 </script>
 <style lang="less">
 .musicWrap {
-  position: relative;
+  position: fixed;
   width: 400px;
   max-height: 16px;
-  top: 3%;
+  top: 0;
   left: 0;
   border-radius: 5px;
   color: #ccc;
@@ -177,11 +170,11 @@ export default {
   overflow-x: hidden;
 
   .listTitle {
-    position: relative;
+    // position: relative;
     font-size: 13px;
     text-align: center;
     transition: 0.8s;
-
+    text-align: center;
     &:hover {
       // display: none;
       cursor: default;

@@ -1,4 +1,7 @@
-
+//随机颜色
+const randomColor = () => {
+  return `#${((Math.random() * 0xffffff) << 0).toString(16)}`;
+}
 
 //转换成年月日
 const transtime = (millisecond) => {
@@ -128,6 +131,7 @@ const deepFreeze = (obj) => {
 }
 
 module.exports = {
+  randomColor,
   transtime,
   transMusicTime,
   transPlayCount,
@@ -135,5 +139,6 @@ module.exports = {
   getTimestamp,
   randomRange,
   cookieParser,
-  deepFreeze
+  deepFreeze,
+
 }

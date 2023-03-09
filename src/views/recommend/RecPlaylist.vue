@@ -32,7 +32,88 @@ export default {
   data() {
     return {
       limit: 10,
-      recPlayList: [],
+      recPlayList: [
+        {
+          id: 2420545066,
+          name: "『纯音乐』当雨滴敲响琴键",
+          picUrl:
+            "http://p2.music.126.net/HIUy568wk914exFZai5GXA==/109951163554890901.jpg",
+          playCount: "973万",
+          trackCount: 68,
+        },
+        {
+          id: 8013623763,
+          name: "别担心 迟早都会和喜欢的人在一起的",
+          picUrl:
+            "http://p1.music.126.net/I4L4gx-NPQqYuQbBtzXc6g==/109951168203750890.jpg",
+          playCount: "7.58万",
+          trackCount: 94,
+        },
+        {
+          id: 7662651829,
+          name: "[听·陈奕迅] 有请K歌之王",
+          picUrl:
+            "http://p1.music.126.net/Dt2BjvqgHWag_ZHwJi_rWg==/109951167921109973.jpg",
+          playCount: "310万",
+          trackCount: 30,
+        },
+        {
+          id: 2767811922,
+          name: "古风｜闲庭抚琴桃花酒，叶落似是故人归",
+          picUrl:
+            "http://p1.music.126.net/KjjSfVVJBomMHzP2YZnOJg==/109951164294871555.jpg",
+          playCount: "835万",
+          trackCount: 61,
+        },
+        {
+          id: 8065290179,
+          name: "优美旋律陪伴着我一路成长｜轻音",
+          picUrl:
+            "http://p2.music.126.net/N3OI7jFVm5E_KX7leCVh-g==/109951168242183467.jpg",
+          playCount: "3.05万",
+          trackCount: 92,
+        },
+        {
+          id: 7569628231,
+          name: "民谣｜去做不被定义的自己",
+          picUrl:
+            "http://p2.music.126.net/FQZig87CWrbsIfHHso-5tA==/109951167739914317.jpg",
+          playCount: "2.66万",
+          trackCount: 17,
+        },
+        {
+          id: 7426382152,
+          name: "「刷题专用」明月一灯清 清灯一月明",
+          picUrl:
+            "http://p2.music.126.net/RHczLl3Ja8xbpq405ZANOA==/109951167626284403.jpg",
+          playCount: "3.31万",
+          trackCount: 85,
+        },
+        {
+          id: 7796293725,
+          name: "『纯音乐/治愈』解压放松催眠 看书写作业",
+          picUrl:
+            "http://p1.music.126.net/DNvqiqgUPQoQjH4-23ZsqQ==/109951168127987799.jpg",
+          playCount: "15万",
+          trackCount: 98,
+        },
+        {
+          id: 7734531118,
+          name: "学习纯音 | 深度专注,私享静谧",
+          picUrl:
+            "http://p1.music.126.net/Aun7GzRJg2xSvmlOOrfJ1w==/109951168041516106.jpg",
+          playCount: "10万",
+          trackCount: 54,
+        },
+        {
+          id: 8093747519,
+          name: "【轻音乐】唯心主义浪漫情怀",
+          picUrl:
+            "http://p2.music.126.net/XCnaOJ9thqM0yOmwYw1TEw==/109951168380809911.jpg",
+          playCount: "1.26万",
+          trackCount: 28,
+        },
+      ],
     };
   },
   mounted() {

@@ -1,35 +1,45 @@
 <!DOCTYPE html>
 <html lang="">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- 解决https，http协议不同导致的下载文件失败（下载请求的时http，网站的地址为https） (问题：控制台会出现WebSocket connection to 'wss://192.168.33.116:8080/ws' failed: 报错)-->
-    <!-- <meta
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- 解决https，http协议不同导致的下载文件失败（下载请求的时http，网站的地址为https） (问题：控制台会出现WebSocket connection to 'wss://192.168.33.116:8080/ws' failed: 报错)-->
+  <!-- <meta
       http-equiv="Content-Security-Policy"
       content="upgrade-insecure-requests"
     /> -->
-    <!-- <meta
+  <!-- <meta
       name="viewport"
       content="width=device-width, user-scalable=yes,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     /> -->
-    <title><%= htmlWebpackPlugin.options.title %></title>
-    <link rel="shortcut icon" href="./img/icons/android-chrome-192x192.png" />
-  </head>
-  <style>
-    html {
-      touch-action: manipulation;
-    }
-  </style>
+  <title>
+    <%= htmlWebpackPlugin.options.title %>
+  </title>
+  <link rel="shortcut icon" href="./img/icons/android-chrome-192x192.png" />
+</head>
+<style>
+  html {
+    touch-action: manipulation;
+  }
+</style>
 
-  <body>
-    <noscript>
-      <!-- <strong
+<body>
+
+  <noscript>
+    <!-- <strong
         >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
         properly without JavaScript enabled. Please enable it to
         continue.</strong
       > -->
-    </noscript>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+  </noscript>
+  <!-- <div> -->
+  <!-- <canvas id="myCanvas"></canvas> -->
+
+  <div id="app"></div>
+  <!-- </div> -->
+  <!-- built files will be auto injected -->
+  <!-- <script src="./js/canvas.js"></script> -->
+</body>
+
 </html>

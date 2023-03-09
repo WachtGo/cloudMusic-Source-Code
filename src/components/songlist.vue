@@ -69,24 +69,29 @@ export default {
     },
     //加入/删除喜欢音乐
     likeMusic(id, bool) {
+      const loading = this.$loading({
+        target: "#app_body",
+        background: "rgba(255,255,255,0.1)",
+      });
       likeMusic({ id: id, like: bool })
         .then((res) => {
+          this.$nextTick(() => {
+            loading.close();
+          });
           // console.log("添加", res);
           if (res.data.code === 200) {
             if (bool) {
-              this.$message({
-                type: "success",
-                message: "已添加入我的喜欢-可进入网易云音乐查看",
-              });
+              this.$message.success("已添加入我的喜欢-可进入网易云音乐查看");
               return;
             }
-            this.$message({
-              type: "success",
-              message: "已从我的喜欢列表删除",
-            });
+            this.$message.success("已从我的喜欢列表删除");
           }
         })
-        .catch((res) => {});
+        .catch((error) => {
+          this.$nextTick(() => {
+            loading.close();
+          });
+        });
     },
     //试听音乐
     listenMusic(songDetals) {

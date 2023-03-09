@@ -1,1 +1,1 @@
-export default ['/playlist/subscribe', '/like']
+export default ['/playlist/subscribe', '/like', '/user/playlist', '/playlist/delete', '/playlist/update']

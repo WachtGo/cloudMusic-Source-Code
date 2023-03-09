@@ -3,7 +3,8 @@
   <div>
     <header class="head">
       <!-- 用于拖拽，防止点击到其他元素时也触发 -->
-      <div class="drag" v-drag></div>
+      <!-- <div class="drag" v-drag></div> -->
+      <!-- <div class="drag" v-drag></div> -->
       <!-- 首页 -->
       <div class="left cl" @click="goHome">
         <div class="homeButton"><i class="el-icon-s-home"></i></div>
@@ -166,69 +167,67 @@ export default {
     };
   },
   directives: {
-    drag(el, binding) {
-      // console.log(el)
-      // let dragBox = el.parentElement.parentElement; //获取app元素
-      let dragBox = document.getElementById("app");
-      // 鼠标事件
-      el.onmousedown = (e) => {
-        //鼠标点击时鼠标的的位置
-        // console.log(e)
-        // console.log(el.parentElement)
-        let downX = e.clientX;
-        let downY = e.clientY;
-        //元素位置
-        let left = dragBox.offsetLeft;
-        let top = dragBox.offsetTop;
-        // console.log(e.clientX,e.clientY)
-        // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
-        document.onmousemove = (e) => {
-          //鼠标移动的距离
-          let moveX = e.clientX - downX;
-          let moveY = e.clientY - downY;
-          // console.log('鼠标移动:',moveX,moveY)
-
-          //移动当前元素
-          dragBox.style.left = left + moveX + "px";
-          dragBox.style.top = top + moveY + "px";
-        };
-        document.onmouseup = (e) => {
-          //鼠标弹起来的时候不再移动
-          document.onmousemove = null;
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
-          document.onmouseup = null;
-        };
-      };
-      //手指触屏事件
-      el.touchstart = (e) => {
-        //鼠标点击时鼠标的的位置
-        // console.log(e)
-        // console.log(el.parentElement)
-        let downX = e.clientX;
-        let downY = e.clientY;
-        //元素位置
-        let left = dragBox.offsetLeft;
-        let top = dragBox.offsetTop;
-        // console.log(e.clientX,e.clientY)
-        // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
-        document.touchmove = (e) => {
-          //鼠标移动的距离
-          let moveX = e.clientX - downX;
-          let moveY = e.clientY - downY;
-          // console.log('鼠标移动:',moveX,moveY)
-
-          //移动当前元素
-          dragBox.style.left = left + moveX + "px";
-          dragBox.style.top = top + moveY + "px";
-        };
-        document.touchend = (e) => {
-          //鼠标弹起来的时候不再移动
-          document.touchmove = null;
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
-          document.touchend = null;
-        };
-      };
-    },
+    // drag(el, binding) {
+    //   // console.log(el)
+    //   // let dragBox = el.parentElement.parentElement; //获取app元素
+    //   let dragBox = document.getElementById("app");
+    //   // 鼠标事件
+    //   el.onmousedown = (e) => {
+    //     //鼠标点击时鼠标的的位置
+    //     // console.log(e)
+    //     // console.log(el.parentElement)
+    //     let downX = e.clientX;
+    //     let downY = e.clientY;
+    //     //元素位置
+    //     let left = dragBox.offsetLeft;
+    //     let top = dragBox.offsetTop;
+    //     // console.log(e.clientX,e.clientY)
+    //     // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
+    //     document.onmousemove = (e) => {
+    //       //鼠标移动的距离
+    //       let moveX = e.clientX - downX;
+    //       let moveY = e.clientY - downY;
+    //       // console.log('鼠标移动:',moveX,moveY)
+    //       //移动当前元素
+    //       dragBox.style.left = left + moveX + "px";
+    //       dragBox.style.top = top + moveY + "px";
+    //     };
+    //     document.onmouseup = (e) => {
+    //       //鼠标弹起来的时候不再移动
+    //       document.onmousemove = null;
+    //       //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
+    //       document.onmouseup = null;
+    //     };
+    //   };
+    //   //手指触屏事件
+    //   el.ontouchstart = (e) => {
+    //     //鼠标点击时鼠标的的位置
+    //     // console.log(e)
+    //     // console.log(el.parentElement)
+    //     let downX = e.clientX;
+    //     let downY = e.clientY;
+    //     //元素位置
+    //     let left = dragBox.offsetLeft;
+    //     let top = dragBox.offsetTop;
+    //     // console.log(e.clientX,e.clientY)
+    //     // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
+    //     document.ontouchmove = (e) => {
+    //       //鼠标移动的距离
+    //       let moveX = e.clientX - downX;
+    //       let moveY = e.clientY - downY;
+    //       // console.log('鼠标移动:',moveX,moveY)
+    //       //移动当前元素
+    //       dragBox.style.left = left + moveX + "px";
+    //       dragBox.style.top = top + moveY + "px";
+    //     };
+    //     document.ontouchend = (e) => {
+    //       //鼠标弹起来的时候不再移动
+    //       document.touchmove = null;
+    //       //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
+    //       document.touchend = null;
+    //     };
+    //   };
+    // },
   },
   watch: {
     searchTerms: function () {

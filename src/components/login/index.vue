@@ -8,6 +8,7 @@
         >{{ user.nickname }}</span
       >
       <ul>
+        <li class="logined-li" @click="golike">我的歌单</li>
         <li class="logined-li" @click="loginOut">退出登录</li>
       </ul>
     </div>
@@ -73,43 +74,21 @@ export default {
       user: {
         avatarUrl: "",
         nickname: "",
+        userId: "",
+        userType: "",
       },
       loginStatus: false, //登录状态
       qrloading: false, //点击判断是否已经授权时的加载图标状态
     };
   },
-  computed: {
-    // ...mapState("login", ["loginWrapShow", "loginStatus"]),
-  },
-  watch: {
-    // loginWrapShow: {
-    //   handler(newValue) {
-    //     if (newValue) {
-    //       // console.log(document);
-    //       let adom = document.getElementById("qrStatus");
-    //       console.log("adom", adom);
-    //       this.qrtimer = setInterval(() => {
-    //         adom.click();
-    //       }, 1500);
-    //     }
-    //   },
-    //   // immediate: true,
-    // },
-  },
-  mounted() {
+  computed: {},
+  created() {
+    if (localStorage.getItem("user")) {
+      this.user = JSON.parse(localStorage.getItem("user"));
+    }
     this.getloginStatus();
   },
   methods: {
-    // ...mapMutations("login", ["loginWrapOnOff", "loginStatusOnOff"]),
-    ceshi() {
-      let a =
-        "MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/api/feedback; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/api/clientlog; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/wapi/clientlog; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/api/feedback; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/neapi/clientlog; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_SNS=; Max-Age=0; Expires=Mon, 27 Feb 2023 15:10:28 GMT; Path=/;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/weapi/clientlog; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/openapi/clientlog; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/neapi/feedback; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/weapi/feedback; HTTPOnly;__csrf=a7ae33e29d089a9e30774e67bfd99367; Max-Age=1296010; Expires=Tue, 14 Mar 2023 15:10:38 GMT; Path=/;;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/eapi/clientlog; HTTPOnly;MUSIC_U=6bf80db2682091e66db7c358940e6034f555d03d999284f42033476c98e45796993166e004087dd3e30340b48322c4fd7a82616b73ff591e0195ea446a99c0ab92386fc4f57b0915a0d2166338885bd7; Max-Age=15552000; Expires=Sat, 26 Aug 2023 15:10:28 GMT; Path=/; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/wapi/feedback; HTTPOnly;MUSIC_A_T=1481119727062; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/eapi/feedback; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/weapi/feedback; HTTPOnly;MUSIC_R_T=1481119757789; Max-Age=2147483647; Expires=Sat, 17 Mar 2091 18:24:35 GMT; Path=/api/clientlog; HTTPOnly";
-
-      let cookies = cookieParser(a);
-      //两个都设置上才能请求成功
-      setCookie("MUSIC_U", cookies[0]);
-      setCookie("__csrf", cookies[1]);
-    },
     goLogin() {
       //点击登录，获取二维码
       // this.loginWrapOnOff(true);
@@ -186,46 +165,54 @@ export default {
 
     //获取登录状态
     getloginStatus() {
-      // console.log("this.loginStatus", this.loginStatus);
-      // console.log("----------", getCookie("MUSIC_U"), getCookie("__csrf"));
-      if (getCookie("__csrf")) {
-        this.loginStatus = true;
-        this.user = JSON.parse(localStorage.getItem("user"));
-      } else {
-        this.loginStatus = false;
-        localStorage.removeItem("user");
-        this.user = {};
-      }
       getloginStatus().then(async (res) => {
+        // console.log(res.data.data.profile);
         if (res.data.data.profile) {
-          this.user = await res.data.data.profile;
+          this.loginStatus = true;
+          this.user = {
+            avatarUrl: res.data.data.profile.avatarUrl,
+            nickname: res.data.data.profile.nickname,
+            userId: res.data.data.profile.userId,
+            userType: res.data.data.profile.userType,
+          };
+          // console.log(this.user);
           localStorage.setItem("user", JSON.stringify(this.user));
+        } else {
+          this.loginStatus = false;
+          localStorage.removeItem("user");
         }
       });
     },
     //退出登录
     loginOut() {
-      loginOut().then((res) => {
-        removeCookie("__csrf");
-        this.loginStatus = false;
-        localStorage.removeItem("loginStatus");
-        this.user = {};
-        // this.getloginStatus(); //获取登陆状态
+      const loading = this.$loading({
+        background: "rgba(255,255,255,0.1)",
+      });
+      loginOut()
+        .then((res) => {
+          this.$nextTick(() => {
+            loading.close();
+          });
+          this.loginStatus = false;
+          this.user = {};
+          localStorage.removeItem("user");
+          this.$message.success("已退出登录");
+          // this.getloginStatus(); //获取登陆状态
+        })
+        .catch((err) => {
+          this.$nextTick(() => {
+            loading.close();
+          });
+        });
+    },
+    golike() {
+      this.$router.push({
+        name: "myPlayList",
+        params: {
+          id: this.user.userId,
+        },
       });
     },
-    //获取账户信息-需要与获取登陆状态api都调用，才会真实的刷新登陆状态
-    // getAccount() {
-    //   getAccount().then((res) => {
-    //     console.log("账号信息---：", res.data.profile);
-    //   });
-    // },
-    // 获取用户详情
-    // getuserDetail() {
-    // 374598092 Wacht丶T
-    // getuserDetail({ uid: 374598092 }).then((res) => {
-    // console.log("用户详情---：", res);
-    // });
-    // },
   },
 };
 </script>
@@ -244,7 +231,7 @@ export default {
   transition: 0.2s;
   // background: rgb(161, 145, 139);
   &:hover {
-    height: 64px;
+    height: 96px; //每次添加一个列表这里加32px
     transform: scale(1.01);
   }
 

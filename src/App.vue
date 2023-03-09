@@ -1,16 +1,17 @@
 
 <template>
   <div>
-    <div class="wrap">
-      <!-- app外层套个盒子，防止由于fixed拖拽乱跳 -->
-
-      <div id="app">
-        <HeaderNav></HeaderNav>
+    <!-- <div class="wrap"> -->
+    <!-- app外层套个盒子，防止由于fixed拖拽乱跳 -->
+    <div id="app">
+      <HeaderNav></HeaderNav>
+      <div id="app_body">
         <keep-alive :include="['mvPlay', 'videoPlay']">
           <router-view></router-view>
         </keep-alive>
       </div>
     </div>
+    <!-- </div> -->
     <aplayer></aplayer>
     <!-- <bgmusic></bgmusic> -->
     <Login></Login>
@@ -56,20 +57,22 @@ export default {
 </script>
 <style lang="less">
 @import "@/style/common.less";
-.wrap {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
+// .wrap {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   right: 0;
+//   bottom: 0;
+//   margin: auto;
+//   width: 1200px;
+//   height: 820px;
+
+#app {
+  margin: 50px auto;
   width: 1200px;
   height: 820px;
-
-  #app {
-    height: 820px;
-    overflow: hidden;
-    background: url(@/static/img/background8.jpeg);
-  }
+  overflow: hidden;
+  background: url(@/static/img/background8.jpeg);
 }
+// }
 </style>
