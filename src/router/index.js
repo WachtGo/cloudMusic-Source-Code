@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomePage from '@/views/HomePage.vue'
+import home from '@/views/home.vue'
 
 
 Vue.use(VueRouter)
@@ -9,28 +9,28 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: "/",
-    redirect: { name: "HomePage" },
-    component: HomePage
+    redirect: { name: "home" },
+    component: home
   },
   // 首页
   {
-    path: "/HomePage",
-    name: "HomePage",
+    path: "/home",
+    name: "home",
     redirect: { name: "recommend" },
-    component: () => import("@/views/HomePage.vue"),
+    component: () => import("@/views/home.vue"),
     children: [
       {//个性推荐
-        path: "/HomePage/recommend",
+        path: "/home/recommend",
         name: "recommend",
         component: () => import("@/views/recommend/index.vue")
       },
       {//歌单分类
-        path: "/HomePage/playlistCategary",
+        path: "/home/playlistCategary",
         name: "playlistCategary",
         component: () => import("@/views/categery/playlistCategary.vue")
       },
       {//歌手分类
-        path: "/HomePage/singerCategary",
+        path: "/home/singerCategary",
         name: "singerCategary",
         component: () => import("@/views/categery/singerCategary.vue")
       },

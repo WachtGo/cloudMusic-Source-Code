@@ -42,7 +42,11 @@ cloudMusic.interceptors.response.use(response => {
 
     return response;
 }, error => {
-    Message.error('请求错误')
+    if (loginUrl.includes(config.url) && !localStorage.getItem("user")) {//当请求的url需要登录，并且此时未登录时，进入此处
+        Message.error('请求错误')
+        return false
+    }
+
     return Promise.reject(error);
 });
 export { cloudMusic, cloudMusic2 };//其他文件可通过import { cloudMusic, cloudMusic2 } from  ...导入使用
