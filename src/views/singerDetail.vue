@@ -7,7 +7,7 @@
       <div class="ul">
         <div class="details">
           <div class="details-img">
-            <img :src="artist.img1v1Url" alt="" />
+            <img :src="artist.img1v1Url" alt=" " />
           </div>
           <div class="detailsRight">
             <div style="margin-left: 0px; text-align: left; font-size: 20px">
@@ -100,7 +100,7 @@
                 @click="goAlbumDetail(item.id)"
               >
                 <div class="liWrap-block1">
-                  <img :src="item.blurPicUrl" alt="" />
+                  <img :src="item.blurPicUrl" alt=" " />
                 </div>
                 <div class="liWrap-block2">
                   <div class="div1">
@@ -165,7 +165,7 @@
                       border-radius: 10px;
                     "
                     :src="item.imgurl16v9"
-                    alt=""
+                    alt=" "
                     title=""
                     @click="playMV(item.id)"
                   />

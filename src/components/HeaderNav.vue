@@ -94,7 +94,7 @@
               <span class="suggest-list-music" style="width: 310px"
                 ><img
                   :src="item.img1v1Url"
-                  alt=""
+                  alt=" "
                   style="width: 28px; height: 28px; border-radius: 50%"
               /></span>
               <span class="suggest-list-music" style="width: 180px">{{
@@ -245,7 +245,7 @@ export default {
       location.reload();
     },
     goHome() {
-      this.$router.push({ name: "HomePage" });
+      this.$router.push({ name: "home" });
     },
     switchChange() {
       //显示搜索列表

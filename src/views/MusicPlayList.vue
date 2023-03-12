@@ -53,7 +53,7 @@
             @click.stop="goAlbumDetail(item.id)"
           >
             <div class="liWrap-block1">
-              <img :src="item.blurPicUrl" alt="" />
+              <img :src="item.blurPicUrl" alt=" " />
             </div>
             <div class="liWrap-block2">
               <div class="div1">
@@ -91,7 +91,7 @@
             @click.stop="goSingerDetail(item)"
           >
             <div class="liWrap-block1">
-              <img :src="item.img1v1Url" alt="" />
+              <img :src="item.img1v1Url" alt=" " />
             </div>
             <div class="liWrap-block2">
               <div class="div1">
@@ -125,7 +125,7 @@
                 <div class="image">
                   <img
                     :src="item.coverImgUrl"
-                    alt=""
+                    alt=" "
                     title=""
                     @click="goSongList(item)"
                   />
@@ -163,7 +163,7 @@
                       border-radius: 10px;
                     "
                     :src="item.coverUrl"
-                    alt=""
+                    alt=" "
                     title=""
                     @click="goVideo(item.vid, item.type)"
                   />
@@ -223,7 +223,7 @@
                       border-radius: 10px;
                     "
                     :src="item.cover"
-                    alt=""
+                    alt=" "
                     title=""
                     @click="goVideo(item.id, item.mark)"
                   />

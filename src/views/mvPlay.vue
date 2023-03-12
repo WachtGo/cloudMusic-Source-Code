@@ -14,7 +14,7 @@
       <div>
         <div style="margin-bottom: 10px">
           <div class="authorImg">
-            <img :src="mvDetail.cover" alt="" />
+            <img :src="mvDetail.cover" alt=" " />
           </div>
           <span class="authorName">{{ mvDetail.artistName }}</span>
         </div>

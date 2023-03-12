@@ -6,7 +6,12 @@
       <ul class="recPlaywrap">
         <li class="recPlayList" v-for="(item, index) in recMvList" :key="index">
           <div class="image">
-            <img :src="item.cover" alt="" title="" @click="goPlayMv(item.id)" />
+            <img
+              :src="item.cover"
+              alt=" "
+              title=""
+              @click="goPlayMv(item.id)"
+            />
             <span class="playCount"
               ><i class="el-icon-video-play" style="margin-right: 1px"></i
               >{{ item.playCount }}</span

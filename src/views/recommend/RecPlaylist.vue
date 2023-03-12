@@ -10,7 +10,12 @@
           :key="index"
         >
           <div class="image">
-            <img :src="item.picUrl" alt="" title="" @click="goSongList(item)" />
+            <img
+              :src="item.picUrl"
+              alt=" "
+              title=""
+              @click="goSongList(item)"
+            />
             <span class="playCount"
               ><i class="el-icon-video-play" style="margin-right: 1px"></i
               >{{ item.playCount }}</span

@@ -10,7 +10,7 @@
           @click="getMusicList(item.searchWord)"
         >
           <span>{{ item.searchWord }}</span
-          ><img class="hot" v-if="item.iconType" :src="item.iconUrl" alt="" />
+          ><img class="hot" v-if="item.iconType" :src="item.iconUrl" alt=" " />
         </div>
       </div>
     </div>

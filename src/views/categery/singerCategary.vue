@@ -86,7 +86,7 @@
           @click.stop="goSingerDetail(item)"
         >
           <div class="liWrap-block1">
-            <img :src="item.img1v1Url" alt="" />
+            <img :src="item.img1v1Url" alt=" " />
           </div>
           <div class="liWrap-block2">
             <div class="div1">

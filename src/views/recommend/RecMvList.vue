@@ -8,7 +8,7 @@
           <div class="image">
             <img
               :src="item.picUrl"
-              alt=""
+              alt=" "
               title=""
               @click="goPlayMv(item.id)"
             />

@@ -6,7 +6,7 @@
       <div class="ul">
         <div class="details">
           <div class="details-img">
-            <img :src="albumDesc.blurPicUrl" alt="" />
+            <img :src="albumDesc.blurPicUrl" alt=" " />
           </div>
           <div class="detailsRight">
             <div style="margin-left: 0px; text-align: left; font-size: 20px">
@@ -17,7 +17,7 @@
                 <img
                   class="artistPic"
                   :src="albumDesc.artist.img1v1Url"
-                  alt=""
+                  alt=" "
                 />-
                 <span class="playListNickName">{{
                   albumDesc.artist.name

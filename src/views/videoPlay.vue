@@ -15,7 +15,7 @@
       <div>
         <div style="margin-bottom: 10px">
           <div class="authorImg">
-            <img :src="videoDetail.creator.avatarUrl" alt="" />
+            <img :src="videoDetail.creator.avatarUrl" alt=" " />
           </div>
           <span class="authorName">{{ videoDetail.creator.nickname }}</span>
         </div>

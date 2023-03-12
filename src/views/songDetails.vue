@@ -6,7 +6,7 @@
       <ul>
         <div id="like_detail" class="details">
           <div class="details-img">
-            <img :src="songDetails.al.picUrl" alt="" />
+            <img :src="songDetails.al.picUrl" alt=" " />
           </div>
           <div class="detailsRight">
             <div style="margin-left: 0px; text-align: left; font-size: 20px">

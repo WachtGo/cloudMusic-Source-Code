@@ -79,7 +79,7 @@
               <div class="image">
                 <img
                   :src="item.coverImgUrl"
-                  alt=""
+                  alt=" "
                   title=""
                   @click="goSongList(item)"
                 />

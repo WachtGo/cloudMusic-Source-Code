@@ -7,7 +7,7 @@
         <!-- 歌单信息 -->
         <div class="details" id="list_detail">
           <div class="details-img">
-            <img :src="playListDetail.coverImgUrl" alt="" />
+            <img :src="playListDetail.coverImgUrl" alt=" " />
           </div>
           <div class="detailsRight">
             <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
@@ -36,7 +36,7 @@
               </div>
             </h3>
             <div class="playListCreator">
-              <img :src="playListDetail.creator.avatarUrl" alt="" />
+              <img :src="playListDetail.creator.avatarUrl" alt=" " />
               <span class="playListNickName"
                 >&nbsp;&nbsp;&nbsp;&nbsp;{{
                   playListDetail.creator.nickname
@@ -184,8 +184,8 @@ export default {
       : (this.playListDetail = JSON.parse(
           localStorage.getItem("playListDetail")
         )); //将字符串转成对象
-    this.getPlaylistDetail();
     this.getSongList();
+    this.getPlaylistDetail();
     // this.getPlayListComment();
   },
   methods: {

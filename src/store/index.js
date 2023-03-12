@@ -18,7 +18,7 @@ export default new Vuex.Store({
       storage: window.localStorage,
       // storage: window.sessionStorage,
       // 白名单 要缓存的数据，刷新不会丢失，重新打开也不会丢失
-      // whiteList: ['loginState'],
+      // whiteList: ['aplayer'],
       // 黑名单 不缓存的数据，刷新丢失
       // blackList: [],
     }),

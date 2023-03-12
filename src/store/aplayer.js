@@ -1,12 +1,14 @@
-// import createPersistedState from "vuex-persistedstate"
+import createPersistedState from "vuex-persistedstate"
 
 export default {
   namespaced: true,
   state: {
     // 歌曲生成周期
-    // plugins: [createPersistedState({
-    // 	storage: window.sessionStorage
-    // })],
+    plugins: [createPersistedState({
+      key: 'aplayer',
+      storage: window.sessionStorage,
+      whiteList: ['audio', 'audition', 'musicAudioStatu', 'alplayShow'],
+    })],
     audio: [], //播放列表音乐
     audition: [], //试听歌曲
     musicAudioStatu: 0, //控制audio,audition两个播放器显示

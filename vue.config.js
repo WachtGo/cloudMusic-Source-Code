@@ -2,6 +2,7 @@ const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
     transpileDependencies: true,
     lintOnSave: false,
+    productionSourceMap: false,
     pwa: {
         iconPaths: {//图标设置
             favicon32: 'favicon.ico',
