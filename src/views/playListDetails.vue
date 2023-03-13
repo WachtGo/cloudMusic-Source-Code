@@ -164,13 +164,15 @@ export default {
         tags: [],
         description: "",
       },
-      userId: "", //用户id，用于鉴别歌单是否由用户自己创建的
+      //userId: "", //用户id，用于鉴别歌单是否由用户自己创建的
     };
   },
+  computed: {
+    userId() {
+      return this.$store.state.user.userId;
+    },
+  },
   mounted() {
-    if (localStorage.getItem("user")) {
-      this.userId = JSON.parse(localStorage.getItem("user")).userId;
-    }
     //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
     if (this.$route.params.playListDetail) {
       localStorage.setItem(

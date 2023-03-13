@@ -6,7 +6,7 @@ export default {
     // 歌曲生成周期
     plugins: [createPersistedState({
       key: 'aplayer',
-      storage: window.sessionStorage,
+      storage: window.localStorage,
       whiteList: ['audio', 'audition', 'musicAudioStatu', 'alplayShow'],
     })],
     audio: [], //播放列表音乐

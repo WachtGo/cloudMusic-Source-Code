@@ -1,12 +1,12 @@
 /**
  * 存储localStorage
  */
-export const setStorage = (name, content) => {
+export const setStorage = (name, value) => {
 	if (!name) return;
-	if (typeof content !== 'string') {
-		content = JSON.stringify(content);
+	if (typeof value !== 'string') {
+		value = JSON.stringify(value);
 	}
-	window.localStorage.setItem(name, content);
+	window.localStorage.setItem(name, value);
 }
 
 /**

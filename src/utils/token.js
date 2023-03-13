@@ -1,13 +1,13 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'token'
+const TokenKey = 'token'//方便后面设置token,网易云音乐token请求
 
 export function getToken() {
   return Cookies.get(TokenKey)
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token, { sameSite: 'none' })
+  return Cookies.set(TokenKey, token, { expires: 999 })
 }
 
 export function removeToken() {

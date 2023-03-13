@@ -5,24 +5,47 @@ import homePage from "./homePage";
 import musicPlayList from "./musicPlayList";
 import login from "./login"
 import createPersistedState from "vuex-persistedstate";//状态持久化，将vuex资源保存在localStorage中
-// import {getToken,setToken,removeToken} from "@/utils/auth"
-// import {getStorage, setStorage,removeStorage} from "@/utils/storage"
+import { getToken, setToken, removeToken } from "@/utils/token"
+import { getStorage, setStorage, removeStorage } from "@/utils/storage"
 Vue.use(Vuex);
 export default new Vuex.Store({
   // 歌曲生成周期
   plugins: [
     createPersistedState({
-      // 默认值vuex
-      // key: 'userState',
-      // 缓存的介质localStorage、sessionStorage
-      storage: window.localStorage,
+      key: 'userState', // 默认值vuex
+      storage: window.localStorage,  // 缓存的介质localStorage、sessionStorage
       // storage: window.sessionStorage,
-      // 白名单 要缓存的数据，刷新不会丢失，重新打开也不会丢失
-      // whiteList: ['aplayer'],
-      // 黑名单 不缓存的数据，刷新丢失
-      // blackList: [],
+      whiteList: ['token', 'user'],  // 白名单 要缓存的数据，刷新不会丢失，重新打开也不会丢失
+      // blackList: [], // 黑名单 不缓存的数据，刷新丢失
     }),
   ],
+  state: {
+    token: null,
+    user: null,
+  },
+  mutations: {
+    setTOKEN(state, value) { //登录后设置token
+      state.token = value
+      setToken(value)
+    },
+    removeTOKEN(state) {
+      removeToken()
+      state.token = null
+      state.user = null
+    },
+    setUSER(state, user) {//登录后将用户信息存在vuex
+      state.user = user
+    },
+    setSTORAGE(state, obj) {//设置本地存储
+      setStorage(obj.name, obj.value)
+    },
+
+  },
+  actions: {
+    getTOKEN() {//获取token值
+      return getToken()
+    }
+  },
   modules: {
     aplayer,
     homePage,
@@ -31,7 +54,6 @@ export default new Vuex.Store({
   },
 
 });
-
 // export default new Vuex.Store({
 // state: {
 //   // 获取token

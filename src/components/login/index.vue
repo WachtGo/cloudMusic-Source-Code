@@ -1,9 +1,9 @@
 <template>
   <!-- 暂时开启该功能 -->
   <div>
-    <div v-if="!loginStatus" class="login" @click="goLogin">登录</div>
-    <div v-if="loginStatus" class="user">
-      <img class="userAvatar" :src="user.avatarUrl" alt="" /><span
+    <div v-if="!user" class="login" @click="goLogin">登录</div>
+    <div v-if="user" class="user">
+      <img class="userAvatar" :src="user.avatarUrl" alt=" " /><span
         class="nickName"
         >{{ user.nickname }}</span
       >
@@ -58,10 +58,7 @@ import {
   getloginStatus,
   loginOut,
 } from "@/api/login";
-// import { mapMutations, mapState } from "vuex";
-// import { getuserDetail, getAccount } from "@/api/user";
 import { cookieParser, getTimestamp } from "@/utils/commonApi";
-import { getCookie, removeCookie, setCookie } from "@/utils/cookie";
 
 export default {
   name: "Login",
@@ -71,22 +68,19 @@ export default {
       qrStatus: "",
       qrtimer: null,
       key: "",
-      user: {
-        avatarUrl: "",
-        nickname: "",
-        userId: "",
-        userType: "",
-      },
-      loginStatus: false, //登录状态
       qrloading: false, //点击判断是否已经授权时的加载图标状态
     };
   },
-  computed: {},
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
   created() {
-    if (localStorage.getItem("user")) {
-      this.user = JSON.parse(localStorage.getItem("user"));
-    }
-    this.getloginStatus();
+    // if (localStorage.getItem("user")) {
+    //   this.user = JSON.parse(localStorage.getItem("user"));
+    // }
+    // this.getloginStatus();
   },
   methods: {
     goLogin() {
@@ -145,13 +139,10 @@ export default {
           // clearInterval(this.qrtimer);
           // console.log("扫码登录成功");
           let cookies = cookieParser(res.data.cookie);
-          setCookie("__csrf", cookies[1]);
+          this.$store.commit("setTOKEN", cookies[1]); //设置好了token
           setTimeout(() => {
             this.loginWrapShow = false; //关闭登录窗口
-            this.$message({
-              type: "success",
-              message: "已登录",
-            });
+            this.$message.success("已登录");
           }, 500);
           this.getloginStatus();
         } else if (res.data.code === 800) {
@@ -168,18 +159,12 @@ export default {
       getloginStatus().then(async (res) => {
         // console.log(res.data.data.profile);
         if (res.data.data.profile) {
-          this.loginStatus = true;
-          this.user = {
+          this.$store.commit("setUSER", {
             avatarUrl: res.data.data.profile.avatarUrl,
             nickname: res.data.data.profile.nickname,
             userId: res.data.data.profile.userId,
             userType: res.data.data.profile.userType,
-          };
-          // console.log(this.user);
-          localStorage.setItem("user", JSON.stringify(this.user));
-        } else {
-          this.loginStatus = false;
-          localStorage.removeItem("user");
+          });
         }
       });
     },
@@ -193,9 +178,7 @@ export default {
           this.$nextTick(() => {
             loading.close();
           });
-          this.loginStatus = false;
-          this.user = {};
-          localStorage.removeItem("user");
+          this.$store.commit("removeTOKEN");
           this.$message.success("已退出登录");
           // this.getloginStatus(); //获取登陆状态
         })
@@ -206,6 +189,7 @@ export default {
         });
     },
     golike() {
+      console.log(this.user);
       this.$router.push({
         name: "myPlayList",
         params: {

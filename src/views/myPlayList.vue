@@ -105,7 +105,7 @@ export default {
     //获取用户歌单
     getMyPlayList() {
       let params = {
-        uid: JSON.parse(localStorage.getItem("user")).userId,
+        uid: this.$store.state.user.userId,
         limit: 30,
         offset: (this.currentPage - 1) * 30,
       };
