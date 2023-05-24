@@ -5,11 +5,11 @@
     <!-- app外层套个盒子，防止由于fixed拖拽乱跳 -->
     <div id="app">
       <HeaderNav></HeaderNav>
-      <div id="app_body">
-        <keep-alive :include="['mvPlay', 'videoPlay']">
+      <!-- <div id="app_body"> -->
+        <!-- <keep-alive :include="['mvPlay', 'videoPlay']"> -->
           <router-view></router-view>
-        </keep-alive>
-      </div>
+        <!-- </keep-alive> -->
+      <!-- </div> -->
     </div>
     <!-- </div> -->
     <aplayer></aplayer>
@@ -70,7 +70,7 @@ export default {
 #app {
   margin: 50px auto;
   width: 1200px;
-  height: 820px;
+  height: 830px;
   overflow: hidden;
   background: url(@/static/img/background8.jpeg);
 }

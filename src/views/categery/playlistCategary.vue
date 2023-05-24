@@ -96,7 +96,7 @@
         </div>
       </div>
     </div>
-    <div class="pagination">
+    <div class="pagination position_bottom">
       <el-pagination
         v-show="count !== 0"
         @current-change="handleCurrentChange"
@@ -392,6 +392,10 @@ export default {
     }
   }
 }
+// .position_bottom{
+  // position: absolute;
+  // bottom: 0;
+// }
 .pagination {
   text-align: center;
   background: none !important;

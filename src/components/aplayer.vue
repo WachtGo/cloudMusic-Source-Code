@@ -38,7 +38,7 @@
           ></span>
           <span
             class="inline-block auditionAdd"
-            @click.stop="addListenMusic(item.id)"
+            @click.stop="addListenMusic(item)"
             ><i class="el-icon-folder-add iconhover"></i
           ></span>
         </div>
@@ -68,7 +68,6 @@
 </template>
 <script>
 import { mapMutations, mapState } from "vuex";
-import { getSongDetails } from "@/api/api";
 import { playMusic } from "@/utils/musicPlay";
 export default {
   data() {
@@ -113,12 +112,23 @@ export default {
       this.deleteAUDITION(idx);
     },
     //添加到播放列表
-    async addListenMusic(id) {
+    addListenMusic(songDetals) {
       let that = this;
-      let list = "audition";
-      await getSongDetails({ ids: id }).then((res) => {
-        playMusic(id, res.data.songs[0].fee, 0, list, that);
-      });
+      let songDetail = {
+        ar: [
+          {
+            name: songDetals.artist,
+          },
+        ],
+        al: {
+          picUrl: songDetals.cover,
+        },
+        id: songDetals.id,
+        // url: songDetals.url,
+        name: songDetals.name,
+        timer: songDetals.timer,
+      };
+      playMusic(songDetail, that);
     },
   },
   directives: {

@@ -78,7 +78,7 @@ export default {
           this.$nextTick(() => {
             loading.close();
           });
-          // console.log("添加", res);
+          console.log("添加", res);
           if (res.data.code === 200) {
             if (bool) {
               this.$message.success("已添加入我的喜欢-可进入网易云音乐查看");
@@ -97,14 +97,14 @@ export default {
     listenMusic(songDetals) {
       //获取播放音乐链接
       var that = this;
-      var list = "songlist";
+      // var list = "songlist";
       listenMusic(songDetals, that);
     },
     //添加歌曲到播放列表
     playMusic(songDetals) {
       //获取播放音乐链接
       var that = this;
-      var list = "songlist";
+      // var list = "songlist";
       playMusic(songDetals, that);
     },
     playMV(mvId) {

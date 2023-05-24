@@ -143,7 +143,7 @@ const routes = [
 
 //去除首页导航重复导航相同页面报错 ：Avoided redundant navigation to current location:
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   routes
 })
 // const originalPush = VueRouter.prototype.push

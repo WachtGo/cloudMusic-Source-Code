@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
 import loginUrl from './needLogin/loginUrl';
-import { getCookie } from '@/utils/cookie';
 import { getToken } from '@/utils/token'
 // import { MessageBox, Message } from 'element-ui'
 
@@ -9,20 +8,17 @@ import { getToken } from '@/utils/token'
 
 //可以创建多个axois实例，需要用哪个就引入使用哪个
 const cloudMusic = axios.create({
-    // baseURL: 'https://wacht.xyz/',
+    baseURL: 'https://wacht.fun/',
     // baseURL: 'https://biejuanle.icu/',
     // baseURL: 'http://localhost:3000/',
     // changeOrigin: true,  //解决跨域
     withCredentials: true,
-    params: {
-        'csrf_token': getToken()
-    }
 });
 const cloudMusic2 = axios.create({
-    baseURL: 'https://biejuanle.icu/',
+    // baseURL: 'https://biejuanle.icu/',
     // baseURL:'http://localhost:3000/'
     // changeOrigin: true,  //解决跨域
-    withCredentials: true,
+    // withCredentials: true,
 });
 
 //配置全局的axios默认值
@@ -37,9 +33,20 @@ cloudMusic.interceptors.request.use(config => {
         Message.error('该操作需要登录')
         return false
     }
-    console.log(config)
-    config.params.csrf_token = getToken()
-    console.log(config)
+    // console.log(config)
+    //判断请求的类型：如果是post请求就把默认参数拼到data里面；如果是get请求就拼到params里面
+    if (config.method === 'post') {
+        config.data = {
+
+            'csrf_token': getToken(), ...config.data,
+        }
+    } else if (config.method === 'get') {
+        config.params = {
+
+            'csrf_token': getToken(), ...config.params,
+        }
+    }
+    // console.log(config)
     // config.data.csrf_token = getToken()
     return config
 }, error => {

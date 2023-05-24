@@ -76,7 +76,6 @@ const download = (src, filename) => {
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url);
   });
-
 }
 //获取当前时间戳
 const getTimestamp = () => {

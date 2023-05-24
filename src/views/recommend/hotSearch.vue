@@ -170,7 +170,7 @@ export default {
   box-sizing: border-box;
 
   .hotSearchWrap {
-    height: 120px;
+    // height: 120px;
 
     .hotSearchWord {
       // position: relative;

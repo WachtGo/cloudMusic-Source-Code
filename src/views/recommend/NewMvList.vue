@@ -80,6 +80,7 @@ export default {
 .recPlay {
   // max-height: 550px;
   overflow-x: hidden;
+  margin-bottom: 10px;
   // background: rgba(95, 158, 160, 0.11);
   // &::-webkit-scrollbar {
   //   display: none;

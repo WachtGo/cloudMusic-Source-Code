@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-const TokenKey = 'token'//方便后面设置token,网易云音乐token请求
+const TokenKey = 'csrd_token'//方便后面设置token,网易云音乐token请求
 
 export function getToken() {
   return Cookies.get(TokenKey)
