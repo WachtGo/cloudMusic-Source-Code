@@ -65,7 +65,11 @@ const transPlayCount = (arr, playCount) => {
 
 //歌曲下载
 const download = (src, filename) => {
-  fetch(src).then(res => res.blob()).then(blob => {
+
+  //将http改成https，因为前端部署后，https请求http下载时会出现报错和无法下载，但本地前端请求时却可以下载的问题。
+  let httpssrc = src.replace(/^http:\/\//i, "https://");
+  //  先下载完成后再弹出浏览器窗口2
+  fetch(httpssrc).then(res => res.blob()).then(blob => {
     const a = document.createElement('a');
     document.body.appendChild(a)
     a.style.display = 'none'
@@ -76,6 +80,7 @@ const download = (src, filename) => {
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url);
   });
+
 }
 //获取当前时间戳
 const getTimestamp = () => {
