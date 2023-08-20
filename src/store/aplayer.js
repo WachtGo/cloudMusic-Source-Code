@@ -10,8 +10,19 @@ export default {
       whiteList: ['audio', 'audition', 'musicAudioStatu', 'alplayShow'],
     })],
     audio: [], //播放列表音乐
-    audition: [], //试听歌曲
-    musicAudioStatu: 0, //控制audio,audition两个播放器显示
+    audition: [
+     {
+        name: '卡农（经典钢琴版）', //歌曲名
+        artist: 'dylanf', //作者
+        // url: songUrlAdd,
+        url: `https://music.163.com/song/media/outer/url?id=478507889.mp3`,
+        cover: 'http://p2.music.126.net/fL7FAeRby1s7JreBqoOKjg==/109951165175371079.jpg',
+        // lrc: songlrc,
+        id: 478507889,
+        timer: true, //试听中添加，防止用户连点消耗性能，在添加播放列表方法中可使用到
+      }
+    ], //试听歌曲
+    musicAudioStatu: 1, //控制audio,audition两个播放器显示
     alplayShow: true,
   },
   actions: {},

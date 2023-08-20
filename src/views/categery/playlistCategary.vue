@@ -195,7 +195,7 @@ export default {
     //传入歌单id进入歌单详情
     goSongList(songListDetail) {
       //传入歌单id进入歌单详情
-      console.log("歌单详情", songListDetail);
+      // console.log("歌单详情", songListDetail);
       var that = this;
       that.$router.push({
         name: "playListDetails",

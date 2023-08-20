@@ -11,7 +11,7 @@
           <div class="detailsRight">
             <div style="margin-left: 0px; text-align: left; font-size: 20px">
               {{ songDetails.name }}
-              <div style="display: inline-block">
+              <!-- <div style="display: inline-block">
                 <button
                   class="my-button"
                   @click="likeMusic(songDetails.id, true)"
@@ -23,7 +23,7 @@
                 >
                   不喜欢了<i class="iFont el-icon-star-off iconhover"></i>
                 </button>
-              </div>
+              </div> -->
             </div>
             <div style="margin: 10px 0 10px 0; height: 30px; font-size: 14px">
               <span
@@ -79,7 +79,7 @@
           </div>
         </div>
 
-        <div style="padding: 0px 50px">
+        <!-- <div style="padding: 0px 50px">
           <div class="countLine">
             <span v-if="commentCount">评论({{ commentCount }}条)</span>
           </div>
@@ -120,7 +120,7 @@
             >
             </el-pagination>
           </div>
-        </div>
+        </div> -->
       </ul>
     </div>
   </div>
@@ -128,19 +128,19 @@
 
 <script>
 import { getDownloadUrl, getSongDetails, getSongComment } from "@/api/api";
-import { likeMusic } from "@/api/needLogin/musicOperate";
+// import { likeMusic } from "@/api/needLogin/musicOperate";
 import { download, transMusicTime } from "@/utils/commonApi";
 export default {
   // props: ['songId'],
   data() {
     return {
       //评论分页
-      currentPage: 1,
+      // currentPage: 1,
       songUrlAdd: null,
       // songId: '', //接收的歌曲id
       songDetails: { al: { picUrl: "" }, ar: [{ name: "" }], alia: [], fee: 0 }, //歌曲详情
-      songComment: [],
-      commentCount: 0,
+      // songComment: [],
+      // commentCount: 0,
       //搜索歌曲总数
       count: 0,
     };
@@ -153,25 +153,25 @@ export default {
         "songDetails",
         JSON.stringify(this.$route.params.songDetails)
       );
-      this.getSongComment(this.songDetails.id);
+      // this.getSongComment(this.songDetails.id);
     } else {
       //路由只设置了歌曲id时，便发起请求获取歌曲信息。反之若都没有，代表只是刷新了页面，直接使用缓存获取路由信息
       if (this.$route.params.id) {
         this.getSongDetails();
-        this.getSongComment(this.$route.params.id);
+        // this.getSongComment(this.$route.params.id);
       } else {
         this.songDetails = JSON.parse(localStorage.getItem("songDetails"));
-        this.getSongComment(this.songDetails.id);
+        // this.getSongComment(this.songDetails.id);
       }
     }
   },
   methods: {
-    // 分页
+   /*  // 分页
     songhandleCurrentChange(currentPage) {
       var that = this;
       that.currentPage = currentPage;
       that.getSongComment();
-    },
+    }, */
     // 获取歌曲详情
     getSongDetails() {
       var that = this;
@@ -186,7 +186,7 @@ export default {
         // console.log("歌曲详情", res.data.songs[0]);
       });
     },
-    //获取歌曲评论
+  /*   //获取歌曲评论
     getSongComment(id) {
       var that = this;
       let params = {
@@ -224,7 +224,7 @@ export default {
             loading.close();
           });
         });
-    },
+    }, */
     //试听音乐
     listenMusic(songDetails) {
       // console.log('歌曲信息---：',songDetails)

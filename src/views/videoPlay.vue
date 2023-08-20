@@ -15,7 +15,8 @@
       <div>
         <div style="margin-bottom: 10px">
           <div class="authorImg">
-            <img :src="videoDetail.creator.avatarUrl" alt=" " />
+            <img v-if="videoDetail.creator.avatarUrl === ''" src="../static/img/musicpic2.png" alt=" " />
+            <img v-else :src="videoDetail.creator.avatarUrl" alt=" " />
           </div>
           <span class="authorName">{{ videoDetail.creator.nickname }}</span>
         </div>
@@ -95,7 +96,9 @@ export default {
       mvUrl: "",
       videoUrl: "",
       videoDetail: {
-        creator: {},
+        creator: {
+          avatarUrl:'',
+        },
         title: "",
         publishTime: "",
         playTime: "",

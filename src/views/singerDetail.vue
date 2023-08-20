@@ -65,13 +65,17 @@
             &nbsp;&nbsp;&nbsp;&nbsp;
             <span style="font-size：10px;"></span>
           </h3> -->
-          <div class="loading" v-show="songList.length === 0">
-            <i class="el-icon-loading"></i>
-          </div>
-          <div v-if="songList.length !== 0">
-            <ul class="song-album-wrap">
+          
+          <div >
+            <div class="song-album-wrap" >
+              <ul v-if="songList.length !== 0">
               <songlist :songlist="songList"></songlist>
-            </ul>
+              </ul>
+              <div v-else class="loading" >
+                  <i class="el-icon-loading"></i>
+              </div>
+            </div>
+            
             <div class="pagination">
               <el-pagination
                 v-show="artist.musicSize > 30"
@@ -88,11 +92,10 @@
         </div>
 
         <div id="albumList" v-if="tagSwitch.albumSwitch">
-          <div class="loading" v-show="albumList.length === 0">
-            <i class="el-icon-loading"></i>
-          </div>
-          <div v-if="albumList.length !== 0">
-            <ul class="song-album-wrap">
+          
+          <div >
+            <div class="song-album-wrap">
+              <ul  v-if="albumList.length !== 0">
               <li
                 class="liWrap"
                 v-for="(item, index) in albumList"
@@ -111,7 +114,7 @@
                       }}</span></span
                     >
                   </div>
-                  <div>
+                
                     <div class="divOther">
                       <!-- 作者：<span>{{ item.artist.name }}</span> -->
                     </div>
@@ -122,10 +125,15 @@
                     <div class="divOther" style="width: 100px">
                       歌曲：<span>{{ item.size }}</span>
                     </div>
-                  </div>
+                
                 </div>
               </li>
             </ul>
+            <div v-else class="loading" >
+            <i class="el-icon-loading"></i>
+          </div>
+            </div>
+            
             <div class="pagination">
               <el-pagination
                 v-show="artist.albumSize > 6"
@@ -145,11 +153,9 @@
           <!-- <h3 style="margin: 0 auto">
             MV：{{ mvList.length }}&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-size：10px;"></span>
           </h3> -->
-          <div class="loading" v-show="mvList.length === 0">
-            <i class="el-icon-loading"></i>
-          </div>
-          <div v-if="mvList.length !== 0">
-            <ul class="videoPlaywrap">
+          
+          <div class="videoPlaywrap" >
+            <ul v-if="mvList.length !== 0"  class="videoPlaywrap">
               <li
                 class="videoPlayList"
                 v-for="(item, index) in mvList"
@@ -197,7 +203,12 @@
                 </p>
               </li>
             </ul>
-            <div class="pagination">
+            <div v-else class="loading" >
+            <i class="el-icon-loading"></i>
+          </div>
+            
+          </div>
+          <div class="pagination">
               <el-pagination
                 v-show="artist.mvSize > 8"
                 @current-change="mvHandleCurrentChange"
@@ -209,7 +220,6 @@
               >
               </el-pagination>
             </div>
-          </div>
         </div>
       </div>
     </div>
@@ -430,16 +440,16 @@ export default {
 }
 
 .list-wrap {
-  margin: 10px auto 0;
-  padding: 0 20px 10px;
+  margin: 10px auto 10px ;
+  padding: 0 20px 0;
   width: 1120px;
-  height: 720px;
+  height: 760px; 
   border-radius: 20px;
   background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
 
   .ul {
-    height: 650px;
+    height: 700px;
     border-radius: 0 0 10px 10px;
     background: rgba(95, 158, 160, 0.11);
     // overflow-x: hidden;
@@ -587,7 +597,7 @@ export default {
     margin: 10 auto;
     padding: 10px 20px;
     width: 98%;
-    height: 460px;
+    height: 510px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
@@ -660,7 +670,7 @@ export default {
 
           .albumName {
             display: inline-block;
-            max-width: 500px;
+            max-width: 510px;
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
@@ -713,9 +723,9 @@ export default {
 
   .singerDetail {
     margin: 0 auto;
-    padding: 10px;
+    padding: 10px; 
     width: 96%;
-    height: 420px;
+    height: 510px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
@@ -727,18 +737,18 @@ export default {
 
   #singleSongs {
     margin: 0 auto;
-    padding: 0px 10px 20px;
+    padding: 0px 10px ;
     width: 96%;
-    height: 460px;
+    height: 510px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.05);
     box-sizing: border-box;
-    overflow: hidden;
-    // overflow-x: hidden;
+    // overflow: hidden;
+    overflow-x: hidden;
 
-    // &::-webkit-scrollbar {
-    //   display: none;
-    // }
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .SingsList {
       position: relative;
@@ -791,7 +801,7 @@ export default {
     margin: 0 auto;
     padding: 0px 10px 20px;
     width: 96%;
-    height: 435px;
+    height: 510px;
     border-radius: 10px;
     background: rgba(95, 158, 160, 0.11);
     box-sizing: border-box;
@@ -807,6 +817,7 @@ export default {
       flex-wrap: wrap; //根据宽度限制一行的盒子个数
       margin: 10px 0;
       width: 98%;
+      height: 460px;
       background: transparent;
       // overflow-x: hidden;
 
@@ -872,7 +883,8 @@ export default {
   }
 
   .song-album-wrap {
-    height: 420px;
+    
+    height: 470px;
     // background: #8eb89e;
     overflow-x: hidden;
 

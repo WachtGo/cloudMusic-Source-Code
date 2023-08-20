@@ -3,6 +3,13 @@ const randomColor = () => {
   return `#${((Math.random() * 0xffffff) << 0).toString(16)}`;
 }
 
+const randomNum = (min, max) => {
+  if (min > max) {
+    [min, max] = [max, min]; // 交换 min 和 max 值，确保 min <= max
+  }
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 //转换成年月日
 const transtime = (millisecond) => {
   if (!millisecond) {
@@ -27,6 +34,8 @@ const transMusicTime = (arr, dt) => {
     arr[i][dt] = min + ":" + sec;
   }
 }
+
+
 
 //将播放量转换成亿万单位
 
@@ -134,8 +143,28 @@ const deepFreeze = (obj) => {
   return Object.freeze(obj)
 }
 
+
+/**
+ * 将 source 对象中的非空属性值复制到 destination 对象中。
+ * @param {Object} source - 包含属性和对应值的源对象。
+ * @param {Object} destination - 目标对象，用于接收复制后的非空属性值。
+ */
+const  copyNonEmptyValues = (source, destination)=> {
+  for (const key in source) {
+    const value = source[key];
+    // 检查 value 是否为非空值（不为 null、undefined 和空字符串）。
+    if (value !== null && value !== undefined && value !== '') {
+      // 复制非空值到 destination 对象中的同名属性。
+      destination[key] = value;
+    }
+  }
+}
+
+
+
 module.exports = {
   randomColor,
+  randomNum,
   transtime,
   transMusicTime,
   transPlayCount,
@@ -144,5 +173,5 @@ module.exports = {
   randomRange,
   cookieParser,
   deepFreeze,
-
+  copyNonEmptyValues,
 }

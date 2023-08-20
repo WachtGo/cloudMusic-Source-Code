@@ -27,8 +27,14 @@
           </div>
         </div>
         <div id="singleSongs">
-          <div class="countLine">专辑歌曲：{{ albumSongs.length }} 首</div>
-          <songlist :songlist="albumSongs"></songlist>
+          <div class="countLine">专辑歌曲：{{ albumDesc.size }} 首</div>
+          <div v-if="albumSongs.length !== 0 " >
+            <songlist :songlist="albumSongs"></songlist>
+          </div>
+          <div v-else class="loading">
+            <i class="el-icon-loading"></i>
+          </div>
+          
         </div>
       </div>
     </div>
@@ -59,27 +65,34 @@ export default {
     };
   },
   mounted() {
-    //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
-    if (this.$route.params.albumId) {
-      localStorage.setItem("albumId", this.$route.params.albumId);
+    //进入专辑详情，判断是否有路由信息传入
+    if (this.$route.params.albumDesc) {
+      this.albumDesc = this.$route.params.albumDesc;
+      localStorage.setItem(
+        "albumDesc",
+        JSON.stringify(this.$route.params.albumDesc)
+      );
+      this.getAlbumContent();
+    } else {//没有路由信息，说明刷新了页面，则尝试使用之前的缓存信息
+        this.albumDesc = JSON.parse(localStorage.getItem("albumDesc"));  
     }
-    // 判断是否使用缓存
-    this.$route.params.albumId
-      ? (this.albumId = this.$route.params.albumId)
-      : (this.albumId = localStorage.getItem("albumId"));
-    this.getAlbumContent();
+    //获取专辑信息
+    this.getAlbumContent()
+
+
+
   },
   methods: {
     getAlbumContent() {
       var that = this;
       let params = {
-        id: that.albumId,
+        id: that.albumDesc.id,
       };
       getAlbumContent(params).then((res) => {
         // console.log("专辑信息---：", res.data.album);
         // console.log("专辑歌曲---：", res.data.songs);
-        that.albumDesc = res.data.album;
         that.albumSongs = res.data.songs;
+        that.albumDesc = res.data.album;
         //给每个列表添加一个防抖
         for (let item of that.albumSongs) {
           that.$set(item, "timer", true);
@@ -207,7 +220,7 @@ export default {
       margin: 0 auto;
       padding: 0px 10px 20px;
       width: 96%;
-      height: 420px;
+      height: 520px;
       border-radius: 10px;
       // background: rgba(95, 158, 160, 0.05);
       box-sizing: border-box;

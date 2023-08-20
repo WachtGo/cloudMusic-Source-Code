@@ -13,15 +13,8 @@
       <div class="center cl">
         <div class="search">
           <div class="search-input">
-            <input
-              id="searchInput"
-              @focus="switchChange"
-              @blur="stopSearch"
-              @keyup.enter="enterSearch('searchTerms')"
-              type="text"
-              :placeholder="placeholder"
-              v-model="searchTerms"
-            />
+            <input id="searchInput" @focus="switchChange" @blur="stopSearch" @keyup.enter="enterSearch('searchTerms')"
+              type="text" :placeholder="placeholder" v-model="searchTerms" />
           </div>
         </div>
       </div>
@@ -46,20 +39,14 @@
       <!-- 搜索不到相关单曲，歌手，专辑，歌单 -->
       <div class="correla" v-if="!reloadShow && searchCorrela.trim() !== ''">
         <div class="search-correla" @mousedown="enterSearch('searchCorrela')">
-          搜索 “<span class="search-correla-keyword"
-            >&nbsp;{{ searchCorrela }}&nbsp;</span
-          >” 相关内容
+          搜索 “<span class="search-correla-keyword">&nbsp;{{ searchCorrela }}&nbsp;</span>” 相关内容
         </div>
       </div>
       <!-- 没有搜索结果并且搜索框内容为空 -->
-      <div
-        v-if="
-          !reloadShow &&
-          searchTerms.trim() === '' &&
-          Object.keys(musicList).length === 0
-        "
-        style="text-align: center"
-      >
+      <div v-if="!reloadShow &&
+        searchTerms.trim() === '' &&
+        Object.keys(musicList).length === 0
+        " style="text-align: center">
         没有您想要的搜索结果
       </div>
       <!-- searchSwitch -->
@@ -67,12 +54,8 @@
         <div class="search-box-wrap">
           <div class="suggest-title">单曲</div>
           <ul class="suggest-ul">
-            <li
-              class="suggest-list"
-              v-for="(item, index) in musicList.songs"
-              :key="index"
-              @mousedown="goSongDetails(item.id)"
-            >
+            <li class="suggest-list" v-for="(item, index) in musicList.songs" :key="index"
+              @mousedown="goSongDetails(item.id)">
               <span class="suggest-list-music" style="width: 310px">
                 {{ item.name }}
               </span>
@@ -85,18 +68,10 @@
         <div class="search-box-wrap">
           <div class="suggest-title">歌手</div>
           <ul class="suggest-ul">
-            <li
-              class="suggest-list"
-              v-for="(item, index) in musicList.artists"
-              :key="index"
-              @mousedown="selectArtist(item)"
-            >
-              <span class="suggest-list-music" style="width: 310px"
-                ><img
-                  :src="item.img1v1Url"
-                  alt=" "
-                  style="width: 28px; height: 28px; border-radius: 50%"
-              /></span>
+            <li class="suggest-list" v-for="(item, index) in musicList.artists" :key="index"
+              @mousedown="selectArtist(item)">
+              <span class="suggest-list-music" style="width: 310px"><img :src="item.img1v1Url" alt=" "
+                  style="width: 28px; height: 28px; border-radius: 50%" /></span>
               <span class="suggest-list-music" style="width: 180px">{{
                 item.name
               }}</span>
@@ -106,12 +81,8 @@
         <div class="search-box-wrap">
           <div class="suggest-title">专辑</div>
           <ul class="suggest-ul">
-            <li
-              class="suggest-list"
-              v-for="(item, index) in musicList.albums"
-              :key="index"
-              @mousedown="selectAlbum(item.id)"
-            >
+            <li class="suggest-list" v-for="(item, index) in musicList.albums" :key="index"
+              @mousedown="selectAlbum(item)">
               <div class="suggest-list-music" style="width: 310px">
                 <span>{{ item.name }}</span>
                 <span style="color: #c4fffa">[{{ item.size }}首]</span>
@@ -125,12 +96,8 @@
         <div class="search-box-wrap">
           <div class="suggest-title">歌单</div>
           <ul class="suggest-ul">
-            <li
-              class="suggest-list"
-              v-for="(item, index) in musicList.playlists"
-              :key="index"
-              @mousedown="goSongList(item)"
-            >
+            <li class="suggest-list" v-for="(item, index) in musicList.playlists" :key="index"
+              @mousedown="goSongList(item)">
               <div class="suggest-list-music" style="width: 490px">
                 <span>{{ item.name }}</span>
                 <span style="color: #c4fffa">[{{ item.trackCount }}首]</span>
@@ -150,7 +117,7 @@
 
 <script>
 import { getSearchDefault, getSearchSuggest } from "@/api/api";
-import { deepFreeze } from "@/utils/commonApi";
+import { deepFreeze, randomNum } from "@/utils/commonApi";
 export default {
   data() {
     return {
@@ -164,7 +131,9 @@ export default {
       // page: 1, //搜索列表页数
       // limit: 30, //搜索每次请求的数
       // count: 15, //最后一次搜索请求的数量，用于判断是否全部加载完毕
-    };
+      // 搜索框随机推荐列表
+      searchSuggest: ['卡农', '空山新雨', '天空之城', '迪迦奥特曼 人类的光', ' 分分钟需要你', '斑马', '江南', '周杰伦', '林俊杰', 'Childhood Memory', '星尘']
+    }
   },
   directives: {
     // drag(el, binding) {
@@ -311,12 +280,22 @@ export default {
       });
     },
     // 进入专辑详情
-    selectAlbum(id) {
+    selectAlbum(albumDesc) {
+      let params = {
+        id: albumDesc.id,
+        name: albumDesc.name,
+        blurPicUrl: require('@/static/img/musicpic3.png'),
+        size: albumDesc.size,
+        artist: {
+          name: albumDesc.artist.name,
+          img1v1Url: albumDesc.artist.img1v1Url
+        }
+      }
       //路由配置发送给空页面
       let routerInfo = {
         name: "albumDetail",
         params: {
-          albumId: id,
+          albumDesc: params,
         },
       };
       this.$router.push({
@@ -410,11 +389,13 @@ export default {
       });
     },
     getSearchDefault() {
+      //随机从searchSuggest数组中的歌曲放在搜索框推荐中，例如[0,2]则为：0，1，2
+      this.placeholder = this.searchSuggest[randomNum(0,this.searchSuggest.length-1)]
       //默认搜索关键字
-      getSearchDefault().then(async (res) => {
-        this.placeholder = res.data.data.realkeyword;
-        // console.log("搜索关键字：", res.data.data);
-      });
+      // getSearchDefault().then(async (res) => {
+      //   this.placeholder = res.data.data.realkeyword;
+      // console.log("搜索关键字：", res.data.data);
+      // });
     },
 
     //搜索懒加载
@@ -445,8 +426,8 @@ export default {
   display: flex;
   align-content: center;
   justify-content: space-between;
-
   height: 50px;
+  border-radius: 20px 20px 0 0;
   // line-height: 50px;
   background: rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
@@ -483,15 +464,18 @@ export default {
       }
     }
   }
+
   .left,
   .right {
     margin: 10px 0;
   }
+
   .left {
     flex: 1;
     left: 0;
     margin-left: 50px;
   }
+
   .right {
     flex: 1;
     right: 0;
@@ -507,6 +491,7 @@ export default {
     bottom: 0;
     margin: auto;
   }
+
   .homeButton {
     height: 30px;
     font-size: 20px;
@@ -518,11 +503,12 @@ export default {
       color: rgb(95, 205, 248);
     }
   }
+
   .search-input {
     width: 100%;
     height: 100%;
     // display: inline-block;
-
+    font-family: 仓耳渔阳体 !important;
     input {
       font-size: 16px;
       width: 100%;
@@ -564,38 +550,48 @@ export default {
   background: url(@/static/img/background8.jpeg); //-------------需要与主题更改
   overflow-x: hidden;
   cursor: default;
+
   &::-webkit-scrollbar {
     display: none;
   }
+
   .correla {
     display: flex;
     justify-content: center;
+
     .search-correla {
       color: #d1cece;
       text-align: center;
       transition: 0.2s;
+
       .search-correla-keyword {
         color: rgb(173, 248, 223);
         transition: 0.2s;
+
         &:hover {
           color: rgb(134, 207, 184);
         }
       }
+
       &:hover {
         color: #afafaf;
         cursor: pointer;
       }
     }
   }
+
   .search-box-wrap {
     display: flex;
+
     .suggest-title {
       padding: 8px 0;
       text-indent: 1.5em;
       flex: 1;
     }
+
     .suggest-ul {
       flex: 4;
+
       .suggest-list {
         margin: 5px 10px;
         padding: 0 10px;

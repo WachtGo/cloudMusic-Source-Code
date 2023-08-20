@@ -7,36 +7,21 @@
         <!-- 歌单信息 -->
         <div class="details" id="list_detail">
           <div class="details-img">
-            <img :src="playListDetail.coverImgUrl" alt=" " />
+            <img v-if="playListDetail.coverImgUrl === ''" src="../static/img/playlistpic.png" alt=" " />
+            <img v-else :src="playListDetail.coverImgUrl" alt=" " />
           </div>
           <div class="detailsRight">
-            <h3 style="margin-left: 0px; text-align: left; font-size: 20px">
-              {{ playListDetail.name }}
-
-              <div
-                style="display: inline-block"
-                v-if="playListDetail.creator.userId === userId"
-              >
-                <button
-                  class="my-button"
-                  @click="deletePlayList(playListDetail.id)"
-                >
-                  删除歌单
-                </button>
-              </div>
-              <div
-                style="display: inline-block"
-                v-if="playListDetail.creator.userId !== userId"
-              >
-                <button class="my-button" @click="collectPlaylist('1')">
-                  收藏</button
-                ><button class="my-button" @click="collectPlaylist('2')">
-                  取消收藏
-                </button>
-              </div>
+            
+            <h3 v-if="playListDetail.name === ''" style="margin-left: 0px; text-align: left; font-size: 20px">
+              慢慢的加载，就像音乐舒缓地流淌。
             </h3>
+            <h3 v-else style="margin-left: 0px; text-align: left; font-size: 20px">
+              {{ playListDetail.name }}
+            </h3>
+
             <div class="playListCreator">
-              <img :src="playListDetail.creator.avatarUrl" alt=" " />
+              <img v-if="playListDetail.creator.avatarUrl === ''" src="../static/img/musicpic2.png" alt=" " />
+              <img v-else :src="playListDetail.creator.avatarUrl" alt=" " />
               <span class="playListNickName"
                 >&nbsp;&nbsp;&nbsp;&nbsp;{{
                   playListDetail.creator.nickname
@@ -145,13 +130,13 @@ export default {
       mvUrl: "",
       //搜索歌曲总数
       count: "",
-      playListComment: [
-        {
-          user: {
-            avatarUrl: "",
-          },
-        },
-      ],
+      // playListComment: [
+      //   {
+      //     user: {
+      //       avatarUrl: "",
+      //     },
+      //   },
+      // ],
       // commentCount: "",
       //MV
       songMV: [],
@@ -160,17 +145,17 @@ export default {
         name: "",
         coverImgUrl: "",
         trackCount: "",
-        creator: { avatarUrl: "", nickname: "", signature: "" },
+        creator: { avatarUrl: '', nickname: "", signature: "" },
         tags: [],
         description: "",
       },
-      userId: "", //用户id，用于鉴别歌单是否由用户自己创建的
+      // userId: "", //用户id，用于鉴别歌单是否由用户自己创建的
     };
   },
   created() {
-    if (this.$store.state.token) {
-      this.userId = this.$store.state.user.userId;
-    }
+    // if (this.$store.state.token) {
+    //   this.userId = this.$store.state.user.userId;
+    // }
   },
   mounted() {
     //缓存id,解决params数据在刷新页面后丢失，导致无法获取到歌单id
@@ -249,7 +234,7 @@ export default {
         transMusicTime(that.musicList, "dt");
       });
     },
-    //收藏/取消收藏歌单
+ /*    //收藏/取消收藏歌单
     collectPlaylist(t) {
       const loading = this.$loading({
         target: "#list_detail",
@@ -309,7 +294,7 @@ export default {
             loading.close();
           });
         });
-    },
+    }, */
   },
 };
 </script>

@@ -1,35 +1,17 @@
 <template>
   <div class="list-wrap">
     <div class="tagWrap">
-      <span @click="tagSelect('songSwitch')" v-if="!tagSwitch.songSwitch"
-        >单曲</span
-      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.songSwitch"
-        >单曲</span
-      >
-      <span @click="tagSelect('albumSwitch')" v-if="!tagSwitch.albumSwitch"
-        >专辑</span
-      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.albumSwitch"
-        >专辑</span
-      >
-      <span @click="tagSelect('singerSwitch')" v-if="!tagSwitch.singerSwitch"
-        >歌手</span
-      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.singerSwitch"
-        >歌手</span
-      >
-      <span
-        @click="tagSelect('playListSwitch')"
-        v-if="!tagSwitch.playListSwitch"
-        >歌单</span
-      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.playListSwitch"
-        >歌单</span
-      ><span @click="tagSelect('videoSwitch')" v-if="!tagSwitch.videoSwitch"
-        >视频</span
-      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.videoSwitch"
-        >视频</span
-      ><span @click="tagSelect('mvSwitch')" v-if="!tagSwitch.mvSwitch">MV</span
-      ><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.mvSwitch"
-        >MV</span
-      >
+      <span @click="tagSelect('songSwitch')" v-if="!tagSwitch.songSwitch">单曲</span><span style="color: rgb(80, 180, 220)"
+        v-if="tagSwitch.songSwitch">单曲</span>
+      <span @click="tagSelect('albumSwitch')" v-if="!tagSwitch.albumSwitch">专辑</span><span
+        style="color: rgb(80, 180, 220)" v-if="tagSwitch.albumSwitch">专辑</span>
+      <span @click="tagSelect('singerSwitch')" v-if="!tagSwitch.singerSwitch">歌手</span><span
+        style="color: rgb(80, 180, 220)" v-if="tagSwitch.singerSwitch">歌手</span>
+      <span @click="tagSelect('playListSwitch')" v-if="!tagSwitch.playListSwitch">歌单</span><span
+        style="color: rgb(80, 180, 220)" v-if="tagSwitch.playListSwitch">歌单</span><span @click="tagSelect('videoSwitch')"
+        v-if="!tagSwitch.videoSwitch">视频</span><span style="color: rgb(80, 180, 220)"
+        v-if="tagSwitch.videoSwitch">视频</span><span @click="tagSelect('mvSwitch')"
+        v-if="!tagSwitch.mvSwitch">MV</span><span style="color: rgb(80, 180, 220)" v-if="tagSwitch.mvSwitch">MV</span>
     </div>
     <div class="descript"></div>
     <div>
@@ -46,32 +28,22 @@
           <div class="loading" v-show="albumList.length === 0">
             <i class="el-icon-loading"></i>
           </div>
-          <li
-            class="liWrap"
-            v-for="(item, index) in albumList"
-            :key="index"
-            @click.stop="goAlbumDetail(item.id)"
-          >
+          <li class="liWrap" v-for="(item, index) in albumList" :key="index" @click.stop="goAlbumDetail(item)">
             <div class="liWrap-block1">
               <img :src="item.blurPicUrl" alt=" " />
             </div>
             <div class="liWrap-block2">
               <div class="div1">
-                <span class="albumName"
-                  >{{ item.name }}
+                <span class="albumName">{{ item.name }}
                   <span v-if="item.alias[0]" class="albumName2">{{
                     item.alias[0]
-                  }}</span></span
-                >
+                  }}</span></span>
               </div>
               <div>
                 <div class="divOther">
                   作者：<span>{{ item.artist.name }}</span>
                 </div>
-                <span
-                  class="inline-block"
-                  style="display: inline-block; width: 50px"
-                ></span>
+                <span class="inline-block" style="display: inline-block; width: 50px"></span>
                 <div class="divOther" style="width: 100px">
                   歌曲：<span>{{ item.size }}</span>
                 </div>
@@ -84,12 +56,7 @@
           <div class="loading" v-show="artists.length === 0">
             <i class="el-icon-loading"></i>
           </div>
-          <li
-            class="liWrap"
-            v-for="(item, index) in artists"
-            :key="index"
-            @click.stop="goSingerDetail(item)"
-          >
+          <li class="liWrap" v-for="(item, index) in artists" :key="index" @click.stop="goSingerDetail(item)">
             <div class="liWrap-block1">
               <img :src="item.img1v1Url" alt=" " />
             </div>
@@ -117,22 +84,11 @@
           </div>
           <div class="recPlay">
             <ul class="playListWrap">
-              <li
-                class="playListTable"
-                v-for="(item, index) in playListTable"
-                :key="index"
-              >
+              <li class="playListTable" v-for="(item, index) in playListTable" :key="index">
                 <div class="image">
-                  <img
-                    :src="item.coverImgUrl"
-                    alt=" "
-                    title=""
-                    @click="goSongList(item)"
-                  />
-                  <span class="playCount"
-                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
-                    >{{ item.playCount }}</span
-                  >
+                  <img :src="item.coverImgUrl" alt=" " title="" @click="goSongList(item)" />
+                  <span class="playCount"><i class="el-icon-video-play" style="margin-right: 1px"></i>{{ item.playCount
+                  }}</span>
                 </div>
                 <p class="List-title" @click="goSongList(item)">
                   <span>{{ item.name }} </span>
@@ -148,54 +104,31 @@
           </div>
           <div class="videoPlay">
             <ul class="videoPlaywrap">
-              <li
-                class="videoPlayList"
-                v-for="(item, index) in videoList"
-                :key="index"
-              >
+              <li class="videoPlayList" v-for="(item, index) in videoList" :key="index">
                 <div class="videoImage">
-                  <img
-                    class="videoImg"
-                    style="
+                  <img class="videoImg" style="
                       position: absolute;
                       width: 240px;
                       height: 155px;
                       border-radius: 10px;
-                    "
-                    :src="item.coverUrl"
-                    alt=" "
-                    title=""
-                    @click="goVideo(item.vid, item.type)"
-                  />
-                  <span class="videoPlayTime"
-                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
-                    >{{ item.playTime }}</span
-                  >
+                    " :src="item.coverUrl" alt=" " title="" @click="goVideo(item.vid, item.type)" />
+                  <span class="videoPlayTime"><i class="el-icon-video-play" style="margin-right: 1px"></i>{{ item.playTime
+                  }}</span>
                   <span class="videoPlayTime" style="bottom: 0">{{
                     item.durationms
                   }}</span>
                 </div>
 
-                <p
-                  class="List-title"
-                  style="font-size: 10px"
-                  @click="goVideo(item.vid, item.type)"
-                >
-                  <span
-                    style="
+                <p class="List-title" style="font-size: 10px" @click="goVideo(item.vid, item.type)">
+                  <span style="
                       display: inline-block;
                       width: 100%;
                       overflow: hidden;
                       white-space: nowrap;
                       text-overflow: ellipsis;
-                    "
-                    ><span v-if="!item.type" style="color: red">MV&nbsp;</span
-                    >{{ item.title }}</span
-                  ><br />
-                  <span style="color: rgb(199, 199, 199)"
-                    ><span v-if="item.markTypes">by&nbsp;</span>
-                    <span>{{ item.creator[0].userName }}</span></span
-                  >
+                    "><span v-if="!item.type" style="color: red">MV&nbsp;</span>{{ item.title }}</span><br />
+                  <span style="color: rgb(199, 199, 199)"><span v-if="item.markTypes">by&nbsp;</span>
+                    <span>{{ item.creator[0].userName }}</span></span>
                 </p>
               </li>
             </ul>
@@ -208,54 +141,31 @@
           </div>
           <div class="videoPlay">
             <ul class="videoPlaywrap">
-              <li
-                class="videoPlayList"
-                v-for="(item, index) in mvList"
-                :key="index"
-              >
+              <li class="videoPlayList" v-for="(item, index) in mvList" :key="index">
                 <div class="videoImage">
-                  <img
-                    class="videoImg"
-                    style="
+                  <img class="videoImg" style="
                       position: absolute;
                       width: 240px;
                       height: 155px;
                       border-radius: 10px;
-                    "
-                    :src="item.cover"
-                    alt=" "
-                    title=""
-                    @click="goVideo(item.id, item.mark)"
-                  />
-                  <span class="videoPlayTime"
-                    ><i class="el-icon-video-play" style="margin-right: 1px"></i
-                    >{{ item.playCount }}</span
-                  >
+                    " :src="item.cover" alt=" " title="" @click="goVideo(item.id, item.mark)" />
+                  <span class="videoPlayTime"><i class="el-icon-video-play" style="margin-right: 1px"></i>{{
+                    item.playCount }}</span>
                   <span class="videoPlayTime" style="bottom: 0">{{
                     item.duration
                   }}</span>
                 </div>
 
-                <p
-                  class="List-title"
-                  style="font-size: 10px"
-                  @click="goVideo(item.id, item.mark)"
-                >
-                  <span
-                    style="
+                <p class="List-title" style="font-size: 10px" @click="goVideo(item.id, item.mark)">
+                  <span style="
                       display: inline-block;
                       width: 100%;
                       overflow: hidden;
                       white-space: nowrap;
                       text-overflow: ellipsis;
-                    "
-                    ><span v-if="!item.type" style="color: red">MV&nbsp;</span
-                    >{{ item.name }}</span
-                  ><br />
-                  <span style="color: rgb(199, 199, 199)"
-                    ><span>by&nbsp;</span>
-                    <span>{{ item.artistName }}</span></span
-                  >
+                    "><span v-if="!item.type" style="color: red">MV&nbsp;</span>{{ item.name }}</span><br />
+                  <span style="color: rgb(199, 199, 199)"><span>by&nbsp;</span>
+                    <span>{{ item.artistName }}</span></span>
                 </p>
               </li>
             </ul>
@@ -265,15 +175,8 @@
     </div>
 
     <div class="pagination">
-      <el-pagination
-        v-show="count != 0"
-        @current-change="handleCurrentChange"
-        :current-page.sync="currentPage"
-        :page-size="15"
-        layout="prev, pager, next, jumper"
-        :total="count"
-        :background="true"
-      >
+      <el-pagination v-show="count != 0" @current-change="handleCurrentChange" :current-page.sync="currentPage"
+        :page-size="15" layout="prev, pager, next, jumper" :total="count" :background="true">
       </el-pagination>
     </div>
   </div>
@@ -367,11 +270,21 @@ export default {
     },
 
     //获取专辑详情
-    goAlbumDetail(id) {
+    goAlbumDetail(albumDesc) {
+      let params = {
+        id: albumDesc.id,
+        name: albumDesc.name,
+        blurPicUrl: albumDesc.blurPicUrl,
+        size: albumDesc.size,
+        artist: {
+          name: albumDesc.artist.name,
+          img1v1Url: albumDesc.artist.img1v1Url
+        }
+      }
       this.$router.push({
         name: "albumDetail",
         params: {
-          albumId: id,
+          albumDesc: params,
         },
       });
     },
@@ -401,15 +314,15 @@ export default {
       let params = {
         id: playListDetail.id,
         name: playListDetail.name,
-        coverImgUrl: playListDetail.picUrl,
+        coverImgUrl: playListDetail.coverImgUrl,
         trackCount: playListDetail.trackCount,
         creator: {
-          avatarUrl: "",
+          avatarUrl: '',
           nickname: playListDetail.creator.nickname,
           signature: "",
         },
         tags: [],
-        description: "",
+        // description: "",
       };
       //传入歌单id进入歌单详情
       this.$router.push({
@@ -566,6 +479,7 @@ export default {
 .videoListClass {
   .videoPlay {
     overflow-x: hidden;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -601,6 +515,7 @@ export default {
             transform: scale(1.05);
             cursor: pointer;
           }
+
           .videoImg {
             position: absolute;
             width: 100%;
@@ -620,11 +535,17 @@ export default {
           padding: 0 10px;
           // width: 100%;
           transition: 0.2s;
-          overflow: hidden; /*必须结合的属性,当内容溢出元素框时发生的事情*/
-          text-overflow: ellipsis; /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
-          display: -webkit-box; /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
-          -webkit-line-clamp: 2; /*用来限制在一个块元素显示的文本的行数。*/
-          -webkit-box-orient: vertical; /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
+          overflow: hidden;
+          /*必须结合的属性,当内容溢出元素框时发生的事情*/
+          text-overflow: ellipsis;
+          /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
+          display: -webkit-box;
+          /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
+          -webkit-line-clamp: 2;
+          /*用来限制在一个块元素显示的文本的行数。*/
+          -webkit-box-orient: vertical;
+
+          /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
           span {
             &:hover {
               color: rgb(145, 245, 228);
@@ -636,6 +557,7 @@ export default {
     }
   }
 }
+
 // 歌单列表样式
 .playListClass {
   .recPlay {
@@ -676,6 +598,7 @@ export default {
             cursor: pointer;
             // height: 210px;
           }
+
           img {
             position: absolute;
             width: 100%;
@@ -689,6 +612,7 @@ export default {
             background: transparent;
           }
         }
+
         .List-title {
           margin: 0 auto;
           font-size: 15px;
@@ -698,12 +622,18 @@ export default {
           text-align: center;
           text-overflow: ellipsis;
           white-space: nowrap;
-          overflow: hidden; /*必须结合的属性,当内容溢出元素框时发生的事情*/
-          text-overflow: ellipsis; /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
+          overflow: hidden;
+          /*必须结合的属性,当内容溢出元素框时发生的事情*/
+          text-overflow: ellipsis;
+          /*可以用来多行文本的情况下，用省略号“…”隐藏超出范围的文本 。*/
           white-space: nowrap;
-          display: -webkit-box; /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
-          -webkit-line-clamp: 1; /*用来限制在一个块元素显示的文本的行数。*/
-          -webkit-box-orient: vertical; /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
+          display: -webkit-box;
+          /*必须结合的属性 ，将对象作为弹性伸缩盒子模型显示 。*/
+          -webkit-line-clamp: 1;
+          /*用来限制在一个块元素显示的文本的行数。*/
+          -webkit-box-orient: vertical;
+
+          /*必须结合的属性 ，设置或检索伸缩盒对象的子元素的排列方式 。*/
           span {
             display: inline-block;
             width: 180px;
@@ -722,6 +652,7 @@ export default {
     }
   }
 }
+
 //歌手列表样式
 .singerListClass {
   .liWrap {
@@ -735,25 +666,30 @@ export default {
     background-color: rgba(129, 235, 199, 0.068);
     box-sizing: border-box;
     transition: 0.2s;
+
     &:hover {
       transform: scale(1.01);
     }
+
     .liWrap-block1 {
       width: 60px;
       height: 60px;
       border-radius: 10px;
       background-color: rgba(152, 158, 149, 0);
       transition: 0.2s;
+
       img {
         width: 100%;
         height: 100%;
         border-radius: 10px;
       }
+
       &:hover {
         transform: scale(1.05);
         cursor: pointer;
       }
     }
+
     .liWrap-block2 {
       display: flex;
       justify-content: space-between;
@@ -775,6 +711,7 @@ export default {
           color: rgba(136, 240, 240, 0.719);
         }
       }
+
       .div1 {
         display: inline-block;
         // width: 200px;
@@ -782,11 +719,13 @@ export default {
         span {
           color: bisque;
           transition: 0.2s;
+
           &:hover {
             color: rgba(252, 214, 167, 0.979);
           }
         }
       }
+
       .divOther {
         display: inline-block;
         width: 100px;
@@ -795,11 +734,13 @@ export default {
         span {
           color: bisque;
           transition: 0.2s;
+
           &:hover {
             color: rgba(255, 198, 129, 0.979);
           }
         }
       }
+
       &:hover {
         transform: scale(1.01);
         cursor: pointer;
@@ -807,6 +748,7 @@ export default {
     }
   }
 }
+
 //专辑列表页面样式
 .albumListClass {
   .liWrap {
@@ -820,27 +762,32 @@ export default {
     background-color: rgba(129, 235, 199, 0.068);
     box-sizing: border-box;
     transition: 0.2s;
+
     &:hover {
       // color: aqua;
       transform: scale(1.01);
     }
+
     .liWrap-block1 {
       width: 60px;
       height: 60px;
       border-radius: 10px;
       background-color: rgba(177, 244, 151, 0);
       transition: 0.2s;
+
       img {
         width: 100%;
         height: 100%;
         border-radius: 10px;
       }
+
       &:hover {
         // color: aqua;
         transform: scale(1.05);
         cursor: pointer;
       }
     }
+
     .liWrap-block2 {
       display: flex;
       justify-content: space-between;
@@ -859,12 +806,14 @@ export default {
           color: rgba(109, 255, 255, 0.753);
         }
       }
+
       .div1 {
         display: inline-block;
         width: 520px;
         text-overflow: ellipsis;
         overflow: hidden;
         white-space: nowrap;
+
         .albumName {
           display: inline-block;
           max-width: 500px;
@@ -873,19 +822,23 @@ export default {
           white-space: nowrap;
           color: rgb(196, 255, 250);
           transition: 0.2s;
+
           span {
             &:hover {
               color: rgba(97, 252, 252, 0.979);
             }
           }
+
           &:hover {
             color: rgba(97, 252, 252, 0.979);
           }
         }
+
         &:hover {
           color: rgba(97, 252, 252, 0.979);
         }
       }
+
       .divOther {
         display: inline-block;
         width: 200px;
@@ -898,11 +851,13 @@ export default {
         span {
           color: rgb(196, 255, 250);
           transition: 0.2s;
+
           &:hover {
             color: rgba(97, 252, 252, 0.979);
           }
         }
       }
+
       &:hover {
         // color: rgba(97, 252, 252, 0.979);
         transform: scale(1.01);
@@ -922,11 +877,12 @@ export default {
   background: rgba(95, 158, 160, 0.05);
   box-sizing: border-box;
 }
+
 .list-wrap {
   margin: 10px auto 0;
   padding: 0 20px 10px;
   width: 1120px;
-  // height: 730px;
+  height: 760px;
   border-radius: 20px;
   background: rgba(95, 158, 160, 0.11);
   box-sizing: border-box;
@@ -951,7 +907,7 @@ export default {
   }
 
   ul {
-    height: 650px;
+    height: 685px;
     border-radius: 0 0 10px 10px;
     background: rgba(95, 158, 160, 0.05);
     overflow-x: hidden;
@@ -986,6 +942,7 @@ export default {
         text-overflow: ellipsis;
         white-space: nowrap;
       }
+
       .option {
         position: absolute;
         padding-left: 120px;
@@ -996,6 +953,7 @@ export default {
         span {
           display: inline-block;
           width: 30px;
+
           &:hover {
             cursor: pointer;
           }
@@ -1010,6 +968,7 @@ export default {
     }
   }
 }
+
 .pagination {
   text-align: center;
   background: none !important;
@@ -1018,6 +977,7 @@ export default {
     height: 30px !important;
     background: none !important;
   }
+
   /deep/ .number,
   /deep/ .btn-prev,
   /deep/ .btn-quicknext,
@@ -1028,6 +988,7 @@ export default {
     transition: 0.2s;
     background: transparent !important;
   }
+
   /deep/ .number:hover,
   /deep/ .btn-prev:hover,
   /deep/ .btn-quicknext:hover,
@@ -1037,20 +998,26 @@ export default {
     transform: scale(1.02);
     color: #f7a588 !important;
   }
+
   /deep/ .active {
     color: #f7a588 !important;
   }
+
   /deep/ .el-input__inner {
     border: none;
   }
+
   /deep/ .el-pagination__jump {
     color: #f7dd88 !important;
   }
+
   /deep/.el-pagination {
     height: 100%;
   }
+
   .iconhover {
     transition: 0.2s;
+
     &:hover {
       color: rgb(247, 243, 45);
     }

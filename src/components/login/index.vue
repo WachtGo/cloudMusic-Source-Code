@@ -1,5 +1,5 @@
 <template>
-  <!-- 暂时开启该功能 -->
+  <!-- 暂时不开启该功能 -->
   <div>
     <div v-if="!user" class="login" @click="goLogin">登录</div>
     <div v-if="user" class="user">

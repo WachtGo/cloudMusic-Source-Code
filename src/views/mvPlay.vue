@@ -14,7 +14,8 @@
       <div>
         <div style="margin-bottom: 10px">
           <div class="authorImg">
-            <img :src="mvDetail.cover" alt=" " />
+            <img v-if="mvDetail.cover === ''" src="../static/img/musicpic2.png" alt=" " />
+            <img v-else :src="mvDetail.cover" alt=" " />
           </div>
           <span class="authorName">{{ mvDetail.artistName }}</span>
         </div>
@@ -97,7 +98,9 @@ export default {
       mvUrl: "",
       mvId: "",
       mvComments: [],
-      mvDetail: {},
+      mvDetail: {
+        cover:'',
+      },
       count: "",
       currentPage: 1,
     };

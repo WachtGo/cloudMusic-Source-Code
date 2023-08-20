@@ -1,25 +1,21 @@
 <template>
   <!--music：当前播放的音乐。 list：播放列表 ：showlrc：是否显示歌词-->
-  <div id="aplayerWrap">
+  <div id="aplayerWrap" @keydown="operaMusic">
     <ul class="musicWrap">
       <div v-if="audio.length !== 0" class="listTitle">播放列表</div>
       <div class="wrapShow">
-        <li
-          class="musicLi"
-          v-for="(item, index) in audio"
-          :key="item.id"
-          @click.self="playMusic(index)"
-        >
-          <span>{{ index + 1 }}.</span>&nbsp;
-          <span class="musicName">{{ item.name }}</span>
-          <span class="artist">{{ item.artist }}</span>
-          <span class="delete" @click.stop="deleteMusic(index)"
-            ><i class="el-icon-delete iconhover"></i
-          ></span>
+        <li class="musicLi" v-for="(item, index) in audio" :key="item.id" @click="playMusic(index)">
+          <div :style="{ 'color': item.id === currentMusic.id ? 'rgb(29, 236, 167)' : '#ccc' }">
+            <span>{{ index + 1 }}.</span>&nbsp;
+            <span class="musicName">{{ item.name }}</span>
+            <span class="artist">{{ item.artist }}</span>
+            <span class="delete" @click.stop="deleteMusic(index)"><i class="el-icon-delete iconhover"></i></span>
+          </div>
+
         </li>
       </div>
     </ul>
-    <div class="audition" v-if="audition.length !== 0">
+    <!-- <div class="audition" v-if="audition.length !== 0">
       <div
         class="inline-block"
         style="margin: 0 auto"
@@ -43,41 +39,78 @@
           ></span>
         </div>
       </div>
-    </div>
-    <div v-if="audio.length !== 0 && musicAudioStatu === 0">
-      <aplayer
-        autoplay
-        fixed
-        ref="aplayer"
-        :audio="audio"
-        style="color: rgb(120, 120, 120)"
-      >
+    </div> -->
+    <div style="position: relative;" v-if="audio.length !== 0 && musicAudioStatu === 0">
+      <aplayer autoplay ref="aplayer" :audio="audio" style="color: rgb(120, 120, 120)">
       </aplayer>
+      <span class="aplayeIcon" @click="getDownloadUrl(currentMusic)">
+        <i class="el-icon-download iconhover"></i></span>
     </div>
 
-    <div v-if="audition.length !== 0 && musicAudioStatu === 1">
-      <aplayer
-        autoplay
-        :fixed="true"
-        ref="auditions"
-        :audio="audition"
-        :liric-type="1"
-      ></aplayer>
+    <div style="position: relative;" v-if="audition.length !== 0 && musicAudioStatu === 1">
+      <aplayer autoplay ref="auditions" :audio="audition" :liric-type="1"></aplayer>
+      <span class="aplayeIcon" @click="resetAudition">
+        <i class=" el-icon-magic-stick iconhover"></i></span>
     </div>
   </div>
 </template>
 <script>
 import { mapMutations, mapState } from "vuex";
-import { playMusic } from "@/utils/musicPlay";
+import { playMusic, listenMusic } from "@/utils/musicPlay";
+import { getDownloadUrl } from "@/api/api";
+import { download } from "@/utils/commonApi";
+// import { Loading } from "element-ui";
 export default {
   data() {
-    return {};
+    return {
+      // 试听歌曲
+      // audition:{
+      //   name: '卡农（经典钢琴版）', //歌曲名
+      //   artist: 'dylanf', //作者
+      //   // url: songUrlAdd,
+      //   url: `https://music.163.com/song/media/outer/url?id=478507889.mp3`,
+      //   cover: 'http://p2.music.126.net/fL7FAeRby1s7JreBqoOKjg==/109951165175371079.jpg',
+      //   // lrc: songlrc,
+      //   id: 478507889,
+      //   timer: true, //试听中添加，防止用户连点消耗性能，在添加播放列表方法中可使用到
+      // }
+      currentMusic: {},//当前播放的音乐
+      aplayerDomLoading: false,//是否正在获取aplayer播放器dom，有效利用资源，用于防卡顿一直获取
+    };
   },
   computed: {
     ...mapState("aplayer", ["audio", "audition", "musicAudioStatu"]),
   },
-  mounted() {},
+  created() {
+    //监听按键
+    window.addEventListener('keydown', this.operaMusic);
+    //每隔几秒钟获取一次当前播放的音乐id
+    let a = setInterval(() => {
+      //判断上一次是否获取完毕
+      if (this.musicAudioStatu === 0 && !this.aplayerDomLoading) {
+        this.aplayerDomLoading = true; // 开始获取状态
+        let aplayer = this.$refs.aplayer; // 获取当前播放器
+        let timeout = false; // 初始化超时标志为 false
 
+        // 设置一个超时定时器
+        let timeoutId = setTimeout(() => {
+          timeout = true;
+          this.aplayerDomLoading = false; // 超时时重置状态
+        }, 1000); // 设置超时时间，单位为毫秒，根据实际情况进行调整
+
+        // 检查超时标志和获取状态
+        if (aplayer && aplayer.currentMusic && !timeout) {
+          this.currentMusic = aplayer.currentMusic
+          this.aplayerDomLoading = false;
+          clearTimeout(timeoutId); // 清除超时定时器
+        }
+      }
+    }, 2222);
+  },
+  beforeDestroy() {
+    //销毁按键监听
+    window.removeEventListener('keydown', this.operaMusic);
+  },
   methods: {
     ...mapMutations("aplayer", [
       "deleteMUSIC",
@@ -88,11 +121,17 @@ export default {
     //播放指定歌曲
     async playMusic(idx) {
       //await,防止还未切换播放器就开始请求，使得aplayer出现undefine
-      await this.changeAPLAYER(0); //切换播放器
+      if (this.musicAudioStatu === 1) {
+        await this.changeAPLAYER(0); //切换播放器
+      }
       let aplayer = this.$refs.aplayer; //获取当前播放器
+      // console.log(aplayer.currentMusic.id)
+
       // console.log(aplayer)
       aplayer.switch(idx); //切换到播放当前下标的歌曲
       aplayer.toggle(); //切换播放/暂停
+      this.currentMusic = aplayer.currentMusic//将当前播放的音乐id记录
+      // console.log(this.currentMusicId)
     },
     //删除歌曲
     deleteMusic(idx) {
@@ -101,11 +140,34 @@ export default {
     },
     //试听的播放/暂停
     async playAudition() {
-      await this.changeAPLAYER(1); //切换到试听播放器
+      if (this.musicAudioStatu === 0) {
+        await this.changeAPLAYER(1); //切换到试听播放器
+      }
       let auditions = this.$refs.auditions; //获取当前播放器
+
       // console.log(auditions)
       // auditions.switch(0); //切换到播放当前下标的歌曲
       auditions.toggle(); //切换播放/暂停
+      this.currentMusic = auditions.currentMusic//将当前播放的音乐记录
+    },
+    //按空格键，对音乐进行播放或者暂停
+    operaMusic(event) {
+      // 首先判断事件目标是否为输入框
+      if (event.target.tagName.toLowerCase() !== 'input') {
+        if (event.key === ' ') {
+          // console.log('按下了空格')
+          // console.log(this.musicAudioStatu)
+          if (this.musicAudioStatu === 0) {//播放列表
+            let aplayer = this.$refs.aplayer; //获取当前播放器
+            aplayer.toggle(); //切换播放/暂停
+          } else {
+            // let auditions = this.$refs.auditions; //获取当前播放器
+            console.log(auditions)
+            auditions.toggle(); //切换播放/暂停
+          }
+
+        }
+      }
     },
     //删除试听
     deleteAudition(idx) {
@@ -130,39 +192,40 @@ export default {
       };
       playMusic(songDetail, that);
     },
-  },
-  directives: {
-    drag(el) {
-      // let dragBox = el.parentElement.parentElement; //获取移动的元素
-      let dragBox = document.getElementsByClassName("musicWrap");
-      el.onmousedown = (e) => {
-        //鼠标点击时鼠标的的位置
-        // console.log(e)
-        // console.log(el.parentElement)
-        let downX = e.clientX;
-        let downY = e.clientY;
-        //元素位置
-        let left = dragBox[0].offsetLeft;
-        let top = dragBox[0].offsetTop;
-        // console.log(e.clientX,e.clientY)
-        // console.log('app位置：',dragBox.offsetLeft,dragBox.offsetTop)
-        document.onmousemove = (e) => {
-          //鼠标移动的距离
-          let moveX = e.clientX - downX;
-          let moveY = e.clientY - downY;
-          // console.log('鼠标移动:',moveX,moveY)
-
-          //移动当前元素
-          dragBox[0].style.left = left + moveX + "px";
-          dragBox[0].style.top = top + moveY + "px";
-        };
-        document.onmouseup = (e) => {
-          //鼠标弹起来的时候不再移动
-          document.onmousemove = null;
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）
-          document.onmouseup = null;
-        };
+    //重置试听歌曲
+    resetAudition() {
+      this.$store.commit("aplayer/addAUDITION", {
+        name: '卡农（经典钢琴版）', //歌曲名
+        artist: 'dylanf', //作者
+        // url: songUrlAdd,
+        url: `https://music.163.com/song/media/outer/url?id=478507889.mp3`,
+        cover: 'http://p2.music.126.net/fL7FAeRby1s7JreBqoOKjg==/109951165175371079.jpg',
+        // lrc: songlrc,
+        id: 478507889,
+        timer: true, //试听中添加，防止用户连点消耗性能，在添加播放列表方法中可使用到
+      });
+    },
+    //获取歌曲下载地址
+    getDownloadUrl(currentMusic) {
+      let musicfilename = currentMusic.name + ' - ' + currentMusic.artist
+      var that = this;
+      that.$message({
+        type: "success",
+        message: "正在尝试下载",
+      });
+      let params = {
+        id: currentMusic.id,
       };
+      getDownloadUrl(params).then((res) => {
+        // console.log('歌曲下载地址：', res.data)
+        // console.log("歌曲下载地址：", res.data.data.url);
+        // download(res.data.data.url, songName)
+        download(res.data.data[0].url, musicfilename);
+        that.$message({
+          type: "success",
+          message: "开始下载了",
+        });
+      });
     },
   },
 };
@@ -185,6 +248,7 @@ export default {
     text-align: center;
     transition: 0.8s;
     text-align: center;
+
     &:hover {
       // display: none;
       cursor: default;
@@ -256,113 +320,6 @@ export default {
   }
 }
 
-.audition {
-  position: fixed;
-  width: 500px;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  height: 18px;
-  color: #ccc;
-  // color: rgba(218, 218, 218, 0.842);
-
-  transition: 0.2s;
-
-  .auditionTitle {
-    position: relative;
-    display: inline-block;
-    font-size: 13px;
-    margin-right: 10px;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .auditionMusic {
-    // position: relative;
-    display: inline-block;
-    font-size: 13px;
-    transition: 0.2s;
-
-    &:hover {
-      // color: aqua;
-      color: rgb(29, 236, 167);
-    }
-
-    .auditionName {
-      width: 300px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .auditionArtist {
-      width: 90px;
-      text-align: center;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
-    }
-
-    .auditionDelete {
-      width: 22px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .auditionAdd {
-      width: 22px;
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-  }
-
-  &:hover {
-    cursor: pointer;
-    transform: scale(1.01);
-  }
-}
-
-.bgmusicWrap {
-  position: absolute;
-  top: 0;
-  right: 5px;
-  width: 250px;
-  color: #ccc;
-  max-height: 20px;
-  overflow: hidden;
-  transition: 0.3s;
-  &:hover {
-    max-height: 200px;
-  }
-
-  .bgmusic-ul {
-    width: 100%;
-    text-align: center;
-    transition: 0.2s;
-
-    .bgmusic-li {
-      height: 20px;
-      padding: 0 10px;
-      background: rgba(160, 160, 160, 0.096);
-      transition: 0.2s;
-
-      &:hover {
-        cursor: pointer;
-        color: rgb(29, 236, 167);
-        transform: scale(1.01);
-      }
-    }
-  }
-}
-
 .iconhover {
   transition: 0.3s;
 
@@ -372,85 +329,149 @@ export default {
   }
 }
 
+.aplayeIcon {
+  //播放器上的下载图标
+  position: absolute;
+  right: 57px;
+  top: 20px;
+}
+
 .aplayer {
+  margin: 5px;
+  height: 66px;
+  overflow: hidden;
+  border-radius: 39px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: 0 0 15px 5px #739cbdf1;
+  font-family: 仓耳渔阳体 !important;
+
   .aplayer-body {
-    // height: 200px !important;
-    // .aplayer-pic {
-    // background-image: url("@/img/background.jpg") !important;
-    // img {
-    //   width: 100px;
-    //   height: 100px;
-    // }
+    // background-image: url(../static/img/background8.jpeg);
+    // background-attachment: fixed;
+    // background-size: cover;
 
-    // background: rgba(247, 247, 253, 0.164);
-    // }
-    // .aplayer-info {
-    //   .aplayer-music {
-    //     .aplayer-title {
-    //       color: rgb(133, 130, 130);
-    //       transition: 0.2s;
-    //       &:hover {
-    //         color: turquoise;
-    //       }
-    //     }
-    //     .aplayer-author {
-    //       color: rgb(111, 114, 113);
-    //       transition: 0.2s;
+    .aplayer-pic {
+      width: 66px;
+      height: 66px;
+      border-radius: 50% !important;
 
-    //       &:hover {
-    //         color: turquoise;
-    //       }
-    //     }
-    //   }
-    //   .aplayer-lrc {
-    //     position: fixed;
-    //     top: 45px;
-    //     left: 0;
-    //     right: 0;
-    //     margin: auto;
-    //     // margin-right: 100px;
-    //     width: 350px;
-    //     height: 32px;
-    //     border-radius: 40px;
-    //     // background: rgba(179, 248, 241, 0.082) !important;
-    //     transition: 0.2s;
-    //     &:after {
-    //       background: none;
-    //     }
-    //     &:before {
-    //       background: none;
-    //     }
-    //     &:hover {
-    //       transform: scale(1.01);
-    //     }
+      .aplayer-button {}
 
-    //     background: transparent;
-    //     .aplayer-lrc-contents {
-    //       background: transparent;
-    //       .aplayer-lrc-current {
-    //         // height: 30px;
-    //         font-size: 16px;
+      .aplayer-play {}
+    }
 
-    //         color: rgba(248, 255, 254, 0.973);
-    //         background: transparent;
-    //         &:hover {
-    //           color: turquoise;
-    //         }
-    //       }
-    //       p {
-    //         color: rgb(255, 255, 255);
-    //         font-size: 14px;
-    //       }
-    //     }
-    //   }
-    // }
+    .aplayer-info {
+      // height: 66px;
+      border: 0px !important;
+
+      // background-image: url(../static/img/background8.jpeg);
+      .aplayer-music {
+        text-align: center;
+        font-size: 16px !important;
+
+        .aplayer-title {
+          color: #fff;
+        }
+
+        .aplayer-author {
+          color: #fff;
+        }
+      }
+
+      .aplayer-lrc {
+        .aplayer-lrc-contents {
+          .aplayer-lrc-current {}
+        }
+      }
+
+      .aplayer-controller {
+        .aplayer-bar-wrap {
+          margin: 0 50px 0 0;
+
+          .aplayer-bar {
+            .aplayer-loaded {}
+
+            .aplayer-played {
+              .aplayer-thumb {
+                .aplayer-loading-icon {}
+              }
+            }
+          }
+        }
+
+        .aplayer-time {
+          right: 45px;
+
+          .aplayer-icon {
+            color: aliceblue;
+
+            path {
+              fill: #fff;
+            }
+
+          }
+
+          .aplayer-time-inner {
+            color: #fff;
+
+            .aplayer-ptime {}
+
+            .aplayer-dtime {}
+          }
+
+
+
+          .aplayer-icon-back {}
+
+          .aplayer-icon-play {}
+
+          .aplayer-icon-forward {}
+
+          .aplayer-volume-wrap {
+            .aplayer-icon-volume-down {}
+
+            .aplayer-volume-bar-wrap {
+              .aplayer-volume-bar {
+                .aplayer-volume {}
+              }
+            }
+          }
+
+          .aplayer-icon-order {}
+
+          .aplayer-icon-loop {}
+
+          .aplayer-icon-menu {
+            display: none !important;
+          }
+        }
+      }
+    }
+
+    .aplayer-notice {}
+
+    .aplayer-miniswitcher {
+      .aplayer-icon {}
+
+      .aplayer-icon-miniswitcher {}
+    }
   }
 
-  // .aplayer-list {
-  //   .aplayer-list-light {
-  //   }
-  //   .aplayer-list-cur {
-  //   }
-  // }
+  .aplayer-list {
+    display: none !important;
+
+    .aplayer-list-light {
+      .aplayer-list-cur {}
+
+      .aplayer-list-index {}
+
+      .aplayer-list-title {}
+
+      .aplayer-list-author {}
+    }
+  }
+
+
 }
 </style>
