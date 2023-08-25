@@ -76,6 +76,7 @@ export default {
       // }
       currentMusic: {},//当前播放的音乐
       aplayerDomLoading: false,//是否正在获取aplayer播放器dom，有效利用资源，用于防卡顿一直获取
+      auditionDomLoading:false,
     };
   },
   computed: {
@@ -85,7 +86,7 @@ export default {
     //监听按键
     window.addEventListener('keydown', this.operaMusic);
     //每隔几秒钟获取一次当前播放的音乐id
-    let a = setInterval(() => {
+    let playlist = setInterval(() => {
       //判断上一次是否获取完毕
       if (this.musicAudioStatu === 0 && !this.aplayerDomLoading) {
         this.aplayerDomLoading = true; // 开始获取状态
@@ -106,10 +107,11 @@ export default {
         }
       }
     }, 2222);
+
   },
   beforeDestroy() {
     //销毁按键监听
-    window.removeEventListener('keydown', this.operaMusic);
+    // window.removeEventListener('keydown', this.operaMusic);
   },
   methods: {
     ...mapMutations("aplayer", [
@@ -161,8 +163,8 @@ export default {
             let aplayer = this.$refs.aplayer; //获取当前播放器
             aplayer.toggle(); //切换播放/暂停
           } else {
-            // let auditions = this.$refs.auditions; //获取当前播放器
-            console.log(auditions)
+            let auditions = this.$refs.auditions; //获取当前播放器
+            // console.log(auditions)
             auditions.toggle(); //切换播放/暂停
           }
 

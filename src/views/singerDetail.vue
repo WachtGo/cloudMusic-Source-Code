@@ -749,52 +749,6 @@ export default {
     &::-webkit-scrollbar {
       display: none;
     }
-
-    .SingsList {
-      position: relative;
-      display: flex;
-      justify-content: space-between;
-      margin: 5px auto;
-      width: 100%;
-      height: 30px;
-      line-height: 30px;
-      padding: 0 10px;
-      background-color: rgba(99, 187, 162, 0.144);
-      border-radius: 15px;
-      box-sizing: border-box;
-      line-height: 30px;
-      transition: 0.2s;
-
-      .song-list {
-        display: inline-block;
-        text-align: center;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .song-list-option {
-        position: absolute;
-        width: 130px;
-        right: 10px;
-
-        span {
-          display: inline-block;
-          margin: 0 5px;
-          transition: 0.2s;
-
-          &:hover {
-            color: bisque;
-            cursor: pointer;
-          }
-        }
-      }
-
-      &:hover {
-        color: aqua;
-        transform: scale(1.01);
-      }
-    }
   }
 
   #singerMvs {
@@ -932,14 +886,6 @@ export default {
 
   /deep/ .el-pagination__jump {
     color: #f7dd88 !important;
-  }
-}
-
-.iconhover {
-  transition: 0.2s;
-
-  &:hover {
-    color: rgb(247, 243, 45);
   }
 }
 </style>
