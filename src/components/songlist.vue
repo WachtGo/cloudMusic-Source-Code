@@ -1,12 +1,23 @@
 <template>
   <div>
-    <div class="music-list" v-for="(item, index) in songlist" :key="item.id">
+    <div class="music-list"  v-for="(item, index) in songlist" :key="item.id" 
+        :style="{
+              color: item.id === currentPlayMusic.id ? 'rgb(69, 255, 233)' : undefined,
+              transform: item.id === currentPlayMusic.id ? 'scale(1.01)' : undefined, 
+              backgroundColor: item.id === currentPlayMusic.id ? 'rgba(255, 255, 255,0.033 )': undefined,
+            }"> 
       <div style="width: 35px">{{ index + 1 }}.</div>
-      <div @dblclick="goSongDetails(item)" class="music-list-info">
+      <div @dblclick="listenMusic(item)" class="music-list-info">
         <div class="music-list-span">{{ item.name }}</div>
         <div class="music-list-span">{{ item.ar[0].name }}</div>
         <div class="music-list-span music-list-dt">{{ item.dt }}</div>
       </div>
+      <!-- 双击进入歌曲详情，但是由于不符合一般人习惯，暂时换成试听音乐 -->
+      <!--  <div @dblclick="goSongDetails(item)" class="music-list-info">
+        <div class="music-list-span">{{ item.name }}</div>
+        <div class="music-list-span">{{ item.ar[0].name }}</div>
+        <div class="music-list-span music-list-dt">{{ item.dt }}</div>
+      </div> -->
 
       <div class="option">
         <!-- 加入我的喜欢
@@ -31,11 +42,14 @@
         <span v-if="item.fee == 0 || item.fee == 8" @click="getDownloadUrl(item.id, item.name, item.ar[0].name)">
           <i class="el-icon-download iconhover"></i></span>
       </div>
+    
+      
     </div>
   </div>
 </template>
 
 <script>
+import { mapMutations, mapState } from "vuex";
 import { getDownloadUrl } from "@/api/api";
 import { playMusic, listenMusic } from "@/utils/musicPlay";
 import { likeMusic } from "@/api/needLogin/musicOperate";
@@ -46,6 +60,9 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    ...mapState("aplayer", ["currentPlayMusic"]),
   },
   methods: {
     //获取歌曲详情,进入详情页面
@@ -149,7 +166,7 @@ export default {
   border-radius: 5px;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
-  background-color: rgba(99, 187, 162, 0.044);
+  background: rgba(99, 187, 162, 0.033);
   border-radius: 15px;
   transition: 0.2s;
 
@@ -204,9 +221,9 @@ export default {
   }
 
   &:hover {
-    color: rgb(88, 255, 241);
+    color: rgb(69, 255, 233);
     transform: scale(1.01);
-    // background: rgba(141, 251, 255, 0.192);
+    background: rgba(255, 255, 255,0.033 );
   }
 }
 </style>

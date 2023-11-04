@@ -23,6 +23,7 @@ export default {
       }
     ], //试听歌曲
     musicAudioStatu: 1, //控制audio,audition两个播放器显示
+    currentPlayMusic:{},//当前正在播放的音乐
     alplayShow: true,
   },
   actions: {},
@@ -77,5 +78,10 @@ export default {
     changeAPLAYER(state, statu) {
       statu === 1 ? (state.musicAudioStatu = 1) : (state.musicAudioStatu = 0);
     },
+    //更换当前正在播放的歌曲
+    changeCurrentPlayMusic(state,currentMusic) {
+      state.currentPlayMusic = currentMusic
+      // console.log('store/alayer.js:',state.currentPlayMusic)
+    }
   },
 };

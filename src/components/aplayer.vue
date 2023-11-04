@@ -4,14 +4,24 @@
     <ul class="musicWrap">
       <div v-if="audio.length !== 0" class="listTitle">播放列表</div>
       <div class="wrapShow">
-        <li class="musicLi" v-for="(item, index) in audio" :key="item.id" @click="playMusic(index)">
-          <div :style="{ 'color': item.id === currentMusic.id ? 'rgb(29, 236, 167)' : '#ccc' }">
+        <li
+          class="musicLi"
+          v-for="(item, index) in audio"
+          :key="item.id"
+          @click="playMusic(index)"
+        >
+          <div
+            :style="{
+              color: item.id === currentMusic.id ? 'rgb(29, 236, 167)' : undefined ,
+            }"
+          >
             <span>{{ index + 1 }}.</span>&nbsp;
             <span class="musicName">{{ item.name }}</span>
             <span class="artist">{{ item.artist }}</span>
-            <span class="delete" @click.stop="deleteMusic(index)"><i class="el-icon-delete iconhover"></i></span>
+            <span class="delete" @click.stop="deleteMusic(index)"
+              ><i class="el-icon-delete iconhover"></i
+            ></span>
           </div>
-
         </li>
       </div>
     </ul>
@@ -40,17 +50,48 @@
         </div>
       </div>
     </div> -->
-    <div style="position: relative;" v-if="audio.length !== 0 && musicAudioStatu === 0">
-      <aplayer autoplay ref="aplayer" :audio="audio" style="color: rgb(120, 120, 120)">
+    <div
+      style="position: relative"
+      v-if="audio.length !== 0 && musicAudioStatu === 0"
+    >
+      <aplayer
+        autoplay
+        ref="aplayer"
+        :audio="audio"
+        style="color: rgb(120, 120, 120)"
+      >
       </aplayer>
       <span class="aplayeIcon" @click="getDownloadUrl(currentMusic)">
-        <i class="el-icon-download iconhover"></i></span>
+        <i class="el-icon-download iconhover"></i
+      ></span>
+
+       <span class="aplayeIcon1" @click="resetAudition">
+        <i class="el-icon-magic-stick iconhover"></i
+      ></span>
     </div>
 
-    <div style="position: relative;" v-if="audition.length !== 0 && musicAudioStatu === 1">
-      <aplayer autoplay ref="auditions" :audio="audition" :liric-type="1"></aplayer>
-      <span class="aplayeIcon" @click="resetAudition">
-        <i class=" el-icon-magic-stick iconhover"></i></span>
+    <div
+      style="position: relative"
+      v-if="audition.length !== 0 && musicAudioStatu === 1"
+    >
+      <aplayer
+        autoplay
+        ref="auditions"
+        :audio="audition"
+        :liric-type="1"
+      ></aplayer>
+  
+       <span class="aplayeIcon" @click="getDownloadUrl(currentMusic)">
+        <i class="el-icon-download iconhover"></i
+      ></span>
+
+      <span class="aplayeIcon1" @click="resetAudition">
+        <i class="el-icon-magic-stick iconhover"></i
+      ></span>
+
+      <span class="aplayeIcon2"  @click="addListenMusic(currentMusic)">
+        <i class="el-icon-folder-add iconhover"></i
+      ></span>
     </div>
   </div>
 </template>
@@ -74,9 +115,9 @@ export default {
       //   id: 478507889,
       //   timer: true, //试听中添加，防止用户连点消耗性能，在添加播放列表方法中可使用到
       // }
-      currentMusic: {},//当前播放的音乐
-      aplayerDomLoading: false,//是否正在获取aplayer播放器dom，有效利用资源，用于防卡顿一直获取
-      auditionDomLoading:false,
+      currentMusic: {}, //当前播放的音乐
+      aplayerDomLoading: false, //是否正在获取aplayer播放器dom，有效利用资源，用于防卡顿一直获取
+      auditionDomLoading: false,
     };
   },
   computed: {
@@ -84,13 +125,14 @@ export default {
   },
   created() {
     //监听按键
-    window.addEventListener('keydown', this.operaMusic);
+    window.addEventListener("keydown", this.operaMusic);
     //每隔几秒钟获取一次当前播放的音乐id
     let playlist = setInterval(() => {
       //判断上一次是否获取完毕
-      if (this.musicAudioStatu === 0 && !this.aplayerDomLoading) {
+      if (!this.aplayerDomLoading) {
         this.aplayerDomLoading = true; // 开始获取状态
-        let aplayer = this.$refs.aplayer; // 获取当前播放器
+        let aplayer = null;
+        this.musicAudioStatu === 0 ? ( aplayer =  this.$refs.aplayer) : (aplayer =  this.$refs.auditions);//判断获取哪个播放器的数据
         let timeout = false; // 初始化超时标志为 false
 
         // 设置一个超时定时器
@@ -101,13 +143,16 @@ export default {
 
         // 检查超时标志和获取状态
         if (aplayer && aplayer.currentMusic && !timeout) {
-          this.currentMusic = aplayer.currentMusic
+          this.currentMusic = aplayer.currentMusic;
+          
+          //同步vuex中的正在播放歌曲的数据
+          this.changeVuexCurrentMusic(aplayer.currentMusic)
+
           this.aplayerDomLoading = false;
           clearTimeout(timeoutId); // 清除超时定时器
         }
       }
     }, 2222);
-
   },
   beforeDestroy() {
     //销毁按键监听
@@ -118,6 +163,7 @@ export default {
       "deleteMUSIC",
       "deleteAUDITION",
       "changeAPLAYER",
+      "changeCurrentPlayMusic",
     ]),
 
     //播放指定歌曲
@@ -132,7 +178,7 @@ export default {
       // console.log(aplayer)
       aplayer.switch(idx); //切换到播放当前下标的歌曲
       aplayer.toggle(); //切换播放/暂停
-      this.currentMusic = aplayer.currentMusic//将当前播放的音乐id记录
+      this.currentMusic = aplayer.currentMusic; //将当前播放的音乐id记录
       // console.log(this.currentMusicId)
     },
     //删除歌曲
@@ -150,16 +196,17 @@ export default {
       // console.log(auditions)
       // auditions.switch(0); //切换到播放当前下标的歌曲
       auditions.toggle(); //切换播放/暂停
-      this.currentMusic = auditions.currentMusic//将当前播放的音乐记录
+      this.currentMusic = auditions.currentMusic; //将当前播放的音乐记录
     },
     //按空格键，对音乐进行播放或者暂停
     operaMusic(event) {
       // 首先判断事件目标是否为输入框
-      if (event.target.tagName.toLowerCase() !== 'input') {
-        if (event.key === ' ') {
+      if (event.target.tagName.toLowerCase() !== "input") {
+        if (event.key === " ") {
           // console.log('按下了空格')
           // console.log(this.musicAudioStatu)
-          if (this.musicAudioStatu === 0) {//播放列表
+          if (this.musicAudioStatu === 0) {
+            //播放列表
             let aplayer = this.$refs.aplayer; //获取当前播放器
             aplayer.toggle(); //切换播放/暂停
           } else {
@@ -167,7 +214,6 @@ export default {
             // console.log(auditions)
             auditions.toggle(); //切换播放/暂停
           }
-
         }
       }
     },
@@ -197,11 +243,12 @@ export default {
     //重置试听歌曲
     resetAudition() {
       this.$store.commit("aplayer/addAUDITION", {
-        name: '卡农（经典钢琴版）', //歌曲名
-        artist: 'dylanf', //作者
+        name: "卡农（经典钢琴版）", //歌曲名
+        artist: "dylanf", //作者
         // url: songUrlAdd,
         url: `https://music.163.com/song/media/outer/url?id=478507889.mp3`,
-        cover: 'http://p2.music.126.net/fL7FAeRby1s7JreBqoOKjg==/109951165175371079.jpg',
+        cover:
+          "http://p2.music.126.net/fL7FAeRby1s7JreBqoOKjg==/109951165175371079.jpg",
         // lrc: songlrc,
         id: 478507889,
         timer: true, //试听中添加，防止用户连点消耗性能，在添加播放列表方法中可使用到
@@ -209,7 +256,7 @@ export default {
     },
     //获取歌曲下载地址
     getDownloadUrl(currentMusic) {
-      let musicfilename = currentMusic.name + ' - ' + currentMusic.artist
+      let musicfilename = currentMusic.name + " - " + currentMusic.artist;
       var that = this;
       that.$message({
         type: "success",
@@ -229,6 +276,12 @@ export default {
         });
       });
     },
+
+    //同步vuex正在播放歌曲的数据
+    changeVuexCurrentMusic(musicData) {
+      //同步vuex中的正在播放歌曲的数据
+          this.$store.commit("aplayer/changeCurrentPlayMusic", musicData);
+    }
   },
 };
 </script>
@@ -337,6 +390,18 @@ export default {
   right: 57px;
   top: 20px;
 }
+.aplayeIcon1 {
+  //播放器上的更换卡农歌曲图标
+  position: absolute;
+  right: 77px;
+  top: 20px;
+}
+.aplayeIcon2 {
+  //播放器上的添加到收藏图标
+  position: absolute;
+  right: 35px;
+  top: 20px;
+}
 
 .aplayer {
   margin: 5px;
@@ -358,9 +423,11 @@ export default {
       height: 66px;
       border-radius: 50% !important;
 
-      .aplayer-button {}
+      .aplayer-button {
+      }
 
-      .aplayer-play {}
+      .aplayer-play {
+      }
     }
 
     .aplayer-info {
@@ -383,7 +450,8 @@ export default {
 
       .aplayer-lrc {
         .aplayer-lrc-contents {
-          .aplayer-lrc-current {}
+          .aplayer-lrc-current {
+          }
         }
       }
 
@@ -392,11 +460,13 @@ export default {
           margin: 0 50px 0 0;
 
           .aplayer-bar {
-            .aplayer-loaded {}
+            .aplayer-loaded {
+            }
 
             .aplayer-played {
               .aplayer-thumb {
-                .aplayer-loading-icon {}
+                .aplayer-loading-icon {
+                }
               }
             }
           }
@@ -411,38 +481,44 @@ export default {
             path {
               fill: #fff;
             }
-
           }
 
           .aplayer-time-inner {
             color: #fff;
 
-            .aplayer-ptime {}
+            .aplayer-ptime {
+            }
 
-            .aplayer-dtime {}
+            .aplayer-dtime {
+            }
           }
 
+          .aplayer-icon-back {
+          }
 
+          .aplayer-icon-play {
+          }
 
-          .aplayer-icon-back {}
-
-          .aplayer-icon-play {}
-
-          .aplayer-icon-forward {}
+          .aplayer-icon-forward {
+          }
 
           .aplayer-volume-wrap {
-            .aplayer-icon-volume-down {}
+            .aplayer-icon-volume-down {
+            }
 
             .aplayer-volume-bar-wrap {
               .aplayer-volume-bar {
-                .aplayer-volume {}
+                .aplayer-volume {
+                }
               }
             }
           }
 
-          .aplayer-icon-order {}
+          .aplayer-icon-order {
+          }
 
-          .aplayer-icon-loop {}
+          .aplayer-icon-loop {
+          }
 
           .aplayer-icon-menu {
             display: none !important;
@@ -451,12 +527,15 @@ export default {
       }
     }
 
-    .aplayer-notice {}
+    .aplayer-notice {
+    }
 
     .aplayer-miniswitcher {
-      .aplayer-icon {}
+      .aplayer-icon {
+      }
 
-      .aplayer-icon-miniswitcher {}
+      .aplayer-icon-miniswitcher {
+      }
     }
   }
 
@@ -464,16 +543,18 @@ export default {
     display: none !important;
 
     .aplayer-list-light {
-      .aplayer-list-cur {}
+      .aplayer-list-cur {
+      }
 
-      .aplayer-list-index {}
+      .aplayer-list-index {
+      }
 
-      .aplayer-list-title {}
+      .aplayer-list-title {
+      }
 
-      .aplayer-list-author {}
+      .aplayer-list-author {
+      }
     }
   }
-
-
 }
 </style>
